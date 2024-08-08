@@ -27,6 +27,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/usuarios', 'UserController@index')->name('dashboard.user.index');
     Route::post('/usuarios-store', 'UserController@store')->name('dashboard.user.store');
     Route::post('/usuarios-eliminar', 'UserController@delete')->name('dashboard.user.delete');
+    Route::post('/usuarios-listar-grupos', 'UserController@listGroup')->name('dashboard.user.list.group');
+    Route::post('/usuarios-eliminar-grupos', 'UserController@deleteGroup')->name('dashboard.user.delete.group');
 
     Route::get('/empresa', 'CompanyController@index')->name('dashboard.company.index');
     Route::post('/empresa-actualizar', 'CompanyController@update')->name('dashboard.company.update');

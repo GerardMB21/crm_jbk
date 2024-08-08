@@ -8,10 +8,10 @@
             <thead>
                 <tr>
                     <th class="col-3 text-center">NOMBRE</th>
-                    <th class="col-3 text-center">EMAIL</th>
+                    <th class="col-2 text-center">EMAIL</th>
                     <th class="col-2 text-center">FECHA CREACIÓN</th>
                     <th class="col-2 text-center">FECHA ACTUALIZACIÓN</th>
-                    <th class="col-2 text-center">OPCIONES</th>
+                    <th class="col-3 text-center">OPCIONES</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,6 +26,9 @@
                         </button>
                         <button class="btn btn-danger" @click.prevent="deleteUser(user)" title="Eliminar">
                             <i class="fa-solid fa-trash-can fa-sm" style="color: #ffffff;"></i>
+                        </button>
+                        <button class="btn btn-info" @click.prevent="viewGroups(user)" title="Lista de Grupos">
+                            <i class="fa-solid fa-people-group fa-sm" style="color: #ffffff;"></i>
                         </button>
                     </td>
                 </tr>
@@ -44,6 +47,10 @@ export default {
             default: ''
         },
         url_delete: {
+            type: String,
+            default: '',
+        },
+        url_list_group: {
             type: String,
             default: '',
         }
@@ -85,6 +92,18 @@ export default {
                 }
             });
         },
+        viewGroups(user) {
+            EventBus.$emit('loading', true);
+            axios.post(this.url_list_group, {
+                user_id: user.id,
+            }).then(response => {
+                EventBus.$emit('loading', false);
+                EventBus.$emit('group_modal',response.data,user);
+            }).catch(error => {
+                console.log(error);
+                console.log(error.response);
+            });
+        }
     }
 }
 </script>

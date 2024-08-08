@@ -282,6 +282,8 @@
                 "infoThousands": "."
             }
         });
+
+      
     </script>
 
 </body>

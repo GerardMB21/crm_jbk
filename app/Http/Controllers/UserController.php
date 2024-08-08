@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
+use App\Models\Group;
 use App\Models\User;
+use App\Models\UserGroup;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-    
+
     public function index()
     {
+
+        $groups = Group::get();
+        $company = Company::findOrFail(1);;
         $users = User::select(
             'id',
             'name',
@@ -18,7 +24,7 @@ class UserController extends Controller
             DB::Raw('DATE_FORMAT(updated_at, "%Y-%m-%d %H:%i:%s ") as actualizacion')
         )->get();
 
-        return view('user')->with(compact('users'));
+        return view('user')->with(compact('users', 'company', 'groups'));
     }
 
     public function validateForm()
@@ -43,6 +49,8 @@ class UserController extends Controller
     {
         $this->validateForm();
 
+        $company = Company::findOrFail(1);;
+
         $id = request('id');
         $name = request('name');
         $user = request('user');
@@ -58,7 +66,7 @@ class UserController extends Controller
 
 
         $element->name = $name;
-        $element->user = $user;
+        $element->user = $user . $company->sufijo;
         $element->password = $password;
         $element->remember_token = $password;
         $element->save();
@@ -95,5 +103,30 @@ class UserController extends Controller
             'msg'   => $msg,
             'url'   => $url
         ]);
+    }
+
+    public function listGroup()
+    {
+
+        $user_id = request('user_id');
+
+        $groups = UserGroup::select(
+            'user_groups.id  as id',
+            'groups.name as group_name'
+        )
+            ->leftjoin('groups', 'groups.id', '=', 'user_groups.group_id')
+            ->where('user_groups.user_id', $user_id)
+            ->get();
+
+        return $groups;
+    }
+
+    public function deleteGroup()
+    {
+        $id = request('id');
+        $group = UserGroup::findOrFail($id);
+        $group->delete();
+
+        return $this->listGroup();
     }
 }

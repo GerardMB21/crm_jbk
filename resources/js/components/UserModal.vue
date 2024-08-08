@@ -19,15 +19,44 @@
                         </div>
                         <div class="col-md-6">
                             <label for="user" class="form-label">Usuario:</label>
-                            <input v-model="model.user" type="text" class="form-control" id="user" name="user"
-                                @focus="$parent.clearErrorMsg($event)">
-                            <div id="user-error" class="error invalid-feedback"></div>
+                            <div class="input-group">
+                                <input v-model="model.user" type="text" class="form-control" id="user" name="user"
+                                    @focus="$parent.clearErrorMsg($event)">
+                                <span class="input-group-text bg-info" id="basic-addon2">{{ company.sufijo }}</span>
+                                <div id="user-error" class="error invalid-feedback"></div>
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <label for="password" class="form-label">Contraseña:</label>
                             <input v-model="model.password" type="text" class="form-control" id="password"
                                 name="password" @focus="$parent.clearErrorMsg($event)">
                             <div id="password-error" class="error invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="telefono" class="form-label">Teléfono:</label>
+                            <input v-model="model.telefono" type="text" class="form-control" id="telefono"
+                                name="telefono" @focus="$parent.clearErrorMsg($event)">
+                            <div id="telefono-error" class="error invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="genero" class="form-label">Género:</label>
+                            <select class="form-select" v-model="model.genero" name="genero" id="genero"
+                                @focus="$parent.clearErrorMsg($event)">
+                                <option value="" selected disabled>Seleccionar</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Femenino">Femenino</option>
+                            </select>
+                            <div id="genero-error" class="error invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="fecha_naci" class="form-label">Fecha de nacimiento:</label>
+                            <input v-model="model.fecha_naci" type="date" name="fecha_naci" id ="fecha_naci" class="form-control">
+                            <div id="fecha_naci-error" class="error invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="obs" class="form-label">Observaciones:</label>
+                            <textarea class="form-control" v-model="model.obs" name="obs" id="obs"></textarea>
+                            <div id="obs-error" class="error invalid-feedback"></div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -47,6 +76,14 @@ export default {
         url: {
             type: String,
             default: ''
+        },
+        company: {
+            type: Object,
+            default: ''
+        },
+        groups: {
+            type: Array,
+            default: ''
         }
     },
     data() {
@@ -55,7 +92,8 @@ export default {
                 id: '',
                 name: '',
                 user: '',
-                password: ''
+                password: '',
+                fecha_naci: ''
             },
             text: '',
             color: ''
@@ -80,8 +118,8 @@ export default {
         EventBus.$on('edit_modal', function (user) {
 
             this.model.id = user.id;
-            this.model.name =user.name;
-            this.model.user = user.user;
+            this.model.name = user.name;
+            this.model.user = user.user.slice(0, user.user.length - this.company.sufijo.length);
             this.model.password = '';
 
             this.text = "Actualizar"
@@ -91,42 +129,43 @@ export default {
         }.bind(this));
     },
     methods: {
-        formController: function(url, event) {
-                var vm = this;
+        formController: function (url, event) {
+            var vm = this;
 
-                var target = $(event.target);
-                var url = url;
-                var fd = new FormData(event.target);
+            var target = $(event.target);
+            var url = url;
+            var fd = new FormData(event.target);
 
-                EventBus.$emit('loading', true);
+            EventBus.$emit('loading', true);
 
-                // EventBus.$emit('loading', true);
-                axios.post(url, fd, { headers: {
-                        'Content-type': 'application/x-www-form-urlencoded',
+            // EventBus.$emit('loading', true);
+            axios.post(url, fd, {
+                headers: {
+                    'Content-type': 'application/x-www-form-urlencoded',
+                }
+            }).then(response => {
+                EventBus.$emit('loading', false);
+                this.$parent.alertMsg(response.data);
+
+            }).catch(error => {
+                EventBus.$emit('loading', false);
+                console.log(error.response);
+                var obj = error.response.data.errors;
+                $('.modal').animate({
+                    scrollTop: 0
+                }, 500, 'swing');
+                $.each(obj, function (i, item) {
+                    let c_target = target.find("#" + i + "-error");
+                    if (!c_target.attr('data-required')) {
+                        let p = c_target.prev();
+                        p.addClass('is-invalid');
+                    } else {
+                        c_target.css('display', 'block');
                     }
-                }).then(response => {
-                    EventBus.$emit('loading', false);
-                    this.$parent.alertMsg(response.data);
-
-                }).catch(error => {
-                    EventBus.$emit('loading', false);
-                    console.log(error.response);
-                    var obj = error.response.data.errors;
-                    $('.modal').animate({
-                        scrollTop: 0
-                    }, 500, 'swing');
-                    $.each(obj, function(i, item) {
-                        let c_target = target.find("#" + i + "-error");
-                        if (!c_target.attr('data-required')) {
-                            let p = c_target.prev();
-                            p.addClass('is-invalid');
-                        } else {
-                            c_target.css('display', 'block');
-                        }
-                        c_target.html(item);
-                    });
+                    c_target.html(item);
                 });
-            },
+            });
+        },
 
     }
 }
