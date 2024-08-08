@@ -30,6 +30,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/usuarios-listar-grupos', 'UserController@listGroup')->name('dashboard.user.list.group');
     Route::post('/usuarios-eliminar-grupos', 'UserController@deleteGroup')->name('dashboard.user.delete.group');
 
+    Route::get('/horarios', 'HorarioController@index')->name('dashboard.horario.index');
+    Route::post('/horarios-store', 'HorarioController@store')->name('dashboard.horario.store');
+    Route::post('/horarios-eliminar', 'HorarioController@delete')->name('dashboard.horario.delete');
+
+
+
     Route::get('/empresa', 'CompanyController@index')->name('dashboard.company.index');
     Route::post('/empresa-actualizar', 'CompanyController@update')->name('dashboard.company.update');
 

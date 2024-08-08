@@ -17,25 +17,104 @@
                 Bienvenido (a) <br>{{ Auth::user()->name }}<br><br>
                 <i class="fa-solid fa-user-shield" style="color: #ffffff; font-size: 600%"></i><br><br>
                 <a href="{{ route('dashboard.logout') }}" class="btn btn-danger">Cerrar sesión</a>
-                <hr>    
+                <hr>
             </div>
+
+
+
             <div class="offcanvas-body">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
-                            Gestión
+                            Configuración de Empresa
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark">
-                            <li><a class="dropdown-item" href="{{ route('dashboard.user.index') }}">Usuarios</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
+
                             <li><a class="dropdown-item" href="{{ route('dashboard.company.index') }}">Mi Empresa</a></li>
                         </ul>
                     </li>
                 </ul>
             </div>
+
+
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Configuración de Asistencia
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="{{ route('dashboard.horario.index') }}">Horarios</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ route('dashboard.company.index') }}">Tipos de Desconexión</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ route('dashboard.company.index') }}">Sedes</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Administración de Usuarios
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="{{ route('dashboard.company.index') }}">Grupos de Usuarios</a></li>
+                            <li>
+                            <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ route('dashboard.user.index') }}">Usuarios</a></li>
+
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Colaborativo
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="{{ route('dashboard.user.index') }}">Anuncios</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ route('dashboard.company.index') }}">Popups de Bienvenida</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Reportes
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="{{ route('dashboard.user.index') }}">En construcción</a></li>
+
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+
+
         </div>
     </div>
 </nav>
