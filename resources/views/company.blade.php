@@ -1,6 +1,6 @@
 @extends('includes.app')
 
-@section('title','Gestión')
+@section('title','Configuración de Empresa')
 @section('subtitle','Mi Empresa')
 
 @section('content')

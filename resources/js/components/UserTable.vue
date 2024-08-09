@@ -7,10 +7,12 @@
         <table id="example" class="table table-striped text-center" style="width:100%">
             <thead>
                 <tr>
-                    <th class="col-3 text-center">NOMBRE</th>
+                    <th class="col-2 text-center">NOMBRE</th>
                     <th class="col-2 text-center">EMAIL</th>
-                    <th class="col-2 text-center">FECHA CREACIÓN</th>
-                    <th class="col-2 text-center">FECHA ACTUALIZACIÓN</th>
+                    <th class="col-1 text-center">TELEFONO</th>
+                    <th class="col-1 text-center">GENERO</th>
+                    <th class="col-1 text-center">FECHA DE NACIMIENTO</th>
+                    <th class="col-2 text-center">OBSERVACIONES</th>
                     <th class="col-3 text-center">OPCIONES</th>
                 </tr>
             </thead>
@@ -18,8 +20,10 @@
                 <tr v-for="user in users" :key="user.id">
                     <td>{{ user.name }}</td>
                     <td>{{ user.user }}</td>
-                    <td class="text-center">{{ user.creacion }}</td>
-                    <td class="text-center">{{ user.actualizacion }}</td>
+                    <td>{{ user.telefono }}</td>
+                    <td>{{ user.genero }}</td>
+                    <td>{{ user.fecha_naci }}</td>
+                    <td>{{ user.obs }}</td>
                     <td>
                         <button class="btn btn-primary" @click.prevent="edit(user)" title="Editar">
                             <i class="fa-solid fa-pen-to-square fa-sm" style="color: #ffffff;"></i>

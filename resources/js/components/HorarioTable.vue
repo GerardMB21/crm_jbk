@@ -7,11 +7,15 @@
         <table id="example" class="table table-striped text-center" style="width:100%">
             <thead>
                 <tr>
-                    <th class="col-3 text-center">NOMBRE</th>
-                    <th class="col-2 text-center">HORARIO</th>
-                    <th class="col-2 text-center">TOLERANCIA</th>
+                    <th class="col-2 text-center">NOMBRE</th>
+                    <th class="col-1 text-center">HORARIO</th>
+                    <th class="col-1 text-center">TOLERANCIA</th>
                     <th class="col-2 text-center">ESTADO</th>
-                    <th class="col-3 text-center">OPCIONES</th>
+                    <th class="col-1 text-center">Pedir motivo por llegar tarde</th>
+                    <th class="col-1 text-center">Pedir motivo por salir temprano</th>
+                    <th class="col-1 text-center">Restringir acceso fuera de este horario</th>
+                    <th class="col-1 text-center">Restringir gestión fuera de este horario</th>
+                    <th class="col-2 text-center">OPCIONES</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,6 +24,10 @@
                     <td>{{ horario.sede_id }}</td>
                     <td class="text-center">{{ horario.tolerancia_min }}</td>
                     <td class="text-center">{{ horario.state }}</td>
+                    <td class="text-center">{{ horario.motivo_tardanza == 0 ? 'No' : 'Si' }}</td>
+                    <td class="text-center">{{ horario.motivo_temprano == 0 ? 'No' : 'Si' }}</td>
+                    <td class="text-center">{{ horario.restringir_last == 0 ? 'No' : 'Si' }}</td>
+                    <td class="text-center">{{ horario.restringir_gest == 0 ? 'No' : 'Si' }}</td>
                     <td>
                         <button class="btn btn-primary" @click.prevent="edit(horario)" title="Editar">
                             <i class="fa-solid fa-pen-to-square fa-sm" style="color: #ffffff;"></i>

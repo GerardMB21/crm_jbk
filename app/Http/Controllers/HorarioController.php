@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Models\Day;
 use App\Models\Horario;
 use Illuminate\Support\Facades\DB;
+
+use function PHPSTORM_META\map;
 
 class HorarioController extends Controller
 {
@@ -13,50 +16,80 @@ class HorarioController extends Controller
     {
 
         $horarios = Horario::get();
-
-
         return view('horario')->with(compact('horarios'));
     }
 
-    public function validateForm()
+    public function validateModal()
     {
         $messages = [
-            'name.required'         => 'Debe ingresar un nombre.',
-
+            'model.name.required' => 'Debe ingresar un nombre.',
+            'model.tolerancia_min.required' => 'Debe ingresar la Tolerancia (mins).',
+            'details.*.day.required' => 'El campo día es requerido.',
+            'details.*.start.required' => 'El campo entrada es requerido.',
+            'details.*.end.required' => 'El campo salida es requerido.',
         ];
 
         $rules = [
-            'name'                  => 'required',
-
+            'model.name' => 'required',
+            'model.tolerancia_min' => 'required',
+            'details.*.day' => 'required',
+            'details.*.start' => 'required',
+            'details.*.end' => 'required',
         ];
 
+        // Validate the request
         request()->validate($rules, $messages);
+
         return request()->all();
+    }
+
+    public function getDay()
+    {
+        $id = request('id');
+        $days = Day::select('day', 'inicio as start', 'final as end')
+            ->where('horario_id', $id)->get();
+        return $days;
     }
 
     public function store()
     {
-        $this->validateForm();
+        $this->validateModal();
 
-
-        $id = request('id');
-        $name = request('name');
-        $tolerancia = request('tolerancia');
-
+        $id = request('model.id');
+        $name = request('model.name');
+        $tolerancia_min = request('model.tolerancia_min');
+        $motivo_tardanza = request('model.motivo_tardanza');
+        $motivo_temprano = request('model.motivo_temprano');
+        $restringir_last = request('model.restringir_last');
+        $restringir_gest = request('model.restringir_gest');
+        $details = request('details');
 
         if (isset($id)) {
-            $element = Horario::findOrFail($id);
-            $msg = 'Horario actualizado exitosamente.';
+            $horario = Horario::findOrFail($id);
+            Day::where('horario_id', $id)->delete();
+            $msg = "Horario actualizado con éxito.";
         } else {
-            $element = new Horario();
-            $msg = 'Horario creado exitosamente.';
+            $horario = new Horario();
+            $horario->state = "Activo";
+            $msg = "Horario creado con éxito.";
         }
 
+        $horario->name = $name;
+        $horario->tolerancia_min = $tolerancia_min;
+        $horario->motivo_tardanza = $motivo_tardanza;
+        $horario->motivo_temprano = $motivo_temprano;
+        $horario->restringir_last = $restringir_last;
+        $horario->restringir_gest = $restringir_gest;
+        $horario->save();
 
-        $element->name = $name;
-        $element->tolerancia = $tolerancia;
-
-        $element->save();
+        foreach ($details as $item) {
+            $element = new Day();
+            $element->horario_id = $horario->id;
+            $element->day = $item['day'];
+            $element->inicio = $item['start'];
+            $element->final = $item['end'];
+            $element->save();
+        }
 
         $type = 3;
         $title = 'Bien';
@@ -75,8 +108,12 @@ class HorarioController extends Controller
     {
 
         $id = request('id');
-        $element = Horario::findOrFail($id);
-        $element->delete();
+
+        $days = Day::where('horario_id', $id);
+        $days->delete();
+
+        $horario = Horario::findOrFail($id);
+        $horario->delete();
 
         $type = 3;
         $title = 'Bien';
@@ -91,6 +128,4 @@ class HorarioController extends Controller
             'url'   => $url
         ]);
     }
-
-
 }

@@ -18,13 +18,14 @@
                             <div id="name-error" class="error invalid-feedback"></div>
                         </div>
                         <div class="col-md-6">
-                            <label for="user" class="form-label">Usuario:</label>
-                            <div class="input-group">
-                                <input v-model="model.user" type="text" class="form-control" id="user" name="user"
-                                    @focus="$parent.clearErrorMsg($event)">
-                                <span class="input-group-text bg-info" id="basic-addon2">{{ company.sufijo }}</span>
-                                <div id="user-error" class="error invalid-feedback"></div>
-                            </div>
+                            <label for="user" class="form-label">Usuario:
+                                <span class="badge bg-danger">{{ company.sufijo }}</span>
+                            </label>
+
+                            <input v-model="model.user" type="text" class="form-control" id="user" name="user"
+                                @focus="$parent.clearErrorMsg($event)">
+                            <div id="user-error" class="error invalid-feedback"></div>
+
                         </div>
                         <div class="col-md-6">
                             <label for="password" class="form-label">Contraseña:</label>
@@ -50,12 +51,14 @@
                         </div>
                         <div class="col-md-6">
                             <label for="fecha_naci" class="form-label">Fecha de nacimiento:</label>
-                            <input v-model="model.fecha_naci" type="date" name="fecha_naci" id ="fecha_naci" class="form-control">
+                            <input v-model="model.fecha_naci" type="date" name="fecha_naci" id="fecha_naci"
+                                @focus="$parent.clearErrorMsg($event)" class="form-control">
                             <div id="fecha_naci-error" class="error invalid-feedback"></div>
                         </div>
                         <div class="col-md-12">
                             <label for="obs" class="form-label">Observaciones:</label>
-                            <textarea class="form-control" v-model="model.obs" name="obs" id="obs"></textarea>
+                            <textarea class="form-control" v-model="model.obs" name="obs" id="obs"
+                                @focus="$parent.clearErrorMsg($event)"></textarea>
                             <div id="obs-error" class="error invalid-feedback"></div>
                         </div>
                     </div>
@@ -81,10 +84,6 @@ export default {
             type: Object,
             default: ''
         },
-        groups: {
-            type: Array,
-            default: ''
-        }
     },
     data() {
         return {
@@ -93,7 +92,10 @@ export default {
                 name: '',
                 user: '',
                 password: '',
-                fecha_naci: ''
+                telefono: '',
+                genero: '',
+                fecha_naci: '',
+                obs: ''
             },
             text: '',
             color: ''
@@ -109,6 +111,10 @@ export default {
             this.model.name = '';
             this.model.user = '';
             this.model.password = '';
+            this.model.telefono = '';
+            this.model.genero = '';
+            this.model.fecha_naci = '';
+            this.model.obs = '';
 
             this.text = "Crear"
             this.color = "success";
@@ -121,6 +127,10 @@ export default {
             this.model.name = user.name;
             this.model.user = user.user.slice(0, user.user.length - this.company.sufijo.length);
             this.model.password = '';
+            this.model.telefono = user.telefono;
+            this.model.genero = user.genero;
+            this.model.fecha_naci = user.fecha_naci;
+            this.model.obs = user.obs;
 
             this.text = "Actualizar"
             this.color = "primary";

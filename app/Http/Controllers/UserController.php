@@ -13,18 +13,11 @@ class UserController extends Controller
 
     public function index()
     {
-
-        $groups = Group::get();
+        $groups_general = Group::get();
         $company = Company::findOrFail(1);;
-        $users = User::select(
-            'id',
-            'name',
-            'user',
-            DB::Raw('DATE_FORMAT(created_at, "%Y-%m-%d %H:%i:%s") as creacion'),
-            DB::Raw('DATE_FORMAT(updated_at, "%Y-%m-%d %H:%i:%s ") as actualizacion')
-        )->get();
+        $users = User::get();
 
-        return view('user')->with(compact('users', 'company', 'groups'));
+        return view('user')->with(compact('users', 'company', 'groups_general'));
     }
 
     public function validateForm()
@@ -32,17 +25,65 @@ class UserController extends Controller
         $messages = [
             'name.required'         => 'Debe ingresar un nombre.',
             'user.required'         => 'Debe ingresar un Usuario.',
-            'password.required'     => 'Debe ingresar una contraseña.'
+            'password.required'     => 'Debe ingresar una contraseña.',
+            'telefono.required'     => 'Debe ingresar un teléfono.',
+            'genero.required'       => 'Debe seleccionar el género.',
+            'fecha_naci.required'   => 'Debe ingresar la fecha de nacimiento.',
+            'obs.required'          => 'Debe ingresar una observación.'
         ];
 
         $rules = [
             'name'                  => 'required',
             'user'                  => 'required',
-            'password'              => 'required'
+            'password'              => 'required',
+            'telefono'              => 'required',
+            'genero'                => 'required',
+            'fecha_naci'            => 'required',
+            'obs'                   => 'required'
         ];
 
         request()->validate($rules, $messages);
         return request()->all();
+    }
+
+    public function validateModalGroup()
+    {
+        $messages = [
+            'group_id.required'         => 'Debe seleccionar un Grupo.',
+        ];
+
+        $rules = [
+            'group_id'                  => 'required',
+        ];
+
+        request()->validate($rules, $messages);
+        return request()->all();
+    }
+
+    public function addGroup()
+    {
+        $this->validateModalGroup();
+
+        $user_id = request('user_id');
+        $group_id = request('group_id');
+
+        $info = [
+            'type'  => 1,
+            'title' => 'Bien',
+            'msg'   => 'Grupo agregado con éxito.',
+        ];
+
+        $element = new UserGroup();
+        $element->user_id = $user_id;
+        $element->group_id = $group_id;
+        $element->save();
+
+        $list = $this->listGroup();
+
+        return response()->json([
+            'info'  => $info,
+            'list'  => $list
+        ]);
     }
 
     public function store()
@@ -55,6 +96,10 @@ class UserController extends Controller
         $name = request('name');
         $user = request('user');
         $password = bcrypt(request('password'));
+        $telefono = request('telefono');
+        $genero = request('genero');
+        $fecha_naci = request('fecha_naci');
+        $obs = request('obs');
 
         if (isset($id)) {
             $element = User::findOrFail($id);
@@ -69,6 +114,10 @@ class UserController extends Controller
         $element->user = $user . $company->sufijo;
         $element->password = $password;
         $element->remember_token = $password;
+        $element->telefono = $telefono;
+        $element->genero = $genero;
+        $element->fecha_naci = $fecha_naci;
+        $element->obs = $obs;
         $element->save();
 
         $type = 3;
@@ -112,6 +161,7 @@ class UserController extends Controller
 
         $groups = UserGroup::select(
             'user_groups.id  as id',
+            'groups.id as group_id',
             'groups.name as group_name'
         )
             ->leftjoin('groups', 'groups.id', '=', 'user_groups.group_id')
@@ -127,6 +177,17 @@ class UserController extends Controller
         $group = UserGroup::findOrFail($id);
         $group->delete();
 
-        return $this->listGroup();
+        $list = $this->listGroup();
+
+        $info = [
+            'type'  => 1,
+            'title' => 'Bien',
+            'msg'   => 'Se quitó el grupo con éxito.',
+        ];
+
+        return response()->json([
+            'info'  => $info,
+            'list'  => $list
+        ]);
     }
 }

@@ -1,6 +1,6 @@
 @extends('includes.app')
 
-@section('title','Gestión')
+@section('title','Administración de Usuarios')
 @section('subtitle','Usuarios')
 
 @section('content')
@@ -13,12 +13,13 @@
 
     <user-modal
     :company="{{ $company }}"
-    :groups="{{ $groups }}"
     :url="' {{ route('dashboard.user.store') }} '"
     ></user-modal>
 
     <user-modal-group
+    :groups_general="{{ $groups_general }}"
     :url_delete_group="'{{ route('dashboard.user.delete.group') }}'"
+    :url="'{{ route('dashboard.user.add.group') }}'"
     ></user-modal-group>
 
     <loading></loading>

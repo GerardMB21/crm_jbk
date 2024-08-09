@@ -24,17 +24,25 @@ Route::get('/cerrar-sesion', 'LoginController@logout')->name('dashboard.logout')
 
 Route::middleware('auth')->group(function () {
 
+    //ADMINISTRACION DE USUARIOS - USUARIOS
     Route::get('/usuarios', 'UserController@index')->name('dashboard.user.index');
     Route::post('/usuarios-store', 'UserController@store')->name('dashboard.user.store');
     Route::post('/usuarios-eliminar', 'UserController@delete')->name('dashboard.user.delete');
     Route::post('/usuarios-listar-grupos', 'UserController@listGroup')->name('dashboard.user.list.group');
     Route::post('/usuarios-eliminar-grupos', 'UserController@deleteGroup')->name('dashboard.user.delete.group');
+    Route::post('/usuarios-agregar-grupos', 'UserController@addGroup')->name('dashboard.user.add.group');
 
-    
+    //ADMINISTRACION DE USUARIOS - GRUPOS DE USUARIOS
+    Route::get('/grupo-usuarios', 'GroupUserController@index')->name('dashboard.group.user.index');
+    Route::post('/grupo-eliminar-usuarios', 'GroupUserController@delete')->name('dashboard.group.user.delete');
+    Route::post('/grupo-eliminar-store', 'GroupUserController@store')->name('dashboard.group.user.store');
+
+
 
     Route::get('/horarios', 'HorarioController@index')->name('dashboard.horario.index');
     Route::post('/horarios-store', 'HorarioController@store')->name('dashboard.horario.store');
     Route::post('/horarios-eliminar', 'HorarioController@delete')->name('dashboard.horario.delete');
+    Route::post('/horarios-buscar-dias', 'HorarioController@getDay')->name('dashboard.horario.get.day');
 
 
 

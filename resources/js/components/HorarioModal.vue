@@ -15,17 +15,73 @@
                             <label for="name" class="form-label">Nombre:</label>
                             <input v-model="model.name" type="text" class="form-control" id="name" name="name"
                                 @focus="$parent.clearErrorMsg($event)">
-                            <div id="name-error" class="error invalid-feedback"></div>
+                            <div id="model-name-error" class="error invalid-feedback"></div>
                         </div>
                         <div class="col-md-6">
-                            <label for="tolerancia" class="form-label">Tolerancia (mins):</label>
+                            <label for="tolerancia_min" class="form-label">Tolerancia (mins):</label>
                             <div class="input-group">
-                                <input v-model="model.tolerancia" type="text" class="form-control" id="tolerancia"
-                                name="tolerancia" @focus="$parent.clearErrorMsg($event)">
-                                <div id="tolerancia-error" class="error invalid-feedback"></div>
+                                <input v-model="model.tolerancia_min" type="text" class="form-control"
+                                    id="tolerancia_min" name="tolerancia_min" @focus="$parent.clearErrorMsg($event)">
+                                <div id="model-tolerancia_min-error" class="error invalid-feedback"></div>
                             </div>
                         </div>
-
+                        <div class="col-md-12">
+                            <hr>
+                        </div>
+                        <div class="col-md-6 form-check form-switch">
+                            <label class="form-check-label" for="flexSwitchCheckChecked">Pedir motivo por llegar
+                                tarde</label>
+                            <input v-model="model.motivo_tardanza" class="form-check-input" type="checkbox"
+                                role="switch" id="flexSwitchCheckChecked">
+                        </div>
+                        <div class="col-md-6 form-check form-switch">
+                            <label class="form-check-label" for="flexSwitchCheckChecked">Pedir motivo por salir
+                                temprano</label>
+                            <input v-model="model.motivo_temprano" class="form-check-input" type="checkbox"
+                                role="switch" id="flexSwitchCheckChecked">
+                        </div>
+                        <div class="col-md-6 form-check form-switch">
+                            <label class="form-check-label" for="flexSwitchCheckChecked">Restringir acceso fuera de este
+                                horario</label>
+                            <input v-model="model.restringir_last" class="form-check-input" type="checkbox"
+                                role="switch" id="flexSwitchCheckChecked">
+                        </div>
+                        <div class="col-md-6 form-check form-switch">
+                            <label class="form-check-label" for="flexSwitchCheckChecked">Restringir gestión fuera de
+                                este horario</label>
+                            <input v-model="model.restringir_gest" class="form-check-input" type="checkbox"
+                                role="switch" id="flexSwitchCheckChecked">
+                        </div>
+                        <div class="col-md-12">
+                            <hr>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label badge bg-info">Día</label>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label badge bg-info">Entrada</label>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label badge bg-info">Salida</label>
+                        </div>
+                        <!--LUNES-->
+                        <div v-for="(detail, index) in details" :key="index" class="row mb-2">
+                            <div class="col-md-4">
+                                <input v-model="detail.day" type="text" class="form-control" id="day" name="day"
+                                    readonly @focus="$parent.clearErrorMsg($event)">
+                                <div id="day-error" class="error invalid-feedback"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <input v-model="detail.start" type="time" class="form-control" id="start" name="start"
+                                    @focus="$parent.clearErrorMsg($event)">
+                                <div :id="'details-' + index + '-start-error'" class="error invalid-feedback"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <input v-model="detail.end" type="time" class="form-control" id="end" name="end"
+                                    @focus="$parent.clearErrorMsg($event)">
+                                <div :id="'details-' + index + '-end-error'" class="error invalid-feedback"></div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-white border-dark" data-bs-dismiss="modal">Cerrar</button>
@@ -44,6 +100,10 @@ export default {
         url: {
             type: String,
             default: ''
+        },
+        url_get_day: {
+            type: String,
+            default: ''
         }
 
     },
@@ -52,9 +112,21 @@ export default {
             model: {
                 id: '',
                 name: '',
-                tolerancia: ''
-
+                tolerancia_min: false,
+                motivo_tardanza: false,
+                motivo_temprano: false,
+                restringir_last: false,
+                restringir_gest: false,
             },
+            details: [
+                { day: 'Lunes', start: '', end: '' },
+                { day: 'Martes', start: '', end: '' },
+                { day: 'Miércoles', start: '', end: '' },
+                { day: 'Jueves', start: '', end: '' },
+                { day: 'Viernes', start: '', end: '' },
+                { day: 'Sábado', start: '', end: '' },
+                { day: 'Domingo', start: '', end: '' }
+            ],
             text: '',
             color: ''
         }
@@ -67,60 +139,98 @@ export default {
 
             this.model.id = '';
             this.model.name = '';
-            this.model.tolerancia = '';
+            this.model.tolerancia_min = '';
+            this.model.motivo_tardanza = false;
+            this.model.motivo_temprano = false;
+            this.model.restringir_last = false;
+            this.model.restringir_gest = false;
 
             this.text = "Crear"
             this.color = "success";
+            this.resetDetails();
 
             $('#horarioModal').modal('show');
         }.bind(this));
         EventBus.$on('edit_modal', function (horario) {
 
+            EventBus.$emit('loading', true);
+
             this.model.id = horario.id;
             this.model.name = horario.name;
-            this.model.tolerancia = '';
+            this.model.tolerancia_min = horario.tolerancia_min;
+            this.model.motivo_tardanza = horario.motivo_tardanza == 1 ? true : false;
+            this.model.motivo_temprano = horario.motivo_temprano == 1 ? true : false;
+            this.model.restringir_last = horario.restringir_last == 1 ? true : false;
+            this.model.restringir_gest = horario.restringir_gest == 1 ? true : false;
 
             this.text = "Actualizar"
             this.color = "primary";
 
-            $('#horarioModal').modal('show');
+
+            axios.post(this.url_get_day, {
+                id: horario.id,
+            }).then(response => {
+                EventBus.$emit('loading', false);
+                this.resetDetails();
+                this.details = response.data;
+                $('#horarioModal').modal('show');
+            }).catch(error => {
+                console.log(error);
+                console.log(error.response);
+            });
+
         }.bind(this));
     },
     methods: {
+        resetDetails() {
+            this.details = [
+                { day: 'Lunes', start: '', end: '' },
+                { day: 'Martes', start: '', end: '' },
+                { day: 'Miércoles', start: '', end: '' },
+                { day: 'Jueves', start: '', end: '' },
+                { day: 'Viernes', start: '', end: '' },
+                { day: 'Sábado', start: '', end: '' },
+                { day: 'Domingo', start: '', end: '' }
+            ];
+        },
         formController: function (url, event) {
-            var vm = this;
 
             var target = $(event.target);
-            var url = url;
-            var fd = new FormData(event.target);
 
             EventBus.$emit('loading', true);
 
-            // EventBus.$emit('loading', true);
-            axios.post(url, fd, {
-                headers: {
-                    'Content-type': 'application/x-www-form-urlencoded',
-                }
+            axios.post(this.url, {
+                model: this.model,
+                details: this.details,
             }).then(response => {
                 EventBus.$emit('loading', false);
                 this.$parent.alertMsg(response.data);
-
             }).catch(error => {
                 EventBus.$emit('loading', false);
                 console.log(error.response);
                 var obj = error.response.data.errors;
+
                 $('.modal').animate({
                     scrollTop: 0
                 }, 500, 'swing');
                 $.each(obj, function (i, item) {
-                    let c_target = target.find("#" + i + "-error");
-                    if (!c_target.attr('data-required')) {
-                        let p = c_target.prev();
-                        p.addClass('is-invalid');
+
+                    let c_target;
+
+                    let parts = i.split('.');
+                    if (i.startsWith('details.')) {
+                        let index = parts[1];
+                        let field = parts[2];
+                        c_target = $("#details-" + index + '-' + field + '-error');
                     } else {
-                        c_target.css('display', 'block');
+                        let field = parts[1];
+                        c_target = $("#model-" + field + '-error');
                     }
+
+                    c_target.prev().addClass('is-invalid');
+                    c_target.css('display', 'block');
                     c_target.html(item);
+
                 });
             });
         },
