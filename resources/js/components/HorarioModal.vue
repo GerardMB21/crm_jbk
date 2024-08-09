@@ -20,9 +20,8 @@
                         <div class="col-md-6">
                             <label for="tolerancia" class="form-label">Tolerancia (mins):</label>
                             <div class="input-group">
-                                <input v-model="model.tolerancia" type="text" class="form-control" id="tolerancia" name="tolerancia"
-                                    @focus="$parent.clearErrorMsg($event)">
-                                <span class="input-group-text bg-info" id="basic-addon2">{{ company.sufijo }}</span>
+                                <input v-model="model.tolerancia" type="text" class="form-control" id="tolerancia"
+                                name="tolerancia" @focus="$parent.clearErrorMsg($event)">
                                 <div id="tolerancia-error" class="error invalid-feedback"></div>
                             </div>
                         </div>
@@ -53,7 +52,7 @@ export default {
             model: {
                 id: '',
                 name: '',
-                tolerancia: '',
+                tolerancia: ''
 
             },
             text: '',

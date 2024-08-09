@@ -80,7 +80,7 @@ class HorarioController extends Controller
 
         $type = 3;
         $title = 'Bien';
-        $msg = 'Usuario eliminado exitosamente.';
+        $msg = 'Horario eliminado exitosamente.';
         $url = route('dashboard.horario.index');
 
 

@@ -5266,11 +5266,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: {
@@ -5361,8 +5356,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-//
-//
 //
 //
 //
@@ -44336,15 +44329,6 @@ var render = function () {
                       },
                     }),
                     _vm._v(" "),
-                    _c(
-                      "span",
-                      {
-                        staticClass: "input-group-text bg-info",
-                        attrs: { id: "basic-addon2" },
-                      },
-                      [_vm._v(_vm._s(_vm.company.sufijo))]
-                    ),
-                    _vm._v(" "),
                     _c("div", {
                       staticClass: "error invalid-feedback",
                       attrs: { id: "tolerancia-error" },
@@ -44484,26 +44468,6 @@ var render = function () {
                     [
                       _c("i", {
                         staticClass: "fa-solid fa-trash-can fa-sm",
-                        staticStyle: { color: "#ffffff" },
-                      }),
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-info",
-                      attrs: { title: "Lista de Grupos" },
-                      on: {
-                        click: function ($event) {
-                          $event.preventDefault()
-                          return _vm.viewGroups(horario)
-                        },
-                      },
-                    },
-                    [
-                      _c("i", {
-                        staticClass: "fa-solid fa-people-group fa-sm",
                         staticStyle: { color: "#ffffff" },
                       }),
                     ]
