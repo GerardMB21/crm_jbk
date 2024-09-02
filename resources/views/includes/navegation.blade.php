@@ -101,8 +101,40 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Configuración de Campañas
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="{{ route('dashboard.tab_state.index') }}">Pestañas de Estado</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ route('dashboard.state.index') }}">Estados</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('dashboard.company.index') }}">sssss</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Venta
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" id="campanias-menu">
+                            
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </nav>
+
+<script>
+    
+</script>
