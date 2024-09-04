@@ -70,4 +70,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/estado/habilitar-pestania', 'StateController@habilitar')->name('dashboard.state.habilitar');
     Route::post('/estado/listar-pestania', 'StateController@getTabState')->name('dashboard.state.get_tab_state');
     Route::post('/estado/listar-estado', 'StateController@getState')->name('dashboard.state.get_state');
+
+    //CONFIGURACION DE CAMPAÑAS - ESTADOS
+    Route::get('/bloque-de-campos', 'BlockController@index')->name('dashboard.block.index');
+    Route::post('/bloque-de-campos/almacenar', 'BlockController@store')->name('dashboard.block.store');
+    Route::post('/bloque-de-campos/listar-bloques', 'BlockController@list')->name('dashboard.block.list');
+    Route::post('/bloque-de-campos/bloque', 'BlockController@getBlock')->name('dashboard.block.get_block');
+    Route::post('/bloque-de-campos/eliminar', 'BlockController@delete')->name('dashboard.block.delete');
+    Route::post('/bloque-de-campos/deshabilitar', 'BlockController@deshabilitar')->name('dashboard.block.deshabilitar');
+    Route::post('/bloque-de-campos/habilitar', 'BlockController@habilitar')->name('dashboard.block.habilitar');
 });

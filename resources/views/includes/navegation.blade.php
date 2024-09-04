@@ -118,6 +118,9 @@
                             <li>
                                 <a class="dropdown-item" href="{{ route('dashboard.company.index') }}">sssss</a>
                             </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('dashboard.block.index') }}">Bloques de Campos</a>
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
