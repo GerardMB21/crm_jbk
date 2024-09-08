@@ -71,7 +71,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/estado/listar-pestania', 'StateController@getTabState')->name('dashboard.state.get_tab_state');
     Route::post('/estado/listar-estado', 'StateController@getState')->name('dashboard.state.get_state');
 
-    //CONFIGURACION DE CAMPAÑAS - ESTADOS
+    //CONFIGURACION DE CAMPAÑAS - BLOQUE DE CAMPOS
     Route::get('/bloque-de-campos', 'BlockController@index')->name('dashboard.block.index');
     Route::post('/bloque-de-campos/almacenar', 'BlockController@store')->name('dashboard.block.store');
     Route::post('/bloque-de-campos/listar-bloques', 'BlockController@list')->name('dashboard.block.list');
@@ -79,4 +79,18 @@ Route::middleware('auth')->group(function () {
     Route::post('/bloque-de-campos/eliminar', 'BlockController@delete')->name('dashboard.block.delete');
     Route::post('/bloque-de-campos/deshabilitar', 'BlockController@deshabilitar')->name('dashboard.block.deshabilitar');
     Route::post('/bloque-de-campos/habilitar', 'BlockController@habilitar')->name('dashboard.block.habilitar');
+
+    //CONFIGURACION DE CAMPAÑAS - CAMPOS
+    Route::get('/campos', 'FieldController@index')->name('dashboard.field.index');
+    Route::post('/campos/almacenar', 'FieldController@store')->name('dashboard.field.store');
+    Route::post('/campos/listar-campos', 'FieldController@list')->name('dashboard.field.list');
+    Route::post('/campos/campo', 'FieldController@getField')->name('dashboard.field.get_field');
+    Route::post('/campos/bloque', 'FieldController@getBlock')->name('dashboard.field.get_block');
+    Route::post('/campos/tipo-de-campo', 'FieldController@getTypeField')->name('dashboard.field.get_type_field');
+    Route::post('/campos/ancho', 'FieldController@getWidth')->name('dashboard.field.get_width');
+    Route::post('/campos/grupo-de-usuario', 'FieldController@getUserGroup')->name('dashboard.field.get_user_group');
+    Route::post('/campos/estados', 'FieldController@getState')->name('dashboard.field.get_state');
+    Route::post('/campos/eliminar', 'FieldController@delete')->name('dashboard.field.delete');
+    Route::post('/campos/deshabilitar', 'FieldController@deshabilitar')->name('dashboard.field.deshabilitar');
+    Route::post('/campos/habilitar', 'FieldController@habilitar')->name('dashboard.field.habilitar');
 });

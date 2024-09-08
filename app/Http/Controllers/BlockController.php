@@ -59,7 +59,7 @@ class BlockController extends Controller
         $messages = [
             'name.required'         => 'Debe completar el nombre.',
             'order.required'         => 'Debe completar el Orden.',
-            'campain_id.required'         => 'Debe elegit una Campaña.',
+            'campain_id.required'         => 'Debe elegir una Campaña.',
         ];
 
         $rules = [
