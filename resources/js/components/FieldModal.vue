@@ -11,6 +11,7 @@
                     <div class="modal-body row">
                         <input v-model="model.id" class="d-none" type="text" name="id" id="id">
                         <input v-model="model.campain_id" class="d-none" type="text" name="campain_id" id="campain_id">
+
                         <div class="col-md-8">
                             <label for="name" class="form-label">Nombre:</label>
                             <input v-model="model.name" type="text" class="form-control" id="name" name="name"
@@ -29,18 +30,24 @@
                             <label for="block_id" class="form-label">Bloque de Campos:</label>
                             <select class="form-select" v-model="model.block_id" name="block_id" id="block_id" @focus="$parent.clearErrorMsg($event)">
                                 <option value="" selected disabled>Seleccionar</option>
-                                    <option v-for="block in blocks" :value="block.id" :key="block.id">{{ block.name }}</option>
+                                <option v-for="block in blocks" :value="block.id" :key="block.id">{{ block.name }}</option>
                             </select>
                             <div id="block_id-error" class="error invalid-feedback"></div>
                         </div>
 
                         <div class="col-md-6">
                             <label for="type_field_id" class="form-label">Tipo de Campo:</label>
-                            <select class="form-select" v-model="model.type_field_id" name="type_field_id" id="type_field_id" @focus="$parent.clearErrorMsg($event)">
+                            <select class="form-select" v-model="model.type_field_id" name="type_field_id" id="type_field_id" @focus="$parent.clearErrorMsg($event)" @change="handleSelectTypeFieldChange">
                                 <option value="" selected disabled>Seleccionar</option>
-                                    <option v-for="type_field in type_fields" :value="type_field.id" :key="type_field.id">{{ type_field.name }}</option>
+                                <option v-for="type_field in type_fields" :value="type_field.id" :key="type_field.id">{{ type_field.name }}</option>
                             </select>
                             <div id="type_field_id-error" class="error invalid-feedback"></div>
+                        </div>
+
+                        <div class="col-md-6" v-if="viewOptions">
+                            <label for="options" class="form-label">Valores:</label>
+                            <textarea v-model="model.options" class="form-control" id="options" name="options" @focus="$parent.clearErrorMsg($event)"></textarea>
+                            <div id="options-error" class="error invalid-feedback"></div>
                         </div>
 
                         <div class="col-md-6">
@@ -54,73 +61,84 @@
 
                         <div class="col-md-12">
                             <label for="state_ids" class="form-label">Estados en los que va a aparecer este campo:</label>
-                            <select class="select2-multiple form-select" v-model="model.state_ids" multiple size="3" name="state_ids[]" id="state_ids" @focus="$parent.clearErrorMsg($event)">
+                            <multiselect v-model="model.state_ids" :options="states" name="state_ids" label="name" track-by="id" :multiple="true"></multiselect>
+                            <!-- <select class="select2-multiple form-select" v-model="model.state_ids" multiple size="3" name="state_ids[]" id="state_ids" @focus="$parent.clearErrorMsg($event)">
                                 <option value="" selected disabled>Seleccionar</option>
-                                    <option v-for="state in states" :value="state.id" :key="state.id">{{ state.name }}</option>
-                            </select>
+                                <option v-for="state in states" :value="state.id" :key="state.id">{{ state.name }}</option>
+                            </select> -->
                             <div id="state_ids-error" class="error invalid-feedback"></div>
                         </div>
 
                         <div class="col-md-12">
                             <label for="group_edit_ids" class="form-label">Pueden acceder a este campo [edición]:</label>
-                            <select class="select2-multiple form-select" v-model="model.group_edit_ids" multiple size="3" name="group_edit_ids[]" id="group_edit_ids" @focus="$parent.clearErrorMsg($event)">
+                            <multiselect v-model="model.group_edit_ids" :options="groups" name="group_edit_ids" label="name" track-by="id" :multiple="true"></multiselect>
+                            <!-- <select class="select2-multiple form-select" v-model="model.group_edit_ids" multiple size="3" name="group_edit_ids[]" id="group_edit_ids" @focus="$parent.clearErrorMsg($event)">
                                 <option value="" selected disabled>Seleccionar</option>
                                 <option v-for="group in groups" :value="group.id" :key="group.id">{{ group.name }}</option>
-                            </select>
+                            </select> -->
                             <div id="group_edit_ids-error" class="error invalid-feedback"></div>
                         </div>
 
                         <div class="col-md-12">
                             <label for="group_view_ids" class="form-label">Pueden acceder a este campo [solo visualización]:</label>
-                            <select class="select2-multiple form-select" v-model="model.group_view_ids" multiple size="3" name="group_view_ids[]" id="group_view_ids" @focus="$parent.clearErrorMsg($event)">
+                            <multiselect v-model="model.group_view_ids" :options="groups" name="group_view_ids" label="name" track-by="id" :multiple="true"></multiselect>
+                            <!-- <select class="select2-multiple form-select" v-model="model.group_view_ids" multiple size="3" name="group_view_ids[]" id="group_view_ids" @focus="$parent.clearErrorMsg($event)">
                                 <option value="" selected disabled>Seleccionar</option>
                                 <option v-for="group in groups" :value="group.id" :key="group.id">{{ group.name }}</option>
-                            </select>
+                            </select> -->
                             <div id="group_view_ids-error" class="error invalid-feedback"></div>
                         </div>
 
                         <div class="col-md-12">
                             <label for="group_have_comment_ids" class="form-label">Pueden agregar comentarios sobre este campo:</label>
-                            <select class="select2-multiple form-select" v-model="model.group_have_comment_ids" multiple size="3" name="group_have_comment_ids[]" id="group_have_comment_ids" @focus="$parent.clearErrorMsg($event)">
+                            <multiselect v-model="model.group_have_comment_ids" :options="groups" name="group_have_comment_ids" label="name" track-by="id" :multiple="true"></multiselect>
+                            <!-- <select class="select2-multiple form-select" v-model="model.group_have_comment_ids" multiple size="3" name="group_have_comment_ids[]" id="group_have_comment_ids" @focus="$parent.clearErrorMsg($event)">
                                 <option value="" selected disabled>Seleccionar</option>
                                 <option v-for="group in groups" :value="group.id" :key="group.id">{{ group.name }}</option>
-                            </select>
+                            </select> -->
                             <div id="group_have_comment_ids-error" class="error invalid-feedback"></div>
                         </div>
 
-                        <div class="col-md-4 form-check form-switch">
+                        <div class="col-md-6">
                             <label class="form-check-label" for="required">Campo obligatorio</label>
-                            <input v-model="model.required" name="required" id="required" class="form-check-input" type="checkbox" role="switch">
+                            <switches v-model="model.required"  name="required" id="required" class="form-check-input"></switches>
+                            <!-- <input v-model="model.required" name="required" id="required" class="form-check-input" type="checkbox" role="switch"> -->
                         </div>
 
-                        <div class="col-md-4 form-check form-switch">
+                        <div class="col-md-6">
                             <label class="form-check-label" for="unique">Campo unico</label>
-                            <input v-model="model.unique" name="unique" id="unique" class="form-check-input" type="checkbox" role="switch">
+                            <switches v-model="model.unique"  name="unique" id="unique" class="form-check-input"></switches>
+                            <!-- <input v-model="model.unique" name="unique" id="unique" class="form-check-input" type="checkbox" role="switch"> -->
                         </div>
 
-                        <div class="col-md-4 form-check form-switch">
+                        <div class="col-md-6">
                             <label class="form-check-label" for="bloq_mayus">Campo es en mayúsculas</label>
-                            <input v-model="model.bloq_mayus" name="bloq_mayus" id="bloq_mayus" class="form-check-input" type="checkbox" role="switch">
+                            <switches v-model="model.bloq_mayus"  name="bloq_mayus" id="bloq_mayus" class="form-check-input"></switches>
+                            <!-- <input v-model="model.bloq_mayus" name="bloq_mayus" id="bloq_mayus" class="form-check-input" type="checkbox" role="switch"> -->
                         </div>
 
-                        <div class="col-md-4 form-check form-switch">
+                        <div class="col-md-6">
                             <label class="form-check-label" for="in_solds_list">Agregar campo al listado de ventas</label>
-                            <input v-model="model.in_solds_list" name="in_solds_list" id="in_solds_list" class="form-check-input" type="checkbox" role="switch">
+                            <switches v-model="model.in_solds_list"  name="in_solds_list" id="in_solds_list" class="form-check-input"></switches>
+                            <!-- <input v-model="model.in_solds_list" name="in_solds_list" id="in_solds_list" class="form-check-input" type="checkbox" role="switch"> -->
                         </div>
 
-                        <div class="col-md-4 form-check form-switch">
+                        <div class="col-md-6">
                             <label class="form-check-label" for="in_notifications">Agregar campo a las notificaciones</label>
-                            <input v-model="model.in_notifications" name="in_notifications" id="in_notifications" class="form-check-input" type="checkbox" role="switch">
+                            <switches v-model="model.in_notifications"  name="in_notifications" id="in_notifications" class="form-check-input"></switches>
+                            <!-- <input v-model="model.in_notifications" name="in_notifications" id="in_notifications" class="form-check-input" type="checkbox" role="switch"> -->
                         </div>
 
-                        <div class="col-md-4 form-check form-switch">
+                        <div class="col-md-6">
                             <label class="form-check-label" for="in_general_search">Agregar campo en el buscador general</label>
-                            <input v-model="model.in_general_search" name="in_general_search" id="in_general_search" class="form-check-input" type="checkbox" role="switch">
+                            <switches v-model="model.in_general_search"  name="in_general_search" id="in_general_search" class="form-check-input"></switches>
+                            <!-- <input v-model="model.in_general_search" name="in_general_search" id="in_general_search" class="form-check-input" type="checkbox" role="switch"> -->
                         </div>
 
-                        <div class="col-md-4 form-check form-switch">
+                        <div class="col-md-6">
                             <label class="form-check-label" for="has_edit">Puede editarse en el listado de ventas</label>
-                            <input v-model="model.has_edit" name="has_edit" id="has_edit" class="form-check-input" type="checkbox" role="switch">
+                            <switches v-model="model.has_edit"  name="has_edit" id="has_edit" class="form-check-input"></switches>
+                            <!-- <input v-model="model.has_edit" name="has_edit" id="has_edit" class="form-check-input" type="checkbox" role="switch"> -->
                         </div>
 
                     </div>
@@ -135,8 +153,12 @@
 </template>
 
 <script>
+import 'vue-multiselect/dist/vue-multiselect.min.css';
+import Multiselect from 'vue-multiselect';
+import Switches from 'vue-switches';
 
 export default {
+    components: { Multiselect, Switches },
     props: {
         url: {
             type: String,
@@ -164,13 +186,15 @@ export default {
                 has_edit: false,
                 name: '',
                 order: '',
+                options: '',
             },
             blocks: [],
             type_fields: [],
             widths: [],
             states: [],
             groups: [],
-            text: ''
+            viewOptions: false,
+            text: '',
         }
     },
     created() {
@@ -203,7 +227,7 @@ export default {
             $('#fieldModal').modal('show');
         }.bind(this));
         EventBus.$on('edit_modal', function (data) {
-            const { field, blocks, states, type_fields, roups, widths } = data;
+            const { field, blocks, states, type_fields, groups, widths } = data;
 
             this.model.id = field.id;
             this.model.campain_id = field.campain_id;
@@ -225,6 +249,7 @@ export default {
     methods: {
         formController: function (url, event) {
             var vm = this;
+            console.log(this.model)
 
             var target = $(event.target);
             var url = url;
@@ -246,10 +271,33 @@ export default {
             fd.append("in_notifications", this.model.in_notifications)
             fd.append("has_edit", this.model.has_edit)
             fd.append("in_general_search", this.model.in_general_search)
-            fd.append("group_edit_ids", JSON.stringify(this.model.group_edit_ids))
-            fd.append("group_view_ids", JSON.stringify(this.model.group_view_ids))
-            fd.append("group_have_comment_ids", JSON.stringify(this.model.group_have_comment_ids))
-            fd.append("state_ids", JSON.stringify(this.model.state_ids))
+
+            const group_edit_ids = [];
+            const group_view_ids = [];
+            const group_have_comment_ids = [];
+            const state_ids = [];
+
+            for (let i = 0; i < this.model.group_edit_ids.length; i++) {
+                const element = this.model.group_edit_ids[i];
+                group_edit_ids.push(element.id);
+            };
+            for (let i = 0; i < this.model.group_view_ids.length; i++) {
+                const element = this.model.group_view_ids[i];
+                group_view_ids.push(element.id);
+            };
+            for (let i = 0; i < this.model.group_have_comment_ids.length; i++) {
+                const element = this.model.group_have_comment_ids[i];
+                group_have_comment_ids.push(element.id);
+            };
+            for (let i = 0; i < this.model.state_ids.length; i++) {
+                const element = this.model.state_ids[i];
+                state_ids.push(element.id);
+            };
+
+            fd.append("group_edit_ids", JSON.stringify(group_edit_ids))
+            fd.append("group_view_ids", JSON.stringify(group_view_ids))
+            fd.append("group_have_comment_ids", JSON.stringify(group_have_comment_ids))
+            fd.append("state_ids", JSON.stringify(state_ids))
 
             EventBus.$emit('loading', true);
             axios.post(url, fd, {
@@ -282,6 +330,13 @@ export default {
             });
         },
 
+        handleSelectTypeFieldChange: function () {
+            if (this.model.type_field_id == 3 || this.model.type_field_id == 4) {
+                this.viewOptions = true;
+            } else {
+                this.viewOptions = false;
+            }
+        },
     }
 }
 

@@ -110,7 +110,6 @@ export default {
                         }
                     ],
                     createdRow: function (row, data, dataIndex) {
-                        alert(data.color);
                         $(row).css('background-color', data.color);
                     }
                 });
