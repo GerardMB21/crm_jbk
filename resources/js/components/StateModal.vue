@@ -19,7 +19,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label for="campain_id" class="form-label">Pestañas de Estado:</label>
+                            <label for="tab_state_id" class="form-label">Pestañas de Estado:</label>
                             <select class="form-select" v-model="model.tab_state_id" name="tab_state_id"
                                 id="tab_state_id" @focus="$parent.clearErrorMsg($event)">
                                 <option value="" selected disabled>Seleccionar</option>

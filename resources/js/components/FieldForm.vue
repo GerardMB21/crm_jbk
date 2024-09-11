@@ -1,21 +1,21 @@
 <template>
-  <div class="container mt-2 p-5 bg-white border rounded">
-      <form class="row g-3" @submit.prevent="formController(url, $event)">
-          <div class="col-md-6">
-              <label for="campain_id" class="form-label">Campaña:</label>
-              <select class="form-select" v-model="model.campain_id" name="campain_id" id="campain_id" @focus="$parent.clearErrorMsg($event)">
-                  <option value="" selected disabled>Seleccionar</option>
-                    <option v-for="campain in campains" :value="campain.id" :key="campain.id">{{ campain.name }}</option>
-              </select>
-              <div id="campain_id-error" class="error invalid-feedback"></div>
-          </div>
-          <div class="col-md-12">
-              <label for="sufijo" class="form-label"></label>
-              <button type="submit" class="btn btn-primary">Buscar</button>
-          </div>
-      </form>
+    <div class="container mt-2 p-5 bg-white border rounded">
+        <form class="row g-3" @submit.prevent="formController(url, $event)">
+            <div class="col-md-6">
+                <label for="campain_id" class="form-label">Campaña:</label>
+                <select class="form-select" v-model="model.campain_id" name="campain_id" id="campain_id" @focus="$parent.clearErrorMsg($event)">
+                    <option value="" selected disabled>Seleccionar</option>
+                        <option v-for="campain in campains" :value="campain.id" :key="campain.id">{{ campain.name }}</option>
+                </select>
+                <div id="campain_id-error" class="error invalid-feedback"></div>
+            </div>
+            <div class="col-md-12">
+                <label for="sufijo" class="form-label"></label>
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+        </form>
 
-  </div>
+    </div>
 </template>
 
 <script>

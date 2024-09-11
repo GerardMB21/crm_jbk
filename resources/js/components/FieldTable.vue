@@ -73,6 +73,7 @@ export default {
             type_fields: [],
             groups: [],
             widths: [],
+            tab_states: [],
             isDisabled: true
         }
     },
@@ -98,11 +99,12 @@ export default {
                 });
         }.bind(this));
         EventBus.$on('show_table', function (data, campain_id) {
-            const { fields, blocks, states, type_fields, groups, widths } = data;
+            const { fields, blocks, states, tab_states, type_fields, groups, widths } = data;
 
             this.fields = fields;
             this.blocks = blocks;
             this.states = states;
+            this.tab_states = tab_states;
             this.type_fields = type_fields;
             this.groups = groups;
             this.widths = widths;
@@ -182,6 +184,7 @@ export default {
                 campain_id: this.campain_id,
                 blocks: this.blocks,
                 states: this.states,
+                tab_states: this.tab_states,
                 type_fields: this.type_fields,
                 groups: this.groups,
                 widths: this.widths
@@ -199,6 +202,7 @@ export default {
                         field: response.data,
                         blocks: this.blocks,
                         states: this.states,
+                        tab_states: this.tab_states,
                         type_fields: this.type_fields,
                         groups: this.groups,
                         widths: this.widths

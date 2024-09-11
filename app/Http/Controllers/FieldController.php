@@ -11,10 +11,11 @@ use App\Models\Field;
 use App\Models\GroupFieldEdit;
 use App\Models\GroupFieldView;
 use App\Models\GroupFieldHaveComment;
-use App\Models\StateField;
+use App\Models\TabStateField;
 use App\Models\User;
 use App\Models\Group;
 use App\Models\UserGroup;
+use App\Models\TabState;
 use App\Models\State;
 use Illuminate\Support\Facades\Auth;
 
@@ -55,6 +56,8 @@ class FieldController extends Controller
 
         $groups = Group::get();
 
+        $tab_states = TabState::where('campain_id', $campain_id)->get();
+
         $states = State::get();
 
         $fields = Field::leftjoin('campains', 'campains.id', '=', 'fields.campain_id')
@@ -82,6 +85,7 @@ class FieldController extends Controller
             'widths' => $widths,
             'groups' => $groups,
             'states' => $states,
+            'tab_states' => $tab_states,
         ];
     }
 
@@ -131,13 +135,13 @@ class FieldController extends Controller
         $user_group_edit_ids = request('group_edit_ids');
         $user_group_view_ids = request('group_view_ids');
         $user_group_have_comment_ids = request('group_have_comment_ids');
-        $state_ids = request('state_ids');
+        $tab_state_ids = request('tab_state_ids');
         $state = 1; //activo
 
         $group_field_edit = json_decode($user_group_edit_ids);
         $group_field_view = json_decode($user_group_view_ids);
         $group_field_have_comment = json_decode($user_group_have_comment_ids);
-        $state_field = json_decode($state_ids);
+        $tab_state_field = json_decode($tab_state_ids);
 
         if (isset($id)) {
             $field =  Field::findOrFail($id);
@@ -178,7 +182,7 @@ class FieldController extends Controller
             GroupFieldEdit::where('field_id', $id)->delete();
             GroupFieldView::where('field_id', $id)->delete();
             GroupFieldHaveComment::where('field_id', $id)->delete();
-            StateField::where('field_id', $id)->delete();
+            TabStateField::where('field_id', $id)->delete();
         }
 
         $groupFieldEditData = [];
@@ -208,11 +212,11 @@ class FieldController extends Controller
             ];
         }
 
-        $stateFieldData = [];
-        foreach ($state_field as $stateId) {
-            $stateFieldData[] = [
+        $tabStateFieldData = [];
+        foreach ($tab_state_field as $tabStateId) {
+            $tabStateFieldData[] = [
                 'field_id' => $field->id,
-                'state_id' => $stateId,
+                'tab_state_id' => $tabStateId,
                 'created_at_user' => Auth::user()->name,
             ];
         }
@@ -220,7 +224,7 @@ class FieldController extends Controller
         GroupFieldEdit::insert($groupFieldEditData);
         GroupFieldView::insert($groupFieldViewData);
         GroupFieldHaveComment::insert($groupFieldHaveCommentData);
-        StateField::insert($stateFieldData);
+        TabStateField::insert($tabStateFieldData);
 
         $type = 1;
         $title = '¡Ok!';

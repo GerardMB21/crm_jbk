@@ -3,9 +3,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class StateField extends Model
+class TabStateField extends Model
 {
     use SoftDeletes;
-    protected $table = 'states_fields';
+    protected $table = 'tab_states_fields';
     protected $dates = ['deleted_at'];
 }

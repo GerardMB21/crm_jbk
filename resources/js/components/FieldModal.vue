@@ -60,8 +60,8 @@
                         </div>
 
                         <div class="col-md-12">
-                            <label for="state_ids" class="form-label">Estados en los que va a aparecer este campo:</label>
-                            <multiselect v-model="model.state_ids" :options="states" name="state_ids" label="name" track-by="id" :multiple="true"></multiselect>
+                            <label for="state_ids" class="form-label">Pestaña de Estados en los que va a aparecer este campo:</label>
+                            <multiselect v-model="model.tab_state_ids" :options="tab_states" name="tab_state_ids" label="name" track-by="id" :multiple="true"></multiselect>
                             <!-- <select class="select2-multiple form-select" v-model="model.state_ids" multiple size="3" name="state_ids[]" id="state_ids" @focus="$parent.clearErrorMsg($event)">
                                 <option value="" selected disabled>Seleccionar</option>
                                 <option v-for="state in states" :value="state.id" :key="state.id">{{ state.name }}</option>
@@ -173,7 +173,7 @@ export default {
                 block_id: '',
                 type_field_id: '',
                 width_id: '',
-                state_ids: [],
+                tab_state_ids: [],
                 group_edit_ids: [],
                 group_view_ids: [],
                 group_have_comment_ids: [],
@@ -192,6 +192,7 @@ export default {
             type_fields: [],
             widths: [],
             states: [],
+            tab_states: [],
             groups: [],
             viewOptions: false,
             text: '',
@@ -229,11 +230,12 @@ export default {
             $('#fieldModal').modal('hide');
         }.bind(this));
         EventBus.$on('create_modal', function (data) {
-            const { campain_id, blocks, states, type_fields, groups, widths } = data;
+            const { campain_id, blocks, states, tab_states, type_fields, groups, widths } = data;
 
             this.model.campain_id = campain_id;
             this.blocks = blocks;
             this.states = states;
+            this.tab_states = tab_states;
             this.type_fields = type_fields;
             this.groups = groups;
             this.widths = widths;
@@ -244,7 +246,7 @@ export default {
             $('#fieldModal').modal('show');
         }.bind(this));
         EventBus.$on('edit_modal', function (data) {
-            const { field, blocks, states, type_fields, groups, widths } = data;
+            const { field, blocks, states, tab_states, type_fields, groups, widths } = data;
 
             this.model.id = field.id;
             this.model.campain_id = field.campain_id;
@@ -253,6 +255,7 @@ export default {
             this.model.order = field.order;
             this.blocks = blocks;
             this.states = states;
+            this.tab_states = tab_states;
             this.type_fields = type_fields;
             this.groups = groups;
             this.widths = widths;
@@ -292,7 +295,7 @@ export default {
             const group_edit_ids = [];
             const group_view_ids = [];
             const group_have_comment_ids = [];
-            const state_ids = [];
+            const tab_state_ids = [];
 
             for (let i = 0; i < this.model.group_edit_ids.length; i++) {
                 const element = this.model.group_edit_ids[i];
@@ -306,15 +309,15 @@ export default {
                 const element = this.model.group_have_comment_ids[i];
                 group_have_comment_ids.push(element.id);
             };
-            for (let i = 0; i < this.model.state_ids.length; i++) {
-                const element = this.model.state_ids[i];
-                state_ids.push(element.id);
+            for (let i = 0; i < this.model.tab_state_ids.length; i++) {
+                const element = this.model.tab_state_ids[i];
+                tab_state_ids.push(element.id);
             };
 
             fd.append("group_edit_ids", JSON.stringify(group_edit_ids))
             fd.append("group_view_ids", JSON.stringify(group_view_ids))
             fd.append("group_have_comment_ids", JSON.stringify(group_have_comment_ids))
-            fd.append("state_ids", JSON.stringify(state_ids))
+            fd.append("tab_state_ids", JSON.stringify(tab_state_ids))
 
             EventBus.$emit('loading', true);
             axios.post(url, fd, {
