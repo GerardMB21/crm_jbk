@@ -12,7 +12,7 @@ use App\Models\Field;
 use App\Models\GroupFieldEdit;
 use App\Models\GroupFieldView;
 use App\Models\GroupFieldHaveComment;
-use App\Models\StateField;
+use App\Models\TabStateField;
 use App\Models\User;
 use App\Models\Group;
 use App\Models\UserGroup;
@@ -55,6 +55,11 @@ class SoldController extends Controller
             $form = Form::where('id', $form_id)->first();
         };
         $campain = Campain::where('id', $tab_state->campain_id)->first();
+        $tab_states_fields = TabStateField::where('tab_state_id', $tab_state_id)->get();
+        $field_ids = [];
+        foreach ($tab_states_fields as $tab_state_field) {
+            $field_ids[] = $tab_state_field->field_id;
+        }
         $states = State::where('tab_state_id', $tab_state_id)
                         ->orderBy('states.order','asc')
                         ->get();
@@ -62,6 +67,7 @@ class SoldController extends Controller
                         ->orderBy('blocks.order','asc')
                         ->get();
         $fields = Field::where('fields.campain_id', $campain->id)
+                        ->whereIn('fields.id', $field_ids)
                         ->leftjoin('blocks', 'blocks.id', '=', 'fields.block_id')
                         ->leftjoin('type_fields', 'type_fields.id', '=', 'fields.type_field_id')
                         ->leftjoin('widths', 'widths.id', '=', 'fields.width_id')
@@ -216,7 +222,7 @@ class SoldController extends Controller
         $data = request('data');
         $state = 1; //activo
 
-        if (isset($id)) {
+        if (isset($id) && $id > 0) {
             $form =  Form::findOrFail($id);
             $msg = 'Registro actualizado exitosamente';
             $form->updated_at_user = Auth::user()->name;
@@ -266,6 +272,12 @@ class SoldController extends Controller
         $campain_id = request('campain_id');
         $tab_state_id = request('tab_state_id');
 
+        $tab_states_fields = TabStateField::where('tab_state_id', $tab_state_id)->get();
+        $field_ids = [];
+        foreach ($tab_states_fields as $tab_state_field) {
+            $field_ids[] = $tab_state_field->field_id;
+        }
+
         $forms = Form::where('forms.campain_id', $campain_id)
                         ->where('forms.tab_state_id', $tab_state_id)
                         ->leftjoin('campains', 'campains.id', '=', 'forms.campain_id')
@@ -284,6 +296,7 @@ class SoldController extends Controller
                         ->get();
 
         $fields = Field::where('fields.campain_id', $campain_id)
+                        ->whereIn('fields.id', $field_ids)
                         ->where('fields.in_solds_list', 1)
                         ->select(
                             'fields.id as id',
