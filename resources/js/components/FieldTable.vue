@@ -199,7 +199,11 @@ export default {
                 .then(response => {
                     EventBus.$emit('loading', false);
                     EventBus.$emit('edit_modal', {
-                        field: response.data,
+                        field: response.data.field,
+                        tab_states_fields: response.data.tab_states_fields,
+                        groups_fields_edit: response.data.groups_fields_edit,
+                        groups_fields_view: response.data.groups_fields_view,
+                        groups_fields_have_comment: response.data.groups_fields_have_comment,
                         blocks: this.blocks,
                         states: this.states,
                         tab_states: this.tab_states,

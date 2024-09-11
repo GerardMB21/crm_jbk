@@ -270,8 +270,43 @@ class FieldController extends Controller
     public function getField()
     {
         $id = request('id');
-        $elements = Field::findOrFail($id);
-        return $elements;
+        $field = Field::findOrFail($id);
+        $tab_states_fields = TabStateField::where('field_id', $id)
+                                            ->leftjoin('tab_states', 'tab_states.id', '=', 'tab_states_fields.tab_state_id')
+                                            ->select(
+                                                'tab_states.id as id',
+                                                'tab_states.name as name',
+                                            )
+                                            ->get();
+        $groups_fields_edit = GroupFieldEdit::where('field_id', $id)
+                                            ->leftjoin('groups', 'groups.id', '=', 'groups_fields_edit.group_id')
+                                            ->select(
+                                                'groups.id as id',
+                                                'groups.name as name',
+                                            )
+                                            ->get();
+        $groups_fields_view = GroupFieldView::where('field_id', $id)
+                                            ->leftjoin('groups', 'groups.id', '=', 'groups_fields_view.group_id')
+                                            ->select(
+                                                'groups.id as id',
+                                                'groups.name as name',
+                                            )
+                                            ->get();
+        $groups_fields_have_comment = GroupFieldHaveComment::where('field_id', $id)
+                                                            ->leftjoin('groups', 'groups.id', '=', 'groups_fields_have_comment.group_id')
+                                                            ->select(
+                                                                'groups.id as id',
+                                                                'groups.name as name',
+                                                            )
+                                                            ->get();
+
+        return response()->json([
+                            'field'             => $field,
+                            'tab_states_fields'  => $tab_states_fields,
+                            'groups_fields_edit'  => $groups_fields_edit,
+                            'groups_fields_view'  => $groups_fields_view,
+                            'groups_fields_have_comment'  => $groups_fields_have_comment,
+                        ]);
     }
 
     public function delete()

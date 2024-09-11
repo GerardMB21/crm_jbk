@@ -246,13 +246,25 @@ export default {
             $('#fieldModal').modal('show');
         }.bind(this));
         EventBus.$on('edit_modal', function (data) {
-            const { field, blocks, states, tab_states, type_fields, groups, widths } = data;
+            const { field, tab_states_fields, groups_fields_edit, groups_fields_view, groups_fields_have_comment, blocks, states, tab_states, type_fields, groups, widths } = data;
 
             this.model.id = field.id;
             this.model.campain_id = field.campain_id;
             this.model.block_id = field.block_id;
+            this.model.width_id = field.width_id;
+            this.model.type_field_id = field.type_field_id;
             this.model.name = field.name;
             this.model.order = field.order;
+            this.model.tab_state_ids = tab_states_fields;
+            this.model.group_edit_ids = groups_fields_edit;
+            this.model.group_view_ids = groups_fields_view;
+            this.model.group_have_comment_ids = groups_fields_have_comment;
+            this.model.required = field.required ? true : false;
+            this.model.unique = field.unique ? true : false;
+            this.model.bloq_mayus = field.bloq_mayus ? true : false;
+            this.model.in_solds_list = field.in_solds_list ? true : false;
+            this.model.in_notifications = field.in_notifications ? true : false;
+            this.model.has_edit = field.has_edit ? true : false;
             this.blocks = blocks;
             this.states = states;
             this.tab_states = tab_states;
