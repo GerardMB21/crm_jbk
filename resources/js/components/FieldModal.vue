@@ -202,10 +202,27 @@ export default {
     },
     mounted() {
         EventBus.$on('clear_modal', function () {
-            this.model.id = '';
-            this.model.campain_id = '';
-            this.model.name = '';
-            this.model.order = '';
+            this.model = {
+                id: '',
+                campain_id: '',
+                block_id: '',
+                type_field_id: '',
+                width_id: '',
+                state_ids: [],
+                group_edit_ids: [],
+                group_view_ids: [],
+                group_have_comment_ids: [],
+                required: false,
+                unique: false,
+                bloq_mayus: false,
+                in_solds_list: false,
+                in_notifications: false,
+                in_general_search: false,
+                has_edit: false,
+                name: '',
+                order: '',
+                options: '',
+            };
 
             this.text = "";
 
@@ -249,7 +266,6 @@ export default {
     methods: {
         formController: function (url, event) {
             var vm = this;
-            console.log(this.model)
 
             var target = $(event.target);
             var url = url;
@@ -264,6 +280,7 @@ export default {
             fd.append("width_id", this.model.width_id)
             fd.append("name", this.model.name)
             fd.append("order", this.model.order)
+            fd.append("options", this.model.options)
             fd.append("unique", this.model.unique)
             fd.append("required", this.model.required)
             fd.append("bloq_mayus", this.model.bloq_mayus)

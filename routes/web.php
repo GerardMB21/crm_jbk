@@ -93,4 +93,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/campos/eliminar', 'FieldController@delete')->name('dashboard.field.delete');
     Route::post('/campos/deshabilitar', 'FieldController@deshabilitar')->name('dashboard.field.deshabilitar');
     Route::post('/campos/habilitar', 'FieldController@habilitar')->name('dashboard.field.habilitar');
+
+    //VENTAS
+    Route::get('/ventas', 'SoldController@index')->name('dashboard.sold.index');
+    Route::get('/ventas/crear', 'SoldController@create')->name('dashboard.sold.create');
+    Route::post('/ventas/files', 'SoldController@upload')->name('dashboard.sold.upload');
+    Route::post('/ventas/guardar', 'SoldController@store')->name('dashboard.sold.store');
+    Route::post('/ventas/listar', 'SoldController@list')->name('dashboard.sold.list');
+    Route::post('/ventas/deshabilitar', 'SoldController@deshabilitar')->name('dashboard.sold.deshabilitar');
+    Route::post('/ventas/habilitar', 'SoldController@habilitar')->name('dashboard.sold.habilitar');
+    Route::post('/ventas/eliminar', 'SoldController@delete')->name('dashboard.sold.delete');
+    Route::get('/ventas/download/{id}', 'SoldController@download')->name('dashboard.sold.download');
 });

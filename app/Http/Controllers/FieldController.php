@@ -157,13 +157,20 @@ class FieldController extends Controller
         $field->name = $name;
         $field->options = $options;
         $field->order = $order;
-        $field->unique = $unique;
-        $field->required = $required;
-        $field->bloq_mayus = $bloq_mayus;
-        $field->in_solds_list = $in_solds_list;
-        $field->in_notifications = $in_notifications;
-        $field->has_edit = $has_edit;
-        $field->in_general_search = $in_general_search;
+        $field->unique = 0;
+        if ($unique) $field->unique = 1;
+        $field->required = 0;
+        if ($required) $field->required = 1;
+        $field->bloq_mayus = 0;
+        if ($bloq_mayus) $field->bloq_mayus = 1;
+        $field->in_solds_list = 0;
+        if ($in_solds_list) $field->in_solds_list = 1;
+        $field->in_notifications = 0;
+        if ($in_notifications) $field->in_notifications = 1;
+        $field->has_edit = 0;
+        if ($has_edit) $field->has_edit = 1;
+        $field->in_general_search = 0;
+        if ($in_general_search) $field->in_general_search = 1;
 
         $field->save();
 

@@ -37,10 +37,9 @@
 
     <script>
 
-        
         new DataTable('#example');
 
-        let campaniasMenu = document.getElementById('campanias-menu');
+        let campaniasMenu = document.getElementById('solds-campanias-menu');
 
         axios.post('/listar-campanias')
             .then(function (response) {
@@ -52,7 +51,7 @@
                     let listItem = document.createElement('li');
                     let link = document.createElement('a');
                     link.className = 'dropdown-item';
-                    link.href = `{{ route('dashboard.tab_state.index') }}?id=${campania.id}`;
+                    link.href = `{{ route('dashboard.sold.index') }}?id=${campania.id}`;
                     link.textContent = campania.name;
                     listItem.appendChild(link);
                     campaniasMenu.appendChild(listItem);
