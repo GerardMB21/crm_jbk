@@ -15,7 +15,49 @@ class HorarioController extends Controller
     public function index()
     {
 
-        $horarios = Horario::get();
+        // $horarios = Horario::leftjoin('days', 'days.horario_id', '=', 'horarios.id')
+        //                     ->select(
+        //                         'horarios.id as id',
+        //                         'horarios.name as name',
+        //                         'horarios.sede_id as sede_id',
+        //                         'horarios.tolerancia_min as tolerancia_min',
+        //                         'horarios.state as state',
+        //                         'days.day as day_day',
+        //                         'days.inicio as day_inicio',
+        //                         'days.final as day_final',
+        //                         DB::raw('JSON_ARRAYAGG(
+        //                             JSON_OBJECT(
+        //                                 "day", days.day,
+        //                                 "inicio", days.inicio,
+        //                                 "final", days.final
+        //                             )
+        //                         ) as days')
+        //                     )
+        //                     ->groupBy('horarios.id')
+        //                     ->get();
+        $horarios = Horario::with(['days' => function ($query) {
+                                $query->select('horario_id', 'day', 'inicio', 'final');
+                            }])
+                            ->select('id', 'name', 'sede_id', 'tolerancia_min', 'state')
+                            ->get();
+
+        $horarios = $horarios->map(function ($horario) {
+                        return [
+                            'id' => $horario->id,
+                            'name' => $horario->name,
+                            'sede_id' => $horario->sede_id,
+                            'tolerancia_min' => $horario->tolerancia_min,
+                            'state' => $horario->state,
+                            'days' => $horario->days->map(function ($day) {
+                                return [
+                                    'day' => $day->day,
+                                    'inicio' => $day->inicio,
+                                    'final' => $day->final
+                                ];
+                            })
+                        ];
+                    });
+
         return view('horario')->with(compact('horarios'));
     }
 

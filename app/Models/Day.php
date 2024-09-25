@@ -8,4 +8,9 @@ class Day extends Model
 
     use SoftDeletes;
     protected $dates = ['deleted_at'];
+
+    public function horario()
+    {
+        return $this->belongsTo(Horario::class, 'horario_id');
+    }
 }

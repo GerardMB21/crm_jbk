@@ -11,23 +11,15 @@
                     <th class="col-1 text-center">HORARIO</th>
                     <th class="col-1 text-center">TOLERANCIA</th>
                     <th class="col-2 text-center">ESTADO</th>
-                    <th class="col-1 text-center">Pedir motivo por llegar tarde</th>
-                    <th class="col-1 text-center">Pedir motivo por salir temprano</th>
-                    <th class="col-1 text-center">Restringir acceso fuera de este horario</th>
-                    <th class="col-1 text-center">Restringir gestión fuera de este horario</th>
                     <th class="col-2 text-center">OPCIONES</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="horario in horarios" :key="horario.id">
                     <td>{{ horario.name }}</td>
-                    <td>{{ horario.sede_id }}</td>
+                    <td>{{ joinDays(horario.days) }}</td>
                     <td class="text-center">{{ horario.tolerancia_min }}</td>
                     <td class="text-center">{{ horario.state }}</td>
-                    <td class="text-center">{{ horario.motivo_tardanza == 0 ? 'No' : 'Si' }}</td>
-                    <td class="text-center">{{ horario.motivo_temprano == 0 ? 'No' : 'Si' }}</td>
-                    <td class="text-center">{{ horario.restringir_last == 0 ? 'No' : 'Si' }}</td>
-                    <td class="text-center">{{ horario.restringir_gest == 0 ? 'No' : 'Si' }}</td>
                     <td>
                         <button class="btn btn-primary" @click.prevent="edit(horario)" title="Editar">
                             <i class="fa-solid fa-pen-to-square fa-sm" style="color: #ffffff;"></i>
@@ -57,9 +49,7 @@ export default {
             default: '',
         }
     },
-    mounted() {
-
-    },
+    mounted() {},
     methods: {
         create() {
             EventBus.$emit('create_modal');
@@ -94,7 +84,46 @@ export default {
                 }
             });
         },
+        joinDays(days) {
+            let result = [];
+            let currentGroup = { days: [], inicio: "", final: "" };
 
+            days.forEach((dayObj, index) => {
+                const dayName = dayObj.day;
+
+                const { inicio, final } = dayObj;
+
+                if (currentGroup.days.length === 0) {
+                    currentGroup = { days: [dayName], inicio, final };
+                } else if (currentGroup.inicio === inicio && currentGroup.final === final) {
+                    currentGroup.days.push(dayName);
+                } else {
+                    result.push(currentGroup);
+                    currentGroup = { days: [dayName], inicio, final };
+                }
+
+                if (index === days.length - 1) {
+                    result.push(currentGroup);
+                }
+            });
+
+            return result.map(group => {
+                const daysFormatted = group.days.length > 1
+                    ? `${group.days[0].slice(0, 3)}-${group.days[group.days.length - 1].slice(0, 3)}`
+                    : group.days[0].slice(0, 3);
+                return `${daysFormatted}: ${this.normalizeHour(group.inicio)}-${this.normalizeHour(group.final)}`;
+            }).join(", ");
+        },
+        normalizeHour(hour) {
+            const array = hour.split(":");
+
+            let h = +array[0];
+            let m = array[1];
+
+            if (h > 12) h = h - 12;
+
+            return h + ":" + m;
+        },
     }
 }
 </script>

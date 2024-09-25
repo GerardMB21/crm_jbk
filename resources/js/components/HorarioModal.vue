@@ -67,18 +67,15 @@
                         <!--LUNES-->
                         <div v-for="(detail, index) in details" :key="index" class="row mb-2">
                             <div class="col-md-4">
-                                <input v-model="detail.day" type="text" class="form-control" id="day" name="day"
-                                    readonly @focus="$parent.clearErrorMsg($event)">
+                                <input v-model="detail.day" type="text" class="form-control" id="day" name="day" readonly @focus="$parent.clearErrorMsg($event)">
                                 <div id="day-error" class="error invalid-feedback"></div>
                             </div>
                             <div class="col-md-4">
-                                <input v-model="detail.start" type="time" class="form-control" id="start" name="start"
-                                    @focus="$parent.clearErrorMsg($event)">
+                                <input v-model="detail.start" type="time" class="form-control" id="start" name="start" @change="synchronizeHours(detail, $event)" @focus="$parent.clearErrorMsg($event)">
                                 <div :id="'details-' + index + '-start-error'" class="error invalid-feedback"></div>
                             </div>
                             <div class="col-md-4">
-                                <input v-model="detail.end" type="time" class="form-control" id="end" name="end"
-                                    @focus="$parent.clearErrorMsg($event)">
+                                <input v-model="detail.end" type="time" class="form-control" id="end" name="end" @change="synchronizeHours(detail, $event)" @focus="$parent.clearErrorMsg($event)">
                                 <div :id="'details-' + index + '-end-error'" class="error invalid-feedback"></div>
                             </div>
                         </div>
@@ -234,6 +231,25 @@ export default {
                 });
             });
         },
+        synchronizeHours(detail, event) {
+            const { day, start, end } = detail;
+
+            if (day.toLowerCase() == "lunes") {
+                if (start.trim()) {
+                    this.details[1].start = start;
+                    this.details[2].start = start;
+                    this.details[3].start = start;
+                    this.details[4].start = start;
+                };
+
+                if (end.trim()) {
+                    this.details[1].end = end;
+                    this.details[2].end = end;
+                    this.details[3].end = end;
+                    this.details[4].end = end;
+                };
+            };
+        }
 
     }
 }
