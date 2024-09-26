@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function () {
 
     //ADMINISTRACION DE USUARIOS - GRUPOS DE USUARIOS
     Route::get('/grupo-usuarios', 'GroupUserController@index')->name('dashboard.group.user.index');
+    Route::get('/grupo-usuarios/grupo', 'GroupUserController@getGroup')->name('dashboard.group.user.getGroup');
     Route::post('/grupo-eliminar-usuarios', 'GroupUserController@delete')->name('dashboard.group.user.delete');
     Route::post('/grupo-eliminar-store', 'GroupUserController@store')->name('dashboard.group.user.store');
 

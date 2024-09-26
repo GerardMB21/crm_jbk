@@ -33,6 +33,10 @@
                                 @focus="$parent.clearErrorMsg($event)">
                             <div id="ip-error" class="error invalid-feedback"></div>
                         </div>
+                        <div class="col-md-12">
+                            <label for="ip" class="form-label">Permisos:</label>
+                            <liquor-tree ref="permissions" :data="treeData" :options="{ checkbox: true }" :checkbox="true" @input="onInputChange"></liquor-tree>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-white border-dark" data-bs-dismiss="modal">Cerrar</button>
@@ -45,11 +49,11 @@
 </template>
 
 <script>
-import { valHooks } from 'jquery';
-import { values } from 'lodash';
+import LiquorTree from 'liquor-tree';
 
 
 export default {
+    components: { LiquorTree },
     props: {
         url: {
             type: String,
@@ -66,10 +70,101 @@ export default {
                 id: '',
                 company_id: '',
                 name: '',
-                ip: ''
+                ip: '',
+                permissions: {
+                    enterprise_configuration: [],
+                    presence_configuration: [],
+                    administration_configuration: [],
+                    collaborative: [],
+                    campaign_configuration: []
+                }
             },
             text: '',
-            color: ''
+            color: '',
+            treeData: [
+                {
+                    id: 'enterprise_configuration',
+                    text: 'Configuración de Empresa',
+                    children: [
+                        {
+                            id: 'enterprise_configuration.my_enterprise',
+                            text: 'Mi Empresa',
+                        },
+                    ]
+                },
+                {
+                    id: 'presence_configuration',
+                    text: 'Configuración de Asistencia',
+                    children: [
+                        {
+                            id: 'presence_configuration.hours',
+                            text: 'Horarios',
+                        },
+                        {
+                            id: 'presence_configuration.disconnection',
+                            text: 'Tipos de Desconexión',
+                        },
+                        {
+                            id: 'presence_configuration.sedes',
+                            text: 'Sedes',
+                        },
+                    ]
+                },
+                {
+                    id: 'administration_configuration',
+                    text: 'Administracion de Usuarios',
+                    children: [
+                        {
+                            id: 'administration_configuration.user_groups',
+                            text: 'Grupos de Usuarios',
+                        },
+                        {
+                            id: 'administration_configuration.users',
+                            text: 'Usuarios',
+                        },
+                    ]
+                },
+                {
+                    id: 'collaborative',
+                    text: 'Colaborativo',
+                    children: [
+                        {
+                            id: 'collaborative.advertisements',
+                            text: 'Anuncios',
+                        },
+                        {
+                            id: 'collaborative.popups_welcome',
+                            text: 'Popups de Bienvenida',
+                        },
+                    ]
+                },
+                {
+                    id: 'campaign_configuration',
+                    text: 'Configuración de Campañas',
+                    children: [
+                        {
+                            id: 'campaign_configuration.campaign',
+                            text: 'Campañas',
+                        },
+                        {
+                            id: 'campaign_configuration.tab_states',
+                            text: 'Pestaña de Estado',
+                        },
+                        {
+                            id: 'campaign_configuration.states',
+                            text: 'Estados',
+                        },
+                        {
+                            id: 'campaign_configuration.blocks',
+                            text: 'Bloque de Campos',
+                        },
+                        {
+                            id: 'campaign_configuration.fields',
+                            text: ' Campos',
+                        },
+                    ]
+                },
+            ],
         }
     },
     created() {
@@ -96,6 +191,51 @@ export default {
             this.model.name = group.name;
             this.model.ip = group.ip;
 
+            if (group.permissions) {
+                const parse = JSON.parse(group.permissions);
+
+                this.model.permissions = parse;
+
+                for (const key in parse) {
+                    const element = parse[key];
+
+                    for (const k in this.$refs.permissions.tree.model) {
+                        const model = this.$refs.permissions.tree.model[k];
+
+                        if (element.length) {
+                            if (model.id == key) {
+                                this.$set(model.states, 'checked', true);
+
+                                for (let i = 0; i < element.length; i++) {
+                                    const el = element[i];
+
+                                    for (const ke in model.children) {
+                                        if (model.children[ke].id == (key + "." + el)) {
+                                            this.$set(model.children[ke].states, 'checked', true);
+
+                                            if (!this.$refs.permissions.tree.checkedNodes.includes(model.children[ke])) {
+                                                this.$refs.permissions.tree.checkedNodes.push(model.children[ke]);
+                                            };
+                                        };
+                                    };
+                                }
+                            };
+                        };
+
+                        if (!this.$refs.permissions.tree.checkedNodes.includes(model)) {
+                            this.$refs.permissions.tree.checkedNodes.push(model);
+                        };
+                        // const lengthNodeChecked = this.$refs.permissions.tree.checkedNodes.length;
+
+                        // if (lengthNodeChecked) {
+                        //     this.$refs.permissions.tree.checkedNodes[lengthNodeChecked + 1] = model;
+                        // } else {
+                        //     this.$refs.permissions.tree.checkedNodes[0] = model;
+                        // };
+                    };
+                };
+            };
+
             this.text = "Actualizar"
             this.color = "primary";
 
@@ -110,9 +250,12 @@ export default {
             var url = url;
             var fd = new FormData(event.target);
 
+            const permissions = JSON.stringify(this.model.permissions);
+
+            fd.append("permissions", permissions);
+
             EventBus.$emit('loading', true);
 
-            // EventBus.$emit('loading', true);
             axios.post(url, fd, {
                 headers: {
                     'Content-type': 'application/x-www-form-urlencoded',
@@ -140,7 +283,35 @@ export default {
                 });
             });
         },
+        onInputChange() {
+            const checked = this.$refs.permissions.tree.checkedNodes;
+            const { length } = checked;
+            const permissions = {
+                enterprise_configuration: [],
+                presence_configuration: [],
+                administration_configuration: [],
+                collaborative: [],
+                campaign_configuration: []
+            };
 
+            for (let i = 0; i < length; i++) {
+                const element = checked[i];
+                const { id } = element;
+
+                const arrayId = id.split(".");
+
+                if (arrayId.length == 2) {
+                    permissions[arrayId[0]].push(arrayId[1]);
+                };
+
+                permissions[arrayId[0]] = permissions[arrayId[0]].filter(this.onlyUnique);
+            };
+
+            this.model.permissions = permissions;
+        },
+        onlyUnique(value, index, self) { 
+            return self.indexOf(value) === index;
+        },
     }
 }
 </script>

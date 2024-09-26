@@ -39,23 +39,337 @@
 
         new DataTable('#example');
 
-        let campaniasMenu = document.getElementById('solds-campanias-menu');
+        let menuNavigation = document.getElementById('menu-navigation');
+
+        axios.get('/grupo-usuarios/grupo')
+            .then(function (response) {
+                const { data } = response;
+
+                if (data) {
+                    const { permissions } = data;
+                    const permissionsParse = JSON.parse(permissions);
+
+                    const { enterprise_configuration, presence_configuration, administration_configuration, collaborative, campaign_configuration } = permissionsParse;
+
+                    if (enterprise_configuration.length) {
+                        let li = document.createElement('li');
+                        let a = document.createElement('a');
+                        let ul = document.createElement('ul');
+                        let ul_li = document.createElement('li');
+                        let ul_li_a = document.createElement('a');
+
+                        li.className = 'nav-item dropdown';
+
+                        a.className = 'nav-link dropdown-toggle';
+                        a.href = '#';
+                        a.textContent = "Configuración de Empresa"
+                        a.setAttribute("role", 'button');
+                        a.setAttribute("data-bs-toggle", 'dropdown');
+                        a.setAttribute("aria-expanded", 'false');
+
+                        ul.className = 'dropdown-menu dropdown-menu-dark';
+
+                        ul_li_a.className = 'dropdown-item';
+                        ul_li_a.href = `{{ route('dashboard.company.index') }}`;
+                        ul_li_a.textContent = "Mi Empresa";
+
+                        ul_li.appendChild(ul_li_a);
+                        ul.appendChild(ul_li);
+                        li.appendChild(a);
+                        li.appendChild(ul);
+
+                        menuNavigation.appendChild(li);
+                    };
+
+                    if (presence_configuration.length) {
+                        let li = document.createElement('li');
+                        let a = document.createElement('a');
+                        let ul = document.createElement('ul');
+
+                        li.className = 'nav-item dropdown';
+
+                        a.className = 'nav-link dropdown-toggle';
+                        a.href = '#';
+                        a.textContent = "Configuración de Asistencia"
+                        a.setAttribute("role", 'button');
+                        a.setAttribute("data-bs-toggle", 'dropdown');
+                        a.setAttribute("aria-expanded", 'false');
+
+                        ul.className = 'dropdown-menu dropdown-menu-dark';
+
+                        for (let i = 0; i < presence_configuration.length; i++) {
+                            const element = presence_configuration[i];
+
+                            let ul_li = document.createElement('li');
+                            let ul_li_a = document.createElement('a');
+
+                            if (element == "hours") {
+
+                                ul_li_a.className = 'dropdown-item';
+                                ul_li_a.href = `{{ route('dashboard.horario.index') }}`;
+                                ul_li_a.textContent = "Horarios";
+
+                                ul_li.appendChild(ul_li_a);
+                                ul.appendChild(ul_li);
+                            } else if (element == "disconnection") {
+
+                                ul_li_a.className = 'dropdown-item';
+                                ul_li_a.href = `{{ route('dashboard.company.index') }}`;
+                                ul_li_a.textContent = "Tipos de Desconexión";
+
+                                ul_li.appendChild(ul_li_a);
+                                ul.appendChild(ul_li);
+                            } else if (element == "sedes") {
+
+                                ul_li_a.className = 'dropdown-item';
+                                ul_li_a.href = `{{ route('dashboard.company.index') }}`;
+                                ul_li_a.textContent = "Sedes";
+
+                                ul_li.appendChild(ul_li_a);
+                                ul.appendChild(ul_li);
+                            };
+                        };
+
+                        li.appendChild(a);
+                        li.appendChild(ul);
+
+                        menuNavigation.appendChild(li);
+                    };
+
+                    if (administration_configuration.length) {
+                        let li = document.createElement('li');
+                        let a = document.createElement('a');
+                        let ul = document.createElement('ul');
+
+                        li.className = 'nav-item dropdown';
+
+                        a.className = 'nav-link dropdown-toggle';
+                        a.href = '#';
+                        a.textContent = "Administración de Usuarios"
+                        a.setAttribute("role", 'button');
+                        a.setAttribute("data-bs-toggle", 'dropdown');
+                        a.setAttribute("aria-expanded", 'false');
+
+                        ul.className = 'dropdown-menu dropdown-menu-dark';
+
+                        for (let i = 0; i < administration_configuration.length; i++) {
+                            const element = administration_configuration[i];
+
+                            let ul_li = document.createElement('li');
+                            let ul_li_a = document.createElement('a');
+
+                            if (element == "user_groups") {
+
+                                ul_li_a.className = 'dropdown-item';
+                                ul_li_a.href = `{{ route('dashboard.group.user.index') }}`;
+                                ul_li_a.textContent = "Grupos de Usuarios";
+
+                                ul_li.appendChild(ul_li_a);
+                                ul.appendChild(ul_li);
+                            } else if (element == "users") {
+
+                                ul_li_a.className = 'dropdown-item';
+                                ul_li_a.href = `{{ route('dashboard.user.index') }}`;
+                                ul_li_a.textContent = "Usuarios";
+
+                                ul_li.appendChild(ul_li_a);
+                                ul.appendChild(ul_li);
+                            };
+                        };
+
+                        li.appendChild(a);
+                        li.appendChild(ul);
+
+                        menuNavigation.appendChild(li);
+                    };
+
+                    if (collaborative.length) {
+                        let li = document.createElement('li');
+                        let a = document.createElement('a');
+                        let ul = document.createElement('ul');
+
+                        li.className = 'nav-item dropdown';
+
+                        a.className = 'nav-link dropdown-toggle';
+                        a.href = '#';
+                        a.textContent = "Colaborativo"
+                        a.setAttribute("role", 'button');
+                        a.setAttribute("data-bs-toggle", 'dropdown');
+                        a.setAttribute("aria-expanded", 'false');
+
+                        ul.className = 'dropdown-menu dropdown-menu-dark';
+
+                        for (let i = 0; i < collaborative.length; i++) {
+                            const element = collaborative[i];
+
+                            let ul_li = document.createElement('li');
+                            let ul_li_a = document.createElement('a');
+
+                            if (element == "advertisements") {
+
+                                ul_li_a.className = 'dropdown-item';
+                                ul_li_a.href = `{{ route('dashboard.advertisement.index') }}`;
+                                ul_li_a.textContent = "Anuncios";
+
+                                ul_li.appendChild(ul_li_a);
+                                ul.appendChild(ul_li);
+                            } else if (element == "popups_welcome") {
+
+                                ul_li_a.className = 'dropdown-item';
+                                ul_li_a.href = `{{ route('dashboard.company.index') }}`;
+                                ul_li_a.textContent = "Popups de Bienvenida";
+
+                                ul_li.appendChild(ul_li_a);
+                                ul.appendChild(ul_li);
+                            };
+                        };
+
+                        li.appendChild(a);
+                        li.appendChild(ul);
+
+                        menuNavigation.appendChild(li);
+                    };
+
+                    if (campaign_configuration.length) {
+                        let li = document.createElement('li');
+                        let a = document.createElement('a');
+                        let ul = document.createElement('ul');
+
+                        li.className = 'nav-item dropdown';
+
+                        a.className = 'nav-link dropdown-toggle';
+                        a.href = '#';
+                        a.textContent = "Configuración de Campañas"
+                        a.setAttribute("role", 'button');
+                        a.setAttribute("data-bs-toggle", 'dropdown');
+                        a.setAttribute("aria-expanded", 'false');
+
+                        ul.className = 'dropdown-menu dropdown-menu-dark';
+
+                        for (let i = 0; i < campaign_configuration.length; i++) {
+                            const element = campaign_configuration[i];
+
+                            let ul_li = document.createElement('li');
+                            let ul_li_a = document.createElement('a');
+
+                            if (element == "campaign") {
+
+                                ul_li_a.className = 'dropdown-item';
+                                ul_li_a.href = `{{ route('dashboard.campain.index') }}`;
+                                ul_li_a.textContent = "Campañas";
+
+                                ul_li.appendChild(ul_li_a);
+                                ul.appendChild(ul_li);
+                            } else if (element == "tab_states") {
+
+                                ul_li_a.className = 'dropdown-item';
+                                ul_li_a.href = `{{ route('dashboard.tab_state.index') }}`;
+                                ul_li_a.textContent = "Pestañas de Estado";
+
+                                ul_li.appendChild(ul_li_a);
+                                ul.appendChild(ul_li);
+                            } else if (element == "states") {
+
+                                ul_li_a.className = 'dropdown-item';
+                                ul_li_a.href = `{{ route('dashboard.state.index') }}`;
+                                ul_li_a.textContent = "Estados";
+
+                                ul_li.appendChild(ul_li_a);
+                                ul.appendChild(ul_li);
+                            } else if (element == "blocks") {
+
+                                ul_li_a.className = 'dropdown-item';
+                                ul_li_a.href = `{{ route('dashboard.block.index') }}`;
+                                ul_li_a.textContent = "Bloques de Campos";
+
+                                ul_li.appendChild(ul_li_a);
+                                ul.appendChild(ul_li);
+                            } else if (element == "fields") {
+
+                                ul_li_a.className = 'dropdown-item';
+                                ul_li_a.href = `{{ route('dashboard.field.index') }}`;
+                                ul_li_a.textContent = "Campos";
+
+                                ul_li.appendChild(ul_li_a);
+                                ul.appendChild(ul_li);
+                            };
+                        };
+
+                        li.appendChild(a);
+                        li.appendChild(ul);
+
+                        menuNavigation.appendChild(li);
+                    };
+
+                    let li = document.createElement('li');
+                    let a = document.createElement('a');
+                    let ul = document.createElement('ul');
+                    let ul_li = document.createElement('li');
+                    let ul_li_a = document.createElement('a');
+
+                    li.className = 'nav-item dropdown';
+
+                    a.className = 'nav-link dropdown-toggle';
+                    a.href = '#';
+                    a.textContent = "Reportes"
+                    a.setAttribute("role", 'button');
+                    a.setAttribute("data-bs-toggle", 'dropdown');
+                    a.setAttribute("aria-expanded", 'false');
+
+                    ul.className = 'dropdown-menu dropdown-menu-dark';
+
+                    ul_li_a.className = 'dropdown-item';
+                    ul_li_a.href = `{{ route('dashboard.user.index') }}`;
+                    ul_li_a.textContent = "En construcción";
+
+                    ul_li.appendChild(ul_li_a);
+                    ul.appendChild(ul_li);
+                    li.appendChild(a);
+                    li.appendChild(ul);
+
+                    menuNavigation.appendChild(li);
+                };
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
 
         axios.post('/listar-campanias')
             .then(function (response) {
 
                 let campanias = response.data;
-                campaniasMenu.innerHTML = ''; 
+
+                let li = document.createElement('li');
+                let a = document.createElement('a');
+                let ul = document.createElement('ul');
+
+                li.className = 'nav-item dropdown';
+
+                a.className = 'nav-link dropdown-toggle';
+                a.href = '#';
+                a.textContent = "Venta"
+                a.setAttribute("role", 'button');
+                a.setAttribute("data-bs-toggle", 'dropdown');
+                a.setAttribute("aria-expanded", 'false');
+
+                ul.className = 'dropdown-menu dropdown-menu-dark';
 
                 campanias.forEach(function(campania) {
                     let listItem = document.createElement('li');
                     let link = document.createElement('a');
+
+
                     link.className = 'dropdown-item';
                     link.href = `{{ route('dashboard.sold.index') }}?id=${campania.id}`;
                     link.textContent = campania.name;
                     listItem.appendChild(link);
-                    campaniasMenu.appendChild(listItem);
+                    ul.appendChild(listItem);
                 });
+
+                li.appendChild(a);
+                li.appendChild(ul);
+
+                menuNavigation.appendChild(li);
             })
             .catch(function (error) {
                 console.log(error);
