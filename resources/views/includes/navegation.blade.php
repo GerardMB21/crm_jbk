@@ -96,10 +96,11 @@
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Configuración de Campañas
-                        </a>
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Configuración de Campañas</a>
                         <ul class="dropdown-menu dropdown-menu-dark">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('dashboard.campain.index') }}">Campañas</a>
+                            </li>
                             <li>
                                 <a class="dropdown-item" href="{{ route('dashboard.tab_state.index') }}">Pestañas de Estado</a>
                             </li>

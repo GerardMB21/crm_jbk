@@ -104,4 +104,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/ventas/habilitar', 'SoldController@habilitar')->name('dashboard.sold.habilitar');
     Route::post('/ventas/eliminar', 'SoldController@delete')->name('dashboard.sold.delete');
     Route::get('/ventas/download/{id}', 'SoldController@download')->name('dashboard.sold.download');
+
+    //CAMPAÑAS
+    Route::get('/campañas', 'CampainController@index')->name('dashboard.campain.index');
+    Route::post('/campañas/campaña', 'CampainController@getCampain')->name('dashboard.campain.getCampain');
+    Route::post('/campañas/eliminar', 'CampainController@delete')->name('dashboard.campain.delete');
+    Route::post('/campañas/deshabilitar', 'CampainController@deshabilitar')->name('dashboard.campain.deshabilitar');
+    Route::post('/campañas/habilitar', 'CampainController@habilitar')->name('dashboard.campain.habilitar');
+    Route::post('/campañas/guardar', 'CampainController@store')->name('dashboard.campain.store');
 });

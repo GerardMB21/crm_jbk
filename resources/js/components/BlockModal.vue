@@ -1,40 +1,39 @@
 <template>
+    <div class="modal fade" id="blockModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <form class="row g-3 mb-3" @submit.prevent="formController(url, $event)">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">{{ text }}</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body row">
+                        <input v-model="model.id" class="d-none" type="text" name="id" id="id">
+                        <input v-model="model.campain_id" class="d-none" type="text" name="campain_id" id="campain_id">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Nombre:</label>
+                            <input v-model="model.name" type="text" class="form-control" id="name" name="name"
+                                @focus="$parent.clearErrorMsg($event)">
+                            <div id="name-error" class="error invalid-feedback"></div>
+                        </div>
 
-  <div class="modal fade" id="blockModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-      aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-          <form class="row g-3 mb-3" @submit.prevent="formController(url, $event)">
-              <div class="modal-content">
-                  <div class="modal-header">
-                      <h1 class="modal-title fs-5" id="staticBackdropLabel">{{ text }}</h1>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body row">
-                      <input v-model="model.id" class="d-none" type="text" name="id" id="id">
-                      <input v-model="model.campain_id" class="d-none" type="text" name="campain_id" id="campain_id">
-                      <div class="col-md-6">
-                          <label for="name" class="form-label">Nombre:</label>
-                          <input v-model="model.name" type="text" class="form-control" id="name" name="name"
-                              @focus="$parent.clearErrorMsg($event)">
-                          <div id="name-error" class="error invalid-feedback"></div>
-                      </div>
+                        <div class="col-md-4">
+                            <label for="order" class="form-label">Orden:</label>
+                            <input v-model="model.order" type="text" class="form-control" id="order" name="order"
+                                @focus="$parent.clearErrorMsg($event)">
+                            <div id="order-error" class="error invalid-feedback"></div>
+                        </div>
 
-                      <div class="col-md-4">
-                          <label for="order" class="form-label">Orden:</label>
-                          <input v-model="model.order" type="text" class="form-control" id="order" name="order"
-                              @focus="$parent.clearErrorMsg($event)">
-                          <div id="order-error" class="error invalid-feedback"></div>
-                      </div>
-
-                  </div>
-                  <div class="modal-footer">
-                      <button type="button" class="btn btn-white border-dark" data-bs-dismiss="modal">Cerrar</button>
-                      <button type="submit" :class="'btn btn-' + color">{{ text }}</button>
-                  </div>
-              </div>
-          </form>
-      </div>
-  </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white border-dark" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" :class="'btn btn-' + color">{{ text }}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </template>
 
 <script>
