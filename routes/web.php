@@ -112,4 +112,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/campañas/deshabilitar', 'CampainController@deshabilitar')->name('dashboard.campain.deshabilitar');
     Route::post('/campañas/habilitar', 'CampainController@habilitar')->name('dashboard.campain.habilitar');
     Route::post('/campañas/guardar', 'CampainController@store')->name('dashboard.campain.store');
+
+    //ANUNCIOS
+    Route::get('/anuncios', 'AdvertisementController@index')->name('dashboard.advertisement.index');
+    Route::post('/anuncios/guardar', 'AdvertisementController@store')->name('dashboard.advertisement.store');
+    Route::post('/anuncios/anucio', 'AdvertisementController@getAdvertisement')->name('dashboard.advertisement.getAdvertisement');
+    Route::post('/anuncios/eliminar', 'AdvertisementController@delete')->name('dashboard.advertisement.delete');
+    Route::post('/anuncios/deshabilitar', 'AdvertisementController@deshabilitar')->name('dashboard.advertisement.deshabilitar');
+    Route::post('/anuncios/habilitar', 'AdvertisementController@habilitar')->name('dashboard.advertisement.habilitar');
 });

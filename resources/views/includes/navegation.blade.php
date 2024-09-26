@@ -75,7 +75,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark">
                             <li>
-                                <a class="dropdown-item" href="{{ route('dashboard.user.index') }}">Anuncios</a>
+                                <a class="dropdown-item" href="{{ route('dashboard.advertisement.index') }}">Anuncios</a>
                             </li>
                             <li>
                                 <hr class="dropdown-divider">

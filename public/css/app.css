@@ -591,46 +591,6 @@ progress {
   display: none !important;
 }
 
-.text-4xs {
-  font-size: .125rem;
-}
-
-.text-3xs {
-  font-size: .25rem;
-}
-
-.text-2xs {
-  font-size: .625rem;
-}
-
-.text-xs {
-  font-size: .75rem;
-}
-
-.text-sm {
-  font-size: .875rem;
-}
-
-.text-base {
-  font-size: 1rem;
-}
-
-.text-lg {
-  font-size: 1.125rem;
-}
-
-.text-xl {
-  font-size: 1.25rem;
-}
-
-.text-2xl {
-  font-size: 1.5rem;
-}
-
-.no-underline {
-  text-decoration-line: none;
-}
-
 .lead {
   font-size: 1.125rem;
   font-weight: 300;
@@ -7690,10 +7650,6 @@ textarea.form-control-lg {
   min-height: 100vh !important;
 }
 
-.flex {
-  display: flex;
-}
-
 .flex-fill {
   flex: 1 1 auto !important;
 }
@@ -8100,11 +8056,6 @@ textarea.form-control-lg {
   padding: 3rem !important;
 }
 
-.px-px {
-  padding-right: 1px !important;
-  padding-left: 1px !important;
-}
-
 .px-0 {
   padding-right: 0 !important;
   padding-left: 0 !important;
@@ -8133,11 +8084,6 @@ textarea.form-control-lg {
 .px-5 {
   padding-right: 3rem !important;
   padding-left: 3rem !important;
-}
-
-.py-px {
-  padding-top: 1px !important;
-  padding-bottom: 1px !important;
 }
 
 .py-0 {
