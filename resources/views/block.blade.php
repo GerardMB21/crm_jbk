@@ -6,6 +6,7 @@
 @section('content')
 
     <block-form
+        :campain_id = "{{ $campain_id }}"
         :campains = "{{ $campains }}"
         :url = "'{{ route('dashboard.block.list') }}'"
     ></block-form>

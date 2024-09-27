@@ -17,15 +17,26 @@ use App\Models\Group;
 use App\Models\UserGroup;
 use App\Models\TabState;
 use App\Models\State;
+
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class FieldController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $campains = Campain::get();;
-        return view('field')->with(compact('campains'));
+        $campain_id = 0;
+        $campains = Campain::get();
+
+        if ($request->query('id')) {
+            $campain_id = $request->query('id');
+        };
+
+        return view('field', [
+                                'campain_id'      => $campain_id,
+                                'campains'      => $campains
+                            ]);
     }
 
     public function validateForm()

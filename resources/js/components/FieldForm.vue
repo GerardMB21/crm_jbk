@@ -22,6 +22,10 @@
 
 export default {
     props: {
+        campain_id: {
+            type: Number,
+            default: 0
+        },
         url: {
             type: String,
             default: ''
@@ -38,7 +42,43 @@ export default {
             },
         }
     },
-    created() {},
+    created() {
+        if (this.campain_id) {
+            this.model.campain_id = `${this.campain_id}`;
+
+            var fd = new FormData();
+
+            fd.append('campain_id', `${this.campain_id}`);
+
+            EventBus.$emit('loading', true);
+            axios.post(this.url, fd, {
+                headers: {
+                    'Content-type': 'application/x-www-form-urlencoded',
+                }
+            }).then(response => {
+                EventBus.$emit('loading', false);
+                EventBus.$emit('show_table', response.data, `${this.campain_id}`);
+
+            }).catch(error => {
+                EventBus.$emit('loading', false);
+                console.log(error.response);
+                var obj = error.response.data.errors;
+                $('.modal').animate({
+                    scrollTop: 0
+                }, 500, 'swing');
+                $.each(obj, function (i, item) {
+                    let c_target = target.find("#" + i + "-error");
+                    if (!c_target.attr('data-required')) {
+                        let p = c_target.prev();
+                        p.addClass('is-invalid');
+                    } else {
+                        c_target.css('display', 'block');
+                    }
+                    c_target.html(item);
+                });
+            });
+        };
+    },
     mounted() {},
     methods: {
         formController: function (url, event) {

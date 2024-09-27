@@ -7,15 +7,26 @@ use App\Models\Company;
 use App\Models\Block;
 use App\Models\User;
 use App\Models\UserGroup;
+
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class BlockController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $campains = Campain::get();;
-        return view('block')->with(compact('campains'));
+        $campain_id = 0;
+        $campains = Campain::get();
+
+        if ($request->query('id')) {
+            $campain_id = $request->query('id');
+        };
+
+        return view('block', [
+                                'campain_id'      => $campain_id,
+                                'campains'      => $campains
+                            ]);
     }
 
     public function validateForm()

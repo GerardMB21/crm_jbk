@@ -8,15 +8,26 @@ use App\Models\State;
 use App\Models\TabState;
 use App\Models\User;
 use App\Models\UserGroup;
+
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class StateController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $campains = Campain::get();;
-        return view('state')->with(compact('campains'));
+        $campain_id = 0;
+        $campains = Campain::get();
+
+        if ($request->query('id')) {
+            $campain_id = $request->query('id');
+        };
+
+        return view('state', [
+                                'campain_id'      => $campain_id,
+                                'campains'      => $campains
+                            ]);
     }
 
     public function validateForm()

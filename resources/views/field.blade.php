@@ -6,6 +6,7 @@
 @section('content')
 
     <field-form
+        :campain_id = "{{ $campain_id }}"
         :campains = "{{ $campains }}"
         :url = "'{{ route('dashboard.field.list') }}'"
     ></field-form>
