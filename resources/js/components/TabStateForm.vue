@@ -101,9 +101,9 @@ export default {
             }).then(response => {
                 EventBus.$emit('loading', false);
                 EventBus.$emit('show_table', response.data, this.model.campain_id);
-                target.find('input').prop('disabled', true);
-                target.find('select').prop('disabled', true);
-                target.find('button').prop('disabled', true);
+                target.find('input').prop('disabled', false);
+                target.find('select').prop('disabled', false);
+                target.find('button').prop('disabled', false);
             }).catch(error => {
                 EventBus.$emit('loading', false);
                 console.log(error.response);
