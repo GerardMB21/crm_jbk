@@ -48,6 +48,20 @@
             </div>
 
             <div class="col-md-4">
+                <label for="menu_color" class="form-label">Color del Menú:</label>
+                <input v-model="model.menu_color" type="color" class="form-control" id="menu_color" name="menu_color"
+                    @focus="$parent.clearErrorMsg($event)">
+                <div id="menu_color-error" class="error invalid-feedback"></div>
+            </div>
+
+            <div class="col-md-4">
+                <label for="text_color" class="form-label">Color de Textos:</label>
+                <input v-model="model.text_color" type="color" class="form-control" id="text_color" name="text_color"
+                    @focus="$parent.clearErrorMsg($event)">
+                <div id="text_color-error" class="error invalid-feedback"></div>
+            </div>
+
+            <div class="col-md-4">
                 <label for="sufijo" class="form-label">Logo:</label>
                 <div class="w-full d-flex gap-2">
                     <button type="button" class="d-flex p-2 button-clear bg-blue rounded-2" @click="openFileInput">
@@ -103,6 +117,8 @@ export default {
                 pais: '',
                 asist_type: '',
                 sufijo: '',
+                menu_color: '',
+                text_color: '',
                 logo: null
             },
             imageURL: null,
@@ -115,6 +131,8 @@ export default {
         this.model.pais = this.company.pais;
         this.model.asist_type = this.company.asist_type;
         this.model.sufijo = this.company.sufijo;
+        this.model.menu_color = this.company.menu_color;
+        this.model.text_color = this.company.text_color;
 
         if (this.file) {
             const name = this.file.path.replace("uploads/", "");
@@ -140,6 +158,8 @@ export default {
             fd.append("pais", this.model.pais);
             fd.append("asist_type", this.model.asist_type);
             fd.append("sufijo", this.model.sufijo);
+            fd.append("menu_color", this.model.menu_color);
+            fd.append("text_color", this.model.text_color);
             fd.append("logo", null);
 
             Swal.fire({

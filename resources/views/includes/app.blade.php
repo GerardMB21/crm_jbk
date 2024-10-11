@@ -43,7 +43,28 @@
         new DataTable('#example');
 
         const bodyRoot = document.getElementById('root-body');
+        const header = document.getElementById('navbar-header');
+        const menu = document.getElementById('offcanvasDarkNavbar');
         let menuNavigation = document.getElementById('menu-navigation');
+
+        axios.get('/empresa/paleta-de-colores')
+            .then(function (response) {
+                const { data } = response;
+
+                if (data) {
+                    // header.style.setProperty('background-color', data.menu_color, 'important')
+                    // header.style.setProperty('color', data.text_color, 'important')
+                    // menu.style.setProperty('background-color', data.menu_color, 'important')
+                    // menu.style.setProperty('color', data.text_color, 'important')
+                    header.style.backgroundColor = data.menu_color;
+                    header.style.color = data.text_color;
+                    menu.style.backgroundColor = data.menu_color;
+                    menu.style.color = data.text_color;
+                };
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
 
         axios.get('/empresa/ver-logo')
             .then(function (response) {

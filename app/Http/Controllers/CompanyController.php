@@ -25,6 +25,16 @@ class CompanyController extends Controller
                                 ]);
     }
 
+    public function getColorsPallette()
+    {
+        $company = Company::findOrFail(1);
+
+        return response()->json([
+                                'menu_color' => $company->menu_color,
+                                'text_color' => $company->text_color
+                            ]);
+    }
+
     public function getLogo()
     {
         $company = Company::findOrFail(1);
@@ -80,6 +90,8 @@ class CompanyController extends Controller
         $pais = request('pais');
         $asist_type = request('asist_type');
         $sufijo = request('sufijo');
+        $menu_color = request('menu_color');
+        $text_color = request('text_color');
         $logo = request('logo');
 
         $element = Company::findOrFail($id);
@@ -88,6 +100,8 @@ class CompanyController extends Controller
         $element->pais = $pais;
         $element->asist_type = $asist_type;
         $element->sufijo = $sufijo;
+        $element->menu_color = $menu_color;
+        $element->text_color = $text_color;
 
         if ($logo == "null") {
             $element->logo = null;
