@@ -6,8 +6,10 @@
 @section('content')
     
     <company-form
-    :company = "{{ $company }}"
-    :url="'{{ route('dashboard.company.update') }}'"
+        :company = "{{ $company }}"
+        :file = "{{ json_encode($file) }}"
+        :url="'{{ route('dashboard.company.update') }}'"
+        :url_upload="'{{ route('dashboard.sold.upload') }}'"
     ></company-form>
 
     <loading></loading>

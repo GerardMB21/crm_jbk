@@ -3,14 +3,48 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Models\File;
+
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
     public function index()
     {
-
         $company = Company::findOrFail(1);
-        return view('company')->with(compact('company'));
+        $file = null;
+
+        if ($company->logo) {
+            $file = File::findOrFail($company->logo);
+        };
+
+        return view('company', [
+                                    'company'   => $company,
+                                    'file'      => $file
+                                ]);
+    }
+
+    public function getLogo()
+    {
+        $company = Company::findOrFail(1);
+        $file = null;
+
+        if ($company->logo) {
+            $file = File::findOrFail($company->logo);
+        };
+
+        return $file;
+    }
+
+    public function files(Request $request) {
+        $path = storage_path('app/uploads/' . $request->route('fileName'));
+
+        if (!File::exists($path)) {
+            abort(404);
+        }
+
+        return response()->file($path);
     }
 
     public function validateForm()
@@ -46,6 +80,7 @@ class CompanyController extends Controller
         $pais = request('pais');
         $asist_type = request('asist_type');
         $sufijo = request('sufijo');
+        $logo = request('logo');
 
         $element = Company::findOrFail($id);
         $element->name = $name;
@@ -53,6 +88,13 @@ class CompanyController extends Controller
         $element->pais = $pais;
         $element->asist_type = $asist_type;
         $element->sufijo = $sufijo;
+
+        if ($logo == "null") {
+            $element->logo = null;
+        } else {
+            $element->logo = $logo;
+        };
+
         $element->save();
 
         $type = 3;

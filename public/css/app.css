@@ -607,6 +607,42 @@ progress {
   }
 }
 
+.button-clear {
+  border: none;
+  background-color: transparent;
+  color: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.bg-blue {
+  background-color: var(--bs-blue);
+}
+
+.bg-red {
+  background-color: var(--bs-red);
+}
+
+.bg-center {
+  background-position: center;
+}
+
+.bg-no-repeat {
+  background-repeat: no-repeat;
+}
+
+.bg-cover {
+  background-size: cover;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.h-screen {
+  height: 100vh;
+}
+
 .display-2 {
   font-size: calc(1.575rem + 3.9vw);
   font-weight: 300;

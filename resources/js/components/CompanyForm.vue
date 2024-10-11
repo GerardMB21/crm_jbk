@@ -47,6 +47,23 @@
                 <div id="sufijo-error" class="error invalid-feedback"></div>
             </div>
 
+            <div class="col-md-4">
+                <label for="sufijo" class="form-label">Logo:</label>
+                <div class="w-full d-flex gap-2">
+                    <button type="button" class="d-flex p-2 button-clear bg-blue rounded-2" @click="openFileInput">
+                        <i class="fa-solid fa-upload"></i>
+                    </button>
+                    <button type="button" class="d-flex p-2 button-clear bg-red rounded-2" @click="clearImage">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+                <div class="w-full h-auto mt-4">
+                    <img v-if="imageURL" :src="imageURL" style="width: 150px; height: 150px;" />
+                </div>
+                <input type="file" ref="fileInput" accept="image/jpeg, image/png, image/jpg" class="form-control d-none" id="logo" name="logo" @change="onFileChange($event)" @focus="$parent.clearErrorMsg($event)">
+                <div id="logo-error" class="error invalid-feedback"></div>
+            </div>
+
             <div class="col-md-12">
                 <label for="sufijo" class="form-label"></label>
                 <button type="submit" class="btn btn-success">Guardar</button>
@@ -64,8 +81,16 @@ export default {
             type: String,
             default: ''
         },
+        url_upload: {
+            type: String,
+            default: ''
+        },
         company: {
             type: Object,
+            default: ''
+        },
+        file: {
+            type: Object | null,
             default: ''
         }
     },
@@ -77,8 +102,10 @@ export default {
                 contact: '',
                 pais: '',
                 asist_type: '',
-                sufijo: ''
+                sufijo: '',
+                logo: null
             },
+            imageURL: null,
         }
     },
     created() {
@@ -88,21 +115,32 @@ export default {
         this.model.pais = this.company.pais;
         this.model.asist_type = this.company.asist_type;
         this.model.sufijo = this.company.sufijo;
+
+        if (this.file) {
+            const name = this.file.path.replace("uploads/", "");
+
+            this.imageURL = "http://localhost:8000/empresa/logo/" + name;
+        };
     },
     mounted() {
     },
     methods: {
 
-
-
-        formController: function (url, event) {
+        formController: async function (url, event) {
 
             var vm = this;
 
             var target = $(event.target);
             var url = url;
-            var fd = new FormData(event.target);
+            const fd = new FormData();
 
+            fd.append("id", this.model.id);
+            fd.append("name", this.model.name);
+            fd.append("contact", this.model.contact);
+            fd.append("pais", this.model.pais);
+            fd.append("asist_type", this.model.asist_type);
+            fd.append("sufijo", this.model.sufijo);
+            fd.append("logo", null);
 
             Swal.fire({
                 title: 'Advertencia!',
@@ -111,10 +149,46 @@ export default {
                 showCancelButton: true,
                 confirmButtonText: 'Sí, guardar!',
                 heightAuto: false
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.value) {
 
                     EventBus.$emit('loading', true);
+
+                    if (this.model.logo && typeof this.model.logo !== "string") {
+                        const fdFile = new FormData();
+
+                        fdFile.append("file", this.model.logo);
+
+                        try {
+                            const res = await axios.post(this.url_upload, fdFile, {
+                                headers: {
+                                    'Content-type': 'application/x-www-form-urlencoded',
+                                }
+                            });
+
+                            fd.append("logo", res.data.msg);
+                        } catch (error) {
+                            EventBus.$emit('loading', false);
+                            console.log(error.response);
+                            var obj = error.response.data.errors;
+                            $('.modal').animate({
+                                scrollTop: 0
+                            }, 500, 'swing');
+                            $.each(obj, function (i, item) {
+                                let c_target = target.find("#" + i + "-error");
+                                if (!c_target.attr('data-required')) {
+                                    let p = c_target.prev();
+                                    p.addClass('is-invalid');
+                                } else {
+                                    c_target.css('display', 'block');
+                                }
+                                c_target.html(item);
+                            });
+
+                            return
+                        };
+                    };
+
                     axios.post(url, fd, {
                         headers: {
                             'Content-type': 'application/x-www-form-urlencoded',
@@ -143,8 +217,23 @@ export default {
                 }
             });
 
+        },
 
+        openFileInput() {
+            this.$refs.fileInput.click();
+        },
 
+        onFileChange(event) {
+            const selectedFiles = event.target.files;
+
+            this.model.logo = Array.from(selectedFiles)[0];
+            this.imageURL = URL.createObjectURL(this.model.logo);
+        },
+
+        clearImage() {
+            this.model.logo = null;
+            this.imageURL = null;
+            this.$refs.fileInput.value = null;
         },
 
     }

@@ -13,7 +13,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
-<body>
+<body class="min-h-screen position-relative">
+    <div class="position-fixed w-100 h-screen d-flex justify-content-center align-items-center" style="z-index: -10; top: 50%; left: 50%; transform: translateX(-50%) translateY(-50%);">
+        <img id="root-body" class src="" alt="">
+    </div>
     
     @include('includes.navegation')
     
@@ -39,7 +42,22 @@
 
         new DataTable('#example');
 
+        const bodyRoot = document.getElementById('root-body');
         let menuNavigation = document.getElementById('menu-navigation');
+
+        axios.get('/empresa/ver-logo')
+            .then(function (response) {
+                const { data } = response;
+
+                if (data) {
+                    const fileName = data.path.replace("uploads/","");
+
+                    bodyRoot.src = `http://localhost:8000/empresa/logo/${fileName}`;
+                };
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
 
         axios.get('/grupo-usuarios/grupo')
             .then(function (response) {

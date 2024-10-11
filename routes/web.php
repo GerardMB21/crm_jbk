@@ -50,6 +50,8 @@ Route::middleware('auth')->group(function () {
 
     //CONFIGURACION DE EMPRESA - MI EMPRESA
     Route::get('/empresa', 'CompanyController@index')->name('dashboard.company.index');
+    Route::get('/empresa/ver-logo', 'CompanyController@getLogo')->name('dashboard.company.getLogo');
+    Route::get('/empresa/logo/{fileName}', 'CompanyController@files')->name('dashboard.company.files');
     Route::post('/empresa-actualizar', 'CompanyController@update')->name('dashboard.company.update');
 
     //CONFIGURACION DE CAMPAÑAS - PESTAÑAS DE ESTADO
