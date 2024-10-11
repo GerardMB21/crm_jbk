@@ -16,9 +16,9 @@
             </thead>
             <tbody>
                 <tr v-for="camp in campains" :key="camp.id">
-                    <td>{{ camp.id }}</td>
-                    <td>{{ camp.name }}</td>
-                    <td>{{ camp.state == "1" ? "Activo" : "Inactivo" }}</td>
+                    <td @dblclick.prevent="edit(camp.id)">{{ camp.id }}</td>
+                    <td @dblclick.prevent="edit(camp.id)">{{ camp.name }}</td>
+                    <td @dblclick.prevent="edit(camp.id)">{{ camp.state == "1" ? "Activo" : "Inactivo" }}</td>
                     <td class="">
                         <a :href="'/pestaña-estado?id=' + camp.id" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: #fb5597; color: #fff;">Pestañas de Estados</a>
                         <a :href="'/estado?id=' + camp.id" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: #ff5b57; color: #fff;">Estados</a>

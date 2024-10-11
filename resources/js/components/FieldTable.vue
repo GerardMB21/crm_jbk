@@ -118,14 +118,39 @@ export default {
                 $('#fields').DataTable({
                     data: this.fields,
                     columns: [
-                        { title: 'CAMPAÑA', data: 'campain_name' },
-                        { title: 'BLOQUE DE CAMPOS', data: 'block_name' },
-                        { title: 'NOMBRE', data: 'name' },
-                        { title: 'ORDEN', data: 'order' },
+                        {
+                            title: 'CAMPAÑA',
+                            data: 'campain_name',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
+                        {
+                            title: 'BLOQUE DE CAMPOS',
+                            data: 'block_name',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
+                        {
+                            title: 'NOMBRE',
+                            data: 'name',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
+                        {
+                            title: 'ORDEN',
+                            data: 'order',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
                         {
                             title: 'ESTADO', data: 'state',
                             render: (data, type, row) => {
-                                return data === 1 ? 'Activo' : 'Inactivo';
+                                const state = data === 1 ? 'Activo' : 'Inactivo'
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${state}</div>`
                             }
                         },
                         {
@@ -156,6 +181,10 @@ export default {
                     createdRow: function (row, data, dataIndex) {
                         $(row).css('background-color', data.color);
                     }
+                });
+                $('#fields').on('dblclick', '.cell', event => {
+                    const id = $(event.currentTarget).data('id');
+                    this.edit(id);
                 });
                 $('#fields').on('click', '.edit', event => {
                     const id = $(event.currentTarget).data('id');

@@ -82,18 +82,67 @@ export default {
                 $('#example').DataTable({
                     data: this.tab_states,
                     columns: [
-                        { title: 'CAMPAÑA', data: 'campain_name' },
-                        { title: 'NOMBRE', data: 'name' },
-                        { title: 'PESTAÑA', data: 'tab_state_name' },
-                        { title: 'ORDEN', data: 'order' },
-                        { title: 'COLOR', data: 'color' },
-                        { title: 'RESALTAR EN NOTIFICACIONES', data: 'not' },
-                        { title: 'ESTADO ES AGENDADO', data: 'age' },
-                        { title: 'ESTADO ES COMISIONABLE', data: 'com' },
+                        {
+                            title: 'CAMPAÑA',
+                            data: 'campain_name',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
+                        {
+                            title: 'NOMBRE',
+                            data: 'name',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
+                        {
+                            title: 'PESTAÑA',
+                            data: 'tab_state_name',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
+                        {
+                            title: 'ORDEN',
+                            data: 'order',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
+                        {
+                            title: 'COLOR',
+                            data: 'color',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
+                        {
+                            title: 'RESALTAR EN NOTIFICACIONES',
+                            data: 'not',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
+                        {
+                            title: 'ESTADO ES AGENDADO',
+                            data: 'age',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
+                        {
+                            title: 'ESTADO ES COMISIONABLE',
+                            data: 'com',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
                         {
                             title: 'ESTADO', data: 'state',
                             render: (data, type, row) => {
-                                return data === 1 ? 'Activo' : 'Inactivo';
+                                const state = data === 1 ? 'Activo' : 'Inactivo'
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${state}</div>`
                             }
                         },
                         {
@@ -124,6 +173,10 @@ export default {
                     createdRow: function (row, data, dataIndex) {
                         $(row).css('background-color', data.color);
                     }
+                });
+                $('#example').on('dblclick', '.cell', event => {
+                    const id = $(event.currentTarget).data('id');
+                    this.edit(id);
                 });
                 $('#example').on('click', '.edit', event => {
                     const id = $(event.currentTarget).data('id');

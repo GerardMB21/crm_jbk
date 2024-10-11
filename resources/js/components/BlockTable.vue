@@ -75,13 +75,32 @@ export default {
                 $('#blocks').DataTable({
                     data: this.blocks,
                     columns: [
-                        { title: 'CAMPAÑA', data: 'campain_name' },
-                        { title: 'NOMBRE', data: 'name' },
-                        { title: 'ORDEN', data: 'order' },
+                        {
+                            title: 'CAMPAÑA',
+                            data: 'campain_name',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
+                        {
+                            title: 'NOMBRE',
+                            data: 'name',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
+                        {
+                            title: 'ORDEN',
+                            data: 'order',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
                         {
                             title: 'ESTADO', data: 'state',
                             render: (data, type, row) => {
-                                return data === 1 ? 'Activo' : 'Inactivo';
+                                const state = data === 1 ? 'Activo' : 'Inactivo'
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${state}</div>`
                             }
                         },
                         {
@@ -112,6 +131,10 @@ export default {
                     createdRow: function (row, data, dataIndex) {
                         $(row).css('background-color', data.color);
                     }
+                });
+                $('#blocks').on('dblclick', '.cell', event => {
+                    const id = $(event.currentTarget).data('id');
+                    this.edit(id);
                 });
                 $('#blocks').on('click', '.edit', event => {
                     const id = $(event.currentTarget).data('id');

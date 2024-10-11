@@ -14,8 +14,8 @@
             </thead>
             <tbody>
                 <tr v-for="advertisement in advertisements" :key="advertisement.id">
-                    <td>{{ advertisement.title }}</td>
-                    <td>{{ advertisement.state == "1" ? "Activo" : "Inactivo" }}</td>
+                    <td @dblclick.prevent="edit(advertisement.id)">{{ advertisement.title }}</td>
+                    <td @dblclick.prevent="edit(advertisement.id)">{{ advertisement.state == "1" ? "Activo" : "Inactivo" }}</td>
                     <td>
                             <button v-if="advertisement.state == '1'" class="deshabilitar btn btn-secondary" @click.prevent="deshabilitar(advertisement.id)" title="Deshabilitar">
                                 <i class="fa-solid fa-ban" style="color: #ffffff;"></i>

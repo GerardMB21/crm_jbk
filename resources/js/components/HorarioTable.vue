@@ -16,10 +16,10 @@
             </thead>
             <tbody>
                 <tr v-for="horario in horarios" :key="horario.id">
-                    <td>{{ horario.name }}</td>
-                    <td>{{ joinDays(horario.days) }}</td>
-                    <td class="text-center">{{ horario.tolerancia_min }}</td>
-                    <td class="text-center">{{ horario.state }}</td>
+                    <td @dblclick.prevent="edit(horario)">{{ horario.name }}</td>
+                    <td @dblclick.prevent="edit(horario)">{{ joinDays(horario.days) }}</td>
+                    <td class="text-center" @dblclick.prevent="edit(horario)">{{ horario.tolerancia_min }}</td>
+                    <td class="text-center" @dblclick.prevent="edit(horario)">{{ horario.state }}</td>
                     <td>
                         <button class="btn btn-primary" @click.prevent="edit(horario)" title="Editar">
                             <i class="fa-solid fa-pen-to-square fa-sm" style="color: #ffffff;"></i>

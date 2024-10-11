@@ -10,8 +10,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body row">
-                        <input v-model="model.id" type="text" name="id" id="id">
-                        <input v-model="model.campain_id" type="text" name="campain_id" id="campain_id">
+                        <input v-model="model.id" class="d-none" type="text" name="id" id="id">
+                        <input v-model="model.campain_id" class="d-none" type="text" name="campain_id" id="campain_id">
                         <div class="col-md-8">
                             <label for="name" class="form-label">Nombre:</label>
                             <input v-model="model.name" type="text" class="form-control" id="name" name="name"

@@ -14,8 +14,8 @@
             </thead>
             <tbody>
                 <tr v-for="group in groups" :key="group.id">
-                    <td>{{ group.name }}</td>
-                    <td>{{ group.ip }}</td>
+                    <td @dblclick.prevent="edit(group)">{{ group.name }}</td>
+                    <td @dblclick.prevent="edit(group)">{{ group.ip }}</td>
                     <td>
                         <button class="btn btn-primary" @click.prevent="edit(group)" title="Editar">
                             <i class="fa-solid fa-pen-to-square fa-sm" style="color: #ffffff;"></i>

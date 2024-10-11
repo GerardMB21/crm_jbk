@@ -18,12 +18,12 @@
             </thead>
             <tbody>
                 <tr v-for="user in users" :key="user.id">
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.user }}</td>
-                    <td>{{ user.telefono }}</td>
-                    <td>{{ user.genero }}</td>
-                    <td>{{ user.fecha_naci }}</td>
-                    <td>{{ user.obs }}</td>
+                    <td @dblclick.prevent="edit(user)">{{ user.name }}</td>
+                    <td @dblclick.prevent="edit(user)">{{ user.user }}</td>
+                    <td @dblclick.prevent="edit(user)">{{ user.telefono }}</td>
+                    <td @dblclick.prevent="edit(user)">{{ user.genero }}</td>
+                    <td @dblclick.prevent="edit(user)">{{ user.fecha_naci }}</td>
+                    <td @dblclick.prevent="edit(user)">{{ user.obs }}</td>
                     <td>
                         <button class="btn btn-primary" @click.prevent="edit(user)" title="Editar">
                             <i class="fa-solid fa-pen-to-square fa-sm" style="color: #ffffff;"></i>

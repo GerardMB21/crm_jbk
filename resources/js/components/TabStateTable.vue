@@ -77,13 +77,32 @@ export default {
                 $('#example').DataTable({
                     data: this.tab_states,
                     columns: [
-                        { title: 'CAMPAÑA', data: 'campain_name' },
-                        { title: 'NOMBRE', data: 'name' },
-                        { title: 'ORDEN', data: 'order' },
+                        {
+                            title: 'CAMPAÑA',
+                            data: 'campain_name',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
+                        {
+                            title: 'NOMBRE',
+                            data: 'name',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
+                        {
+                            title: 'ORDEN',
+                            data: 'order',
+                            render: (data, type, row) => {
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${data}</div>`
+                            }
+                        },
                         {
                             title: 'ESTADO', data: 'state',
                             render: (data, type, row) => {
-                                return data === 1 ? 'Activo' : 'Inactivo';
+                                const state = data === 1 ? 'Activo' : 'Inactivo'
+                                return `<div class="w-100 h-100 cell" data-id="${row.id}">${state}</div>`
                             }
                         },
                         {
@@ -111,6 +130,10 @@ export default {
                             }
                         }
                     ]
+                });
+                $('#example').on('dblclick', '.cell', event => {
+                    const id = $(event.currentTarget).data('id');
+                    this.edit(id);
                 });
                 $('#example').on('click', '.edit', event => {
                     const id = $(event.currentTarget).data('id');
