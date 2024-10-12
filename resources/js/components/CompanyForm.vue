@@ -64,10 +64,10 @@
             <div class="col-md-4">
                 <label for="sufijo" class="form-label">Logo:</label>
                 <div class="w-full d-flex gap-2">
-                    <button type="button" class="d-flex p-2 button-clear bg-blue rounded-2" @click="openFileInput">
+                    <button type="button" class="d-flex p-2 btn btn-primary" @click="openFileInput">
                         <i class="fa-solid fa-upload"></i>
                     </button>
-                    <button type="button" class="d-flex p-2 button-clear bg-red rounded-2" @click="clearImage">
+                    <button type="button" class="d-flex p-2 btn btn-danger" @click="clearImage">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
@@ -131,6 +131,7 @@ export default {
         this.model.pais = this.company.pais;
         this.model.asist_type = this.company.asist_type;
         this.model.sufijo = this.company.sufijo;
+        this.model.logo = this.company.logo;
         this.model.menu_color = this.company.menu_color;
         this.model.text_color = this.company.text_color;
 
@@ -160,7 +161,7 @@ export default {
             fd.append("sufijo", this.model.sufijo);
             fd.append("menu_color", this.model.menu_color);
             fd.append("text_color", this.model.text_color);
-            fd.append("logo", null);
+            fd.append("logo", this.model.logo);
 
             Swal.fire({
                 title: 'Advertencia!',
@@ -174,7 +175,7 @@ export default {
 
                     EventBus.$emit('loading', true);
 
-                    if (this.model.logo && typeof this.model.logo !== "string") {
+                    if (this.model.logo && typeof this.model.logo !== "string" && typeof this.model.logo !== "number") {
                         const fdFile = new FormData();
 
                         fdFile.append("file", this.model.logo);

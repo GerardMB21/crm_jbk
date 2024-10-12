@@ -1,14 +1,40 @@
 <!-- <nav id="navbar-header" class="navbar navbar-dark bg-dark"> -->
 <nav id="navbar-header" class="navbar">
     <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
-            <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler d-flex flex-column px-2 gap-1" style="padding-top: 8px; padding-bottom: 8px;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
+            <div class="lines-btn-menu rounded-2" style="width: 25px; height: 3px; background-color: #FFF;"></div>
+            <div class="lines-btn-menu rounded-2" style="width: 25px; height: 3px; background-color: #FFF;"></div>
+            <div class="lines-btn-menu rounded-2" style="width: 25px; height: 3px; background-color: #FFF;"></div>
+            <!-- <span class="navbar-toggler-icon"></span> -->
         </button>
-        <a class="navbar-brand" href="/">Zicacenter</a>
+        <a id="principal-link" class="navbar-brand" href="/">Zicacenter</a>
         <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Zicacenter</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                <button type="button" class="position-relative btn" style="padding: 1rem; margin: -.5rem -.5rem -.5rem auto;" data-bs-dismiss="offcanvas" aria-label="Close">
+                    <div class="close-menu-btn" style="
+                        position: absolute;
+                        width: 100%;
+                        height: 3px;
+                        top: 50%;
+                        left: 0;
+                        transform-origin: center;
+                        border-radius: 5px;
+                        transition: all .3s ease;
+                        transform: rotate(45deg);
+                    "></div>
+                    <div class="close-menu-btn" style="
+                        position: absolute;
+                        width: 100%;
+                        height: 3px;
+                        top: 50%;
+                        left: 0;
+                        transform-origin: center;
+                        border-radius: 5px;
+                        transition: all .3s ease;
+                        transform: rotate(-45deg);
+                    "></div>
+                </button>
             </div>
             <div class="container-fluid text-center">
                 <hr>
