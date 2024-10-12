@@ -9,6 +9,7 @@
                 <tr>
                     <th class="col-5 text-center">GRUPO</th>
                     <th class="col-4 text-center">IP</th>
+                    <th class="col-4 text-center">HORARIO</th>
                     <th class="col-3 text-center">OPCIONES</th>
                 </tr>
             </thead>
@@ -16,6 +17,7 @@
                 <tr v-for="group in groups" :key="group.id">
                     <td @dblclick.prevent="edit(group)">{{ group.name }}</td>
                     <td @dblclick.prevent="edit(group)">{{ group.ip }}</td>
+                    <td @dblclick.prevent="edit(group)">{{ group.horario_name }}</td>
                     <td>
                         <button class="btn btn-primary" @click.prevent="edit(group)" title="Editar">
                             <i class="fa-solid fa-pen-to-square fa-sm" style="color: #ffffff;"></i>

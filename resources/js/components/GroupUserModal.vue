@@ -33,6 +33,14 @@
                                 @focus="$parent.clearErrorMsg($event)">
                             <div id="ip-error" class="error invalid-feedback"></div>
                         </div>
+                        <div class="col-md-6">
+                            <label for="horario_id" class="form-label">Horario:</label>
+                            <select class="form-select" v-model="model.horario_id" name="horario_id" id="horario_id" @focus="$parent.clearErrorMsg($event)">
+                                <option value="" selected disabled>Seleccionar</option>
+                                <option v-for="hour in hours" :value="hour.id" :key="hour.id">{{ hour.name }}</option>
+                            </select>
+                            <div id="horario_id-error" class="error invalid-feedback"></div>
+                        </div>
                         <div class="col-md-12">
                             <label for="ip" class="form-label">Permisos:</label>
                             <liquor-tree ref="permissions" :data="treeData" :options="{ checkbox: true }" :checkbox="true" @input="onInputChange"></liquor-tree>
@@ -62,6 +70,10 @@ export default {
         companies: {
             type: Array,
             default: ''
+        },
+        hours: {
+            type: Array,
+            default: ''
         }
     },
     data() {
@@ -71,6 +83,7 @@ export default {
                 company_id: '',
                 name: '',
                 ip: '',
+                horario_id: '',
                 permissions: {
                     enterprise_configuration: [],
                     presence_configuration: [],
@@ -177,6 +190,7 @@ export default {
             this.model.company_id = '';
             this.model.name = '';
             this.model.ip = '';
+            this.model.hour_id = '';
 
             this.text = "Crear"
             this.color = "success";
@@ -190,6 +204,7 @@ export default {
             this.model.company_id = group.company_id;
             this.model.name = group.name;
             this.model.ip = group.ip;
+            this.model.horario_id = group.horario_id;
 
             if (group.permissions) {
                 const parse = JSON.parse(group.permissions);

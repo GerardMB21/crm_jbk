@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\Group;
 use App\Models\UserGroup;
+use App\Models\Horario;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -14,8 +15,27 @@ class GroupUserController extends Controller
     {
 
         $companies = Company::get();
-        $groups = Group::get();
-        return view('group_user')->with(compact('groups', 'companies'));
+        $groups = Group::leftjoin('horarios', 'horarios.id', '=', 'groups.horario_id')
+                        ->select(
+                            'groups.id as id',
+                            'groups.company_id as company_id',
+                            'groups.campana_id as campana_id',
+                            'groups.name as name',
+                            'groups.ip as ip',
+                            'groups.horario_id as horario_id',
+                            'groups.state as state',
+                            'groups.perfil_id as perfil_id',
+                            'groups.created_at as created_at',
+                            'groups.updated_at as updated_at',
+                            'groups.created_at_user as created_at_user',
+                            'groups.updated_at_user as updated_at_user',
+                            'groups.deleted_at as deleted_at',
+                            'groups.permissions as permissions',
+                            'horarios.name as horario_name',
+                        )
+                        ->get();
+        $hours = Horario::get();
+        return view('group_user')->with(compact('groups', 'companies', 'hours'));
     }
 
     public function validateForm()
@@ -60,12 +80,12 @@ class GroupUserController extends Controller
         $element->name = $name;
         $element->ip = $ip;
         $element->permissions = $permissions;
+        $element->horario_id = $horario_id;
         $element->save();
 
         $type = 3;
         $title = 'Bien';
         $url = route('dashboard.group.user.index');
-
 
         return response()->json([
             'type'  => $type,

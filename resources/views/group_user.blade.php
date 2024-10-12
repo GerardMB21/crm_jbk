@@ -6,13 +6,14 @@
 @section('content')
     
     <group-user-table
-    :groups ="{{ $groups }}"
-    :url_delete ="'{{ route('dashboard.group.user.delete') }}'"
+        :groups ="{{ $groups }}"
+        :url_delete ="'{{ route('dashboard.group.user.delete') }}'"
     ></group-user-table>
 
     <group-user-modal
-    :companies = "{{ $companies }}"
-    :url="'{{ route('dashboard.group.user.store') }}'"
+        :companies = "{{ $companies }}"
+        :hours ="{{ $hours }}"
+        :url="'{{ route('dashboard.group.user.store') }}'"
     ></group-user-modal>
 
     <loading></loading>
