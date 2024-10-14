@@ -54,11 +54,11 @@ class AdvertisementController extends Controller
         if (isset($id)) {
             $advertisement =  Advertisement::findOrFail($id);
             $msg = 'Registro actualizado exitosamente';
-            $advertisement->updated_at_user = Auth::user()->title;
+            $advertisement->updated_at_user = Auth::user()->name;
         } else {
             $advertisement = new Advertisement();
             $advertisement->state = $state;
-            $advertisement->created_at_user = Auth::user()->title;
+            $advertisement->created_at_user = Auth::user()->name;
             $msg = 'Registro creado exitosamente';
         }
 

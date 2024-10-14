@@ -18,6 +18,8 @@ import $ from 'jquery';
 // Asegurarse de que jQuery esté disponible globalmente
 window.$ = window.jQuery = $;
 
+import Vuetify from 'vuetify';
+import 'vuetify/dist/vuetify.min.css';
 
 /**
  * The following block of code may be used to automatically register your
@@ -120,3 +122,5 @@ const app = new Vue({
         },
     }
 });
+
+app.use(Vuetify)

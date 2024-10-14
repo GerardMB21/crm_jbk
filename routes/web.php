@@ -28,6 +28,9 @@ Route::middleware('auth')->group(function () {
     //NAVEGACION - CAMPAÑAS
     Route::post('/listar-campanias', 'CampainController@list')->name('dashboard.campain.list');
 
+    //HOME
+    Route::get('/home', 'HomeController@index')->name('dashboard.home.index');
+
     //ADMINISTRACION DE USUARIOS - USUARIOS
     Route::get('/usuarios', 'UserController@index')->name('dashboard.user.index');
     Route::post('/usuarios-store', 'UserController@store')->name('dashboard.user.store');

@@ -48,6 +48,7 @@
         const principalLink = document.getElementById('principal-link');
         const closesMenuButton = [...document.querySelectorAll('.close-menu-btn')];
         const linesMenuButton = [...document.querySelectorAll('.lines-btn-menu')];
+        const navLinks = [...document.querySelectorAll('.nav-link')];
         let menuNavigation = document.getElementById('menu-navigation');
 
         let bg = undefined;
@@ -77,6 +78,11 @@
                     for (let i = 0; i < closesMenuButton.length; i++) {
                         const LMB = closesMenuButton[i];
                         LMB.style.backgroundColor = data.text_color;
+                    };
+
+                    for (let i = 0; i < navLinks.length; i++) {
+                        const LMB = navLinks[i];
+                        LMB.style.color = data.text_color;
                     };
                 };
             } catch (error) {

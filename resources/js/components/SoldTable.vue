@@ -442,51 +442,51 @@ export default {
                     EventBus.$emit('loading', true);
 
                     try {
-                    const response = await axios({
-                        url: this.url_download.replace('__ID__', id),
-                        method: 'GET',
-                        responseType: 'blob'
-                    });
+                        const response = await axios({
+                            url: this.url_download.replace('__ID__', id),
+                            method: 'GET',
+                            responseType: 'blob'
+                        });
 
-                    let fileName = 'archivo.pdf';
+                        let fileName = 'archivo.pdf';
 
-                    const contentDisposition = response.headers['content-disposition'];
+                        const contentDisposition = response.headers['content-disposition'];
 
-                    if (contentDisposition) {
-                        const fileArray = contentDisposition.split(";")
+                        if (contentDisposition) {
+                            const fileArray = contentDisposition.split(";")
 
-                        if (fileArray.length > 1) {
-                        const name = fileArray[1].replace("filename=", "");
+                            if (fileArray.length > 1) {
+                                const name = fileArray[1].replace("filename=", "");
 
-                        if (name) fileName = name;
+                                if (name) fileName = name;
+                            };
                         };
-                    };
 
-                    const url = window.URL.createObjectURL(new Blob([response.data]));
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.setAttribute('download', fileName);
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    EventBus.$emit('loading', false);
+                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', fileName);
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        EventBus.$emit('loading', false);
                     } catch (error) {
-                    EventBus.$emit('loading', false);
-                    console.log(error.response);
-                    var obj = error.response.data.errors;
-                    $('.modal').animate({
-                        scrollTop: 0
-                    }, 500, 'swing');
-                    $.each(obj, function (i, item) {
-                        let c_target = target.find("#" + i + "-error");
-                        if (!c_target.attr('data-required')) {
-                            let p = c_target.prev();
-                            p.addClass('is-invalid');
-                        } else {
-                            c_target.css('display', 'block');
-                        }
-                        c_target.html(item);
-                    });
+                        EventBus.$emit('loading', false);
+                        console.log(error.response);
+                        var obj = error.response.data.errors;
+                        $('.modal').animate({
+                            scrollTop: 0
+                        }, 500, 'swing');
+                        $.each(obj, function (i, item) {
+                            let c_target = target.find("#" + i + "-error");
+                            if (!c_target.attr('data-required')) {
+                                let p = c_target.prev();
+                                p.addClass('is-invalid');
+                            } else {
+                                c_target.css('display', 'block');
+                            }
+                            c_target.html(item);
+                        });
                     }
                 };
             }

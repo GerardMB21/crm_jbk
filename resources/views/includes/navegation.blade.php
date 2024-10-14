@@ -46,6 +46,11 @@
 
             <div class="offcanvas-body">
                 <ul id="menu-navigation" class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="{{ route('dashboard.home.index') }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Inicio
+                        </a>
+                    </li>
                     <!-- <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Configuración de Empresa
