@@ -108,9 +108,46 @@
                     const { data } = response;
     
                     if (data) {
-                        const { permissions } = data;
+                        const { group, horario } = data;
+                        const { inicio, final } = horario;
+
+                        const times_init = inicio.split(":");
+                        const hour_init = +times_init[0];
+                        const minute_init = +times_init[1];
+                        const second_init = +times_init[2];
+
+                        const times_end = final.split(":");
+                        const hour_end = +times_end[0];
+                        const minute_end = +times_end[1];
+                        const second_end = +times_end[2];
+
+                        let init = new Date();
+                        let end = new Date();
+
+                        init.setHours(hour_init);
+                        init.setMinutes(minute_init);
+                        init.setSeconds(second_init);
+                        init = init.getTime();
+
+                        end.setHours(hour_end);
+                        end.setMinutes(minute_end);
+                        end.setSeconds(second_end);
+                        end = end.getTime();
+
+                        const today = new Date().getTime();
+
+                        if (today < init || today > end) {
+                            window.Swal.fire({
+                                title: "Fuera de Horario",
+                                text: "Usted se encuentra fuera de su horario laborable",
+                                icon: "warning",
+                                heightAuto: false,
+                            });
+                        };
+
+                        const { permissions } = group;
                         const permissionsParse = JSON.parse(permissions);
-    
+
                         const { enterprise_configuration, presence_configuration, administration_configuration, collaborative, campaign_configuration } = permissionsParse;
 
                         if (enterprise_configuration.length) {
@@ -419,7 +456,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-    
+
             axios.post('/listar-campanias')
                 .then(function (response) {
     

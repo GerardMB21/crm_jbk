@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\Group;
 use App\Models\UserGroup;
 use App\Models\Horario;
+use App\Models\Day;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -65,6 +66,7 @@ class GroupUserController extends Controller
         $name = request('name');
         $ip = request('ip');
         $permissions = request('permissions');
+        $horario_id = request('horario_id');
 
         if (isset($id)) {
             $element = Group::findOrFail($id);
@@ -100,12 +102,35 @@ class GroupUserController extends Controller
         $userID = Auth::user()->id;
         $user_group = UserGroup::where('user_id', $userID)->first();
         $group = NULL;
+        $horario = NULL;
+
+        // date_default_timezone_set('America/Lima');
+        // setlocale(LC_TIME, 'es_ES.UTF-8', 'Spanish_Spain', 'es_ES', 'es');
+
+        // $dayOfWeek = strftime("%A");
+        // $dayStr = ucfirst($dayOfWeek);
+        $days = [
+            'Monday' => 'Lunes',
+            'Tuesday' => 'Martes',
+            'Wednesday' => 'Miércoles',
+            'Thursday' => 'Jueves',
+            'Friday' => 'Viernes',
+            'Saturday' => 'Sabado',
+            'Sunday' => 'Domingo',
+        ];
+        $dayStr = date('l');
 
         if ($user_group) {
             $group = Group::where('id', $user_group->group_id)->first();
+            $horario = Day::where('horario_id', $group->horario_id)
+                            ->where('day', $days[$dayStr])
+                            ->first();
         };
 
-        return $group;
+        return response()->json([
+                                'group'     => $group,
+                                'horario'   => $horario
+                            ]);
     }
 
     public function delete()
