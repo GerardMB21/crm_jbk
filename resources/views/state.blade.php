@@ -14,7 +14,6 @@
 
     <state-table
         :url = "'{{ route('dashboard.state.list') }}'"
-        
         :url_get_state = "'{{ route('dashboard.state.get_state') }}'"
         :url_delete = "'{{ route('dashboard.state.delete') }}'"
         :url_deshabilitar = "'{{ route('dashboard.state.deshabilitar') }}'"

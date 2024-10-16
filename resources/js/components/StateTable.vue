@@ -203,7 +203,7 @@ export default {
         create() {
             EventBus.$emit('clear_modal');
             EventBus.$emit('list_tab_states', this.campain_id);
-            EventBus.$emit('create_modal');
+            EventBus.$emit('create_modal', this.tab_states);
         },
         edit(id) {
             EventBus.$emit('clear_modal');
@@ -214,7 +214,7 @@ export default {
             })
                 .then(response => {
                     EventBus.$emit('loading', false);
-                    EventBus.$emit('edit_modal', response.data);
+                    EventBus.$emit('edit_modal', response.data, this.tab_states);
                 }).catch(error => {
                     console.log(error);
                 });

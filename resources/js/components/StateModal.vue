@@ -58,6 +58,13 @@
                         <div class="col-md-12">
                             <hr>
                         </div>
+
+                        <div v-if="model.state_user == '1' || model.state_user == '2'" class="col-md-12">
+                            <label for="states_ids" class="form-label">Estados sobre los que se va a cambiar la venta a este estado:</label>
+                            <multiselect v-model="model.states_ids" :options="states" name="states_ids" label="name" track-by="id" :multiple="true"></multiselect>
+                            <div id="states_ids-error" class="error invalid-feedback"></div>
+                        </div>
+
                         <div class="col-md-4 form-check form-switch">
                             <label class="form-check-label" for="flexSwitchCheckChecked">Resaltar en
                                 notificaciones</label>
@@ -89,8 +96,11 @@
 </template>
 
 <script>
+import 'vue-multiselect/dist/vue-multiselect.min.css';
+import Multiselect from 'vue-multiselect';
 
 export default {
+    components: { Multiselect },
     props: {
         url: {
             type: String,
@@ -112,11 +122,13 @@ export default {
                 order: '',
                 not: '',
                 age: '',
-                com: ''
+                com: '',
+                states_ids: []
             },
             text: '',
             color: '',
-            tab_states: []
+            tab_states: [],
+            states: []
         }
     },
     created() {
@@ -155,14 +167,18 @@ export default {
 
             $('#stateModal').modal('hide');
         }.bind(this));
-        EventBus.$on('create_modal', function () {
+        EventBus.$on('create_modal', function (states) {
+            this.states = states;
 
-            this.text = "Crear"
+            this.text = "Crear";
             this.color = "success";
 
             $('#stateModal').modal('show');
         }.bind(this));
-        EventBus.$on('edit_modal', function (state) {
+        EventBus.$on('edit_modal', function (data, states) {
+            const { state, states: statesIn } = data;
+
+            this.states = states
 
             this.model.id = state.id;
             this.model.tab_state_id = state.tab_state_id;
@@ -173,6 +189,7 @@ export default {
             this.model.not = state.not;
             this.model.age = state.age;
             this.model.com = state.com;
+            this.model.states_ids = statesIn
 
             this.text = "Actualizar"
             this.color = "primary";
@@ -186,11 +203,30 @@ export default {
 
             var target = $(event.target);
             var url = url;
-            var fd = new FormData(event.target);
+            var fd = new FormData();
+
+            fd.append("id", this.model.id)
+            fd.append("tab_state_id", this.model.tab_state_id)
+            fd.append("state_user", this.model.state_user)
+            fd.append("name", this.model.name)
+            fd.append("order", this.model.order)
+            fd.append("color", this.model.color)
+            fd.append("state_user", this.model.state_user)
+            fd.append("not", this.model.not)
+            fd.append("age", this.model.age)
+            fd.append("com", this.model.com)
+
+            const state_ids = [];
+
+            for (let i = 0; i < this.model.states_ids.length; i++) {
+                const element = this.model.states_ids[i];
+                state_ids.push(element.id);
+            };
+
+            fd.append("state_ids", JSON.stringify(state_ids))
 
             EventBus.$emit('loading', true);
 
-            // EventBus.$emit('loading', true);
             axios.post(url, fd, {
                 headers: {
                     'Content-type': 'application/x-www-form-urlencoded',
