@@ -28,7 +28,7 @@ class LoginController extends Controller
             $type = 3;
             $title = 'Ok!';
             $msg = 'Bienvenido, ' . Auth::user()->name;
-            $url = route('dashboard.home.index');
+            $url = route('dashboard.system.index');
         } else {
             $type = 2;
             $title = "Error!";

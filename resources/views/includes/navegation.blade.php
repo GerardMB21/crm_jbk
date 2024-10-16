@@ -1,14 +1,14 @@
 <!-- <nav id="navbar-header" class="navbar navbar-dark bg-dark"> -->
 <nav id="navbar-header" class="navbar">
     <div class="container-fluid">
-        <button class="navbar-toggler d-flex flex-column px-2 gap-1" style="padding-top: 8px; padding-bottom: 8px;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
+        <button id="button-open-menu" class="navbar-toggler d-flex flex-column px-2 gap-1 d-none" style="padding-top: 8px; padding-bottom: 8px;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
             <div class="lines-btn-menu rounded-2" style="width: 25px; height: 3px; background-color: #FFF;"></div>
             <div class="lines-btn-menu rounded-2" style="width: 25px; height: 3px; background-color: #FFF;"></div>
             <div class="lines-btn-menu rounded-2" style="width: 25px; height: 3px; background-color: #FFF;"></div>
-            <!-- <span class="navbar-toggler-icon"></span> -->
         </button>
-        <a id="principal-link" class="navbar-brand" href="/">Zicacenter</a>
+        <a id="principal-link" class="navbar-brand" href="/system">Zicacenter</a>
         <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Zicacenter</h5>
                 <button type="button" class="position-relative btn" style="padding: 1rem; margin: -.5rem -.5rem -.5rem auto;" data-bs-dismiss="offcanvas" aria-label="Close">
@@ -36,6 +36,7 @@
                     "></div>
                 </button>
             </div>
+
             <div class="container-fluid text-center">
                 <hr>
                 Bienvenido (a) <br>{{ Auth::user()->name }}<br><br>
@@ -45,130 +46,8 @@
             </div>
 
             <div class="offcanvas-body">
-                <ul id="menu-navigation" class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link" href="{{ route('dashboard.home.index') }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Inicio
-                        </a>
-                    </li>
-                    <!-- <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Configuración de Empresa
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark">
-                            <li id="my_enterprise">
-                                <a class="dropdown-item" href="{{ route('dashboard.company.index') }}">Mi Empresa</a>
-                            </li>
-                        </ul>
-                    </li> -->
-                    <!-- <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Configuración de Asistencia
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark">
-                            <li id="hours">
-                                <a class="dropdown-item" href="{{ route('dashboard.horario.index') }}">Horarios</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li id="disconnection">
-                                <a class="dropdown-item" href="{{ route('dashboard.company.index') }}">Tipos de Desconexión</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li id="sedes">
-                                <a class="dropdown-item" href="{{ route('dashboard.company.index') }}">Sedes</a>
-                            </li>
-                        </ul>
-                    </li> -->
-                    <!-- <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Administración de Usuarios
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark">
-                            <li id="user_groups">
-                                <a class="dropdown-item" href="{{ route('dashboard.group.user.index') }}">Grupos de Usuarios</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li id="">
-                                <a class="dropdown-item" href="{{ route('dashboard.user.index') }}">Usuarios</a>
-                            </li>
-                        </ul>
-                    </li> -->
-                    <!-- <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Colaborativo
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark">
-                            <li>
-                                <a class="dropdown-item" href="{{ route('dashboard.advertisement.index') }}">Anuncios</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('dashboard.company.index') }}">Popups de Bienvenida</a>
-                            </li>
-                        </ul>
-                    </li> -->
-                    <!-- <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Reportes
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark">
-                            <li>
-                                <a class="dropdown-item" href="{{ route('dashboard.user.index') }}">En construcción</a>
-                            </li>
-                        </ul>
-                    </li> -->
-                    <!-- <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Configuración de Campañas</a>
-                        <ul class="dropdown-menu dropdown-menu-dark">
-                            <li>
-                                <a class="dropdown-item" href="{{ route('dashboard.campain.index') }}">Campañas</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('dashboard.tab_state.index') }}">Pestañas de Estado</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('dashboard.state.index') }}">Estados</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('dashboard.block.index') }}">Bloques de Campos</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('dashboard.field.index') }}">Campos</a>
-                            </li>
-                        </ul>
-                    </li> -->
-                    <!-- <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Venta
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark" id="solds-campanias-menu"></ul>
-                    </li> -->
-                </ul>
+                <ul id="menu-navigation" class="navbar-nav justify-content-end flex-grow-1 pe-3"></ul>
             </div>
         </div>
     </div>
 </nav>
-
-<script>
-
-</script>

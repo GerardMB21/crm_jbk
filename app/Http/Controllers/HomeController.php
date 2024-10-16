@@ -34,4 +34,20 @@ class HomeController extends Controller
 
         return view('home')->with(compact('user', 'group', 'advertisements','logins'));
     }
+
+    public function system()
+    {
+        $rutas = [
+            [
+                'url' => route('dashboard.home.enterprise'),
+                'img' => "/empresa/logo/enterprise.jpg"
+            ],
+            [
+                'url' => route('dashboard.home.sales'),
+                'img' => "/empresa/logo/sales.jpg"
+            ],
+        ];
+
+        return view('system')->with(compact('rutas'));
+    }
 }
