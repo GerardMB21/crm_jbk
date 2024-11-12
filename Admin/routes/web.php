@@ -26,11 +26,14 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'root']);
 Route::get('index/{locale}', [App\Http\Controllers\HomeController::class, 'lang']);
 
 Route::post('/formsubmit', [App\Http\Controllers\HomeController::class, 'FormSubmit'])->name('FormSubmit');
-Route::post('/save-company', [App\Http\Controllers\EnterpriseController::class, 'SaveCompany'])->name('SaveCompany');
+Route::post('/enterprise/save-company', [App\Http\Controllers\EnterpriseController::class, 'SaveCompany'])->name('SaveCompany');
+Route::post('/enterprise/save-hour', [App\Http\Controllers\HoursController::class, 'SaveHour'])->name('SaveHour');
+Route::post('/enterprise/save-group', [App\Http\Controllers\GroupUsersController::class, 'SaveGroup'])->name('SaveGroup');
 
 Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index']);
-Route::get('/enterprise', [App\Http\Controllers\EnterpriseController::class, 'index']);
-Route::get('/hours', [App\Http\Controllers\HoursController::class, 'index']);
+Route::get('/enterprise/config', [App\Http\Controllers\EnterpriseController::class, 'index']);
+Route::get('/enterprise/hours', [App\Http\Controllers\HoursController::class, 'index']);
+Route::get('/enterprise/groups', [App\Http\Controllers\GroupUsersController::class, 'index']);
 
 // Route::middleware('auth')->group(function () {
 

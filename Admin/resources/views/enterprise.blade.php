@@ -22,7 +22,7 @@
 
                     <form class="needs-validation" action="{{ route('SaveCompany') }}" method="POST" novalidate>
                         @csrf
-                        <input type="text" class="form-control" id="id" name="id" value="{{ $company->id }}" style="display: none;">
+                        <input type="text" id="id" name="id" value="{{ $company->id }}" style="display: none;">
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-3">
@@ -94,7 +94,7 @@
                                 <div class="mb-3">
                                     <label class="form-label" for="text-color">Color del Textos</label>
                                     <input type="text" class="form-control" id="text-color" name="text_color" value="{{ $company->text_color }}" required>
-                                    <div class="valid-feedback">Valido!</div>cd ..
+                                    <div class="valid-feedback">Valido!</div>
                                     <div class="invalid-feedback">El color de los textos es requerido.</div>
                                 </div>
                             </div>

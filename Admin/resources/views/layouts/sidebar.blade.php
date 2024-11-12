@@ -32,7 +32,107 @@
         <div id="sidebar-menu">
             <!-- Left Menu Start -->
             <ul class="metismenu list-unstyled" id="side-menu">
-                <li class="menu-title">@lang('translation.Menu')</li>
+                <li class="menu-title">Inicio</li>
+
+                <li>
+                    <a href="{{url('profile')}}">
+                        <i class="uil-user"></i>
+                        <span>Perfil</span>
+                    </a>
+                </li>
+
+                <li class="menu-title">Mi Empresa</li>
+
+                <li>
+                    <a href="{{url('enterprise/config')}}">
+                        <i class="uil-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="uil-clock-eight"></i>
+                        <span>Asistencia</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href="{{url('enterprise/hours')}}">Horarios</a>
+                        </li>
+                        <li>
+                            <a href="{{url('enterprise/disconnect')}}">Tipos de Desconexión</a>
+                        </li>
+                        <li>
+                            <a href="{{url('enterprise/sedes')}}">Sedes</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="uil-users-alt"></i>
+                        <span>Administración</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href="{{url('enterprise/groups')}}">Grupos</a>
+                        </li>
+                        <li>
+                            <a href="{{url('enterprise/users')}}">Usuarios</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="uil-layer-group"></i>
+                        <span>Colaborativo</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href="{{url('enterprise/advertisements')}}">Anuncios</a>
+                        </li>
+                        <li>
+                            <a href="{{url('enterprise/popups')}}">Popups</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="menu-title">Ventas</li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="uil-clipboard-notes"></i>
+                        <span>Campañas</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href="{{url('sales/campaigns')}}">Campañas</a>
+                        </li>
+                        <li>
+                            <a href="{{url('sales/tabs-states')}}">Pestañas de Estado</a>
+                        </li>
+                        <li>
+                            <a href="{{url('sales/states')}}">Estados</a>
+                        </li>
+                        <li>
+                            <a href="{{url('sales/blocks-camps')}}">Bloques de Campos</a>
+                        </li>
+                        <li>
+                            <a href="{{url('sales/camps')}}">Campos</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="uil-dollar-alt"></i>
+                        <span>Ventas</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                    </ul>
+                </li>
+                {{-- <li class="menu-title">@lang('translation.Menu')</li>
 
                 <li>
                     <a href="{{url('index')}}">
@@ -297,7 +397,7 @@
                             </ul>
                         </li>
                     </ul>
-                </li>
+                </li> --}}
 
             </ul>
         </div>
