@@ -2,52 +2,56 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\UserGroup;
-use App\Models\Group;
-use App\Models\GroupAdvertisement;
-use App\Models\Advertisement;
-use App\Models\Logins;
+use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
-    public function index()
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        $userID = Auth::user()->id;
-        $user = User::where('id', $userID)->first();
-        $logins = Logins::where('user_id', $userID)->get();
-        $userGroup = UserGroup::where('user_id', $userID)->first();
-        $group = Group::where('id', $userGroup->group_id)->first();
-        $groupAdvertisement = GroupAdvertisement::where('group_id', $group->id)
-                                                ->orderBy('created_at', 'asc')
-                                                ->get();
-
-        $advertisementId = [];
-
-        foreach ($groupAdvertisement as $GA) {
-            array_push($advertisementId, $GA->advertisement_id);
-        }
-
-        $advertisements = Advertisement::whereIn('id', $advertisementId)->get();
-
-        return view('home')->with(compact('user', 'group', 'advertisements','logins'));
+        $this->middleware('auth');
     }
 
-    public function system()
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function index(Request $request)
     {
-        $rutas = [
-            [
-                'url' => route('dashboard.home.enterprise'),
-                'img' => "/empresa/logo/enterprise.jpg"
-            ],
-            [
-                'url' => route('dashboard.home.sales'),
-                'img' => "/empresa/logo/sales.jpg"
-            ],
-        ];
+        if (view()->exists($request->path())) {
+            return view($request->path());
+        }
+        return abort(404);
+    }
 
-        return view('system')->with(compact('rutas'));
+    public function root()
+    {
+        return view('profile');
+    }
+
+    /*Language Translation*/
+    public function lang($locale)
+    {
+        if ($locale) {
+            App::setLocale($locale);
+            Session::put('lang', $locale);
+            Session::save();
+            return redirect()->back()->with('locale', $locale);
+        } else {
+            return redirect()->back();
+        }
+    }
+
+    public function FormSubmit(Request $request)
+    {
+        return view('form-repeater');
     }
 }

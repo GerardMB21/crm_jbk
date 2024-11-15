@@ -1,20 +1,23 @@
-@extends('includes.app')
-
-@section('title','Inicio')
+@extends('layouts.app')
 
 @section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">{{ __('Dashboard') }}</div>
 
-    <div class="container mt-2 border rounded bg-white p-0">
-        <home-tabs></home-tabs>
-        <home-content
-            :user="{{ $user }}"
-            :group="{{ $group }}"
-            :advertisements="{{ $advertisements }}"
-            :logins="{{ $logins }}"
-            :url_download="'{{ route('dashboard.sold.download', ['id' => '__ID__']) }}'"
-        ></home-content>
+                <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
+                    {{ __('You are logged in!') }}
+                </div>
+            </div>
+        </div>
     </div>
-
-    <loading></loading>
-
+</div>
 @endsection

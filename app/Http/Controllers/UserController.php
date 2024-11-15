@@ -8,8 +8,20 @@ use App\Models\User;
 use App\Models\UserGroup;
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
 class UserController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index()
     {
@@ -18,6 +30,15 @@ class UserController extends Controller
         $users = User::get();
 
         return view('user')->with(compact('users', 'company', 'groups_general'));
+    }
+
+    public function profile()
+    {
+        $userId = Auth::user()->id;
+        $user = User::where('id', $userId)->first();
+
+        //return view('profile', compact('user'));
+        return "xd";
     }
 
     public function validateForm()
@@ -109,7 +130,6 @@ class UserController extends Controller
             $msg = 'Usuario creado exitosamente.';
         }
 
-
         $element->name = $name;
         $element->user = $user . $company->sufijo;
         $element->password = $password;
@@ -123,7 +143,6 @@ class UserController extends Controller
         $type = 3;
         $title = 'Bien';
         $url = route('dashboard.user.index');
-
 
         return response()->json([
             'type'  => $type,

@@ -1,52 +1,63 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
+use App\Http\Controllers\Controller;
+
 use App\Models\Logins;
+
+use App\Providers\RouteServiceProvider;
+
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+
+use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    public function index()
+    /*
+    |--------------------------------------------------------------------------
+    | Login Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller handles authenticating users for the application and
+    | redirecting them to your home screen. The controller uses a trait
+    | to conveniently provide its functionality to your applications.
+    |
+    */
+
+    use AuthenticatesUsers;
+
+    /**
+     * Where to redirect users after login.
+     *
+     * @var string
+     */
+    protected $redirectTo = RouteServiceProvider::HOME;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        return view('login');
+        $this->middleware('guest')->except('logout');
     }
 
-    public function login()
+    protected function authenticated(Request $request, $user)
     {
-        if (Auth::attempt([
-            'user'        => request('user'),
-            'password'    => request('password')
-        ], true)) {
-            $logins = new Logins();
-            $logins->user_id = Auth::user()->id;
-            $logins->login = 1;
-            $logins->created_at_user = Auth::user()->name;
-            $logins->save();
+        $logins = new Logins();
+        $logins->user_id = Auth::user()->id;
+        $logins->login = 1;
+        $logins->created_at_user = Auth::user()->name;
+        $logins->save();
 
-            $type = 3;
-            $title = 'Ok!';
-            $msg = 'Bienvenido, ' . Auth::user()->name;
-            $url = route('dashboard.system.index');
-        } else {
-            $type = 2;
-            $title = "Error!";
-            $msg = "Verifique los datos ingresados";
-            $url = route('dashboard.index');
-        }
-
-
-
-        return response()->json([
-            'type'  => $type,
-            'title' => $title,
-            'msg'   => $msg,
-            'url'   => $url
-        ], 200);
+        return redirect()->intended('/');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         $logouts = new Logins();
         $logouts->user_id = Auth::user()->id;
@@ -55,6 +66,10 @@ class LoginController extends Controller
         $logouts->save();
 
         Auth::logout();
-        return redirect()->route('dashboard.index');
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login');
     }
 }
