@@ -98,10 +98,10 @@
                     </div>
                 </td>
                 <td style="width: 100px">
-                    <button type="button" class="btn btn-outline-info btn-sm edit" id="editEditHour" title="Edit" data-hour-id="{{ $horario->id }}" data-bs-toggle="modal" data-bs-target="#editHour">
+                    <button type="button" class="btn btn-outline-info btn-sm edit" title="Edit" data-hour-id="{{ $horario->id }}" data-bs-toggle="modal" data-bs-target="#editHour">
                         <i class="fas fa-pencil-alt"></i>
                     </button>
-                    <button type="button" class="btn btn-outline-danger btn-sm delete" title="Delete" id="deleteHour">
+                    <button type="button" class="btn btn-outline-danger btn-sm delete" title="Delete" data-hour-id="{{ $horario->id }}">
                         <i class="fas uil-trash-alt"></i>
                     </button>
                 </td>
@@ -445,7 +445,9 @@
                 $('#editHour').modal('show');
             });
 
-            $('#deleteHour').click(function () {
+            $('#datatable tbody').on('click', '.btn.delete', function () {
+                const hourId = this.dataset.hourId;
+
                 Swal.fire({
                     title: '¿Eliminar?',
                     text: "Estas seguro de eliminar este Horario",
@@ -458,11 +460,31 @@
                     buttonsStyling: false
                 }).then(function (result) {
                     if (result.value) {
-                        Swal.fire({
-                            title: 'Eliminado!',
-                            text: 'Horario eliminado.',
-                            icon: 'success',
-                            confirmButtonColor: "#34c38f"
+                        fetch(`{{ route('DeleteHour', '') }}/${hourId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Content-Type': 'application/json',
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            Swal.fire({
+                                title: 'Eliminado!',
+                                text: 'Horario eliminado.',
+                                icon: 'success',
+                                confirmButtonColor: "#34c38f"
+                            }).then(function () {
+                                window.location.reload();
+                            })
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Ocurrio un error al intentar eliminar el horario.',
+                                icon: 'error',
+                                confirmButtonColor: "#34c38f"
+                            });
                         });
                     };
                 });

@@ -37,6 +37,12 @@ class HoursController extends Controller
      */
     public function index()
     {
+        $horarios = $this->getHorarios();
+
+        return view('hours', compact('horarios'));
+    }
+
+    public function getHorarios() {
         $horarios = Horario::with(['days' => function ($query) {
                                 $query->select('horario_id', 'day', 'inicio', 'final');
                             }])
@@ -66,7 +72,7 @@ class HoursController extends Controller
 
         $horarios = json_decode(json_encode($horarios));
 
-        return view('hours', compact('horarios'));
+        return $horarios;
     }
 
     public function validateModal()
@@ -214,43 +220,13 @@ class HoursController extends Controller
             $element->save();
         }
 
-        $horarios = Horario::with(['days' => function ($query) {
-            $query->select('horario_id', 'day', 'inicio', 'final');
-        }])
-        ->select('id', 'name', 'sede_id', 'tolerancia_min', 'motivo_tardanza', 'motivo_temprano', 'restringir_last', 'restringir_gest', 'state')
-        ->get();
-
-        $horarios = $horarios->map(function ($horario) {
-            return [
-                'id' => $horario->id,
-                'name' => $horario->name,
-                'sede_id' => $horario->sede_id,
-                'tolerancia_min' => $horario->tolerancia_min,
-                'motivo_tardanza' => $horario->motivo_tardanza,
-                'motivo_temprano' => $horario->motivo_temprano,
-                'restringir_last' => $horario->restringir_last,
-                'restringir_gest' => $horario->restringir_gest,
-                'state' => $horario->state,
-                'days' => $horario->days->map(function ($day) {
-                    return [
-                        'day' => $day->day,
-                        'inicio' => $day->inicio,
-                        'final' => $day->final
-                    ];
-                })
-            ];
-        });
-
-        $horarios = json_decode(json_encode($horarios));
+        $horarios = $this->getHorarios();
 
         return redirect()->back()->with('horarios', $horarios);
     }
 
-    public function delete()
+    public function DeleteHour($id)
     {
-
-        $id = request('id');
-
         $days = Day::where('horario_id', $id);
         $days->delete();
 
@@ -260,14 +236,12 @@ class HoursController extends Controller
         $type = 3;
         $title = 'Bien';
         $msg = 'Horario eliminado exitosamente.';
-        $url = route('dashboard.horario.index');
 
 
         return response()->json([
             'type'  => $type,
             'title' => $title,
             'msg'   => $msg,
-            'url'   => $url
         ]);
     }
 }

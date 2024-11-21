@@ -137,28 +137,22 @@ class GroupUsersController extends Controller
         ]);
     }
 
-    public function delete()
+    public function DeleteGroup()
     {
 
         $id = request('id');
-
-        $days = Day::where('horario_id', $id);
-        $days->delete();
-
-        $horario = Horario::findOrFail($id);
-        $horario->delete();
+        $element = Group::findOrFail($id);
+        $element->delete();
 
         $type = 3;
         $title = 'Bien';
-        $msg = 'Horario eliminado exitosamente.';
-        $url = route('dashboard.horario.index');
+        $msg = 'Grupo eliminado exitosamente.';
 
 
         return response()->json([
             'type'  => $type,
             'title' => $title,
             'msg'   => $msg,
-            'url'   => $url
         ]);
     }
 }

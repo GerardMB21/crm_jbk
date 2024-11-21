@@ -113,6 +113,11 @@
                                             <div class="event-date text-primar">{{ $advertisement->created_at->format('d M') }}</div>
                                             <h5>{{ $advertisement->title }}</h5>
                                             <p class="text-muted">{!! $advertisement->text !!}</p>
+                                            @if ($advertisement->file_name)
+                                                <div>
+                                                    <a href="/storage/uploads/{{ $advertisement->file_name }}" target="_blank" class="btn btn-success waves-effect waves-light mb-3">Descargar Adjunto</a>
+                                                </div>
+                                            @endif
                                         </li>
                                     @endforeach
                                 </ul>
@@ -129,7 +134,6 @@
 @section('script')
     <!-- fullcalendar -->
     <script src="{{ URL::asset('/assets/libs/fullcalendar/fullcalendar.min.js') }}"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');

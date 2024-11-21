@@ -14,7 +14,6 @@
         @slot('title') Grupos de Usuarios @endslot
     @endcomponent
 
-
     <x-table :idCreateButton="'newEditGroup'" :idModal="'editGroup'" :textButton="'Crear Horario'" :headers="['GRUPO','IP','HORARIO','ESTADO','OPCIONES']">
         @foreach ($groups as $group)
             <tr data-id="{{ $group->id }}">
@@ -34,15 +33,15 @@
                     </div>
                 </td>
                 <td data-field="state">
-                    <div data-hour-id="{{ $group->id }}">
+                    <div data-group-id="{{ $group->id }}">
                         {{ $group->state }}
                     </div>
                 </td>
                 <td style="width: 100px">
-                    <button type="button" class="btn btn-outline-info btn-sm edit" id="editEditGroup" title="Edit" data-group-id="{{ $group->id }}" data-bs-toggle="modal" data-bs-target="#editGroup">
+                    <button type="button" class="btn btn-outline-info btn-sm edit" title="Edit" data-group-id="{{ $group->id }}" data-bs-toggle="modal" data-bs-target="#editGroup">
                         <i class="fas fa-pencil-alt"></i>
                     </button>
-                    <button type="button" class="btn btn-outline-danger btn-sm delete" title="Delete" id="deleteGroup">
+                    <button type="button" class="btn btn-outline-danger btn-sm delete" title="Delete" data-group-id="{{ $group->id }}">
                         <i class="fas uil-trash-alt"></i>
                     </button>
                 </td>
@@ -160,9 +159,9 @@
                 titleEditGroup.innerText = "Nuevo Grupo";
             });
 
-            // $('#editHour').on('click', 'btn-close', function () {
-            //     reinitData();
-            // });
+            $('#editGroup').on('click', 'btn-close', function () {
+                reinitData();
+            });
 
             $('#datatable tbody').on('click', '.btn.edit', function () {
                 titleEditGroup.innerText = "Editar Grupo";
@@ -176,56 +175,60 @@
                 $('#editGroup').modal('show');
             });
 
-            // $('#datatable tbody').on('dblclick', 'tr td div', function () {
-            //     reinitData();
+            $('#datatable tbody').on('dblclick', 'tr td div', function () {
+                reinitData();
 
-            //     const hourId = this.dataset.hourId;
+                const groupId = this.dataset.groupId;
 
-            //     loadData(hourId);
+                loadData(groupId);
 
-            //     $('#editHour').modal('show');
-            // });
+                $('#editGroup').modal('show');
+            });
 
-            // $('#deleteHour').click(function () {
-            //     Swal.fire({
-            //         title: '¿Eliminar?',
-            //         text: "Estas seguro de eliminar este Horario",
-            //         icon: 'warning',
-            //         showCancelButton: true,
-            //         confirmButtonText: 'Eliminar',
-            //         cancelButtonText: 'Cancelar',
-            //         confirmButtonClass: 'btn btn-success mt-2',
-            //         cancelButtonClass: 'btn btn-danger ms-2 mt-2',
-            //         buttonsStyling: false
-            //     }).then(function (result) {
-            //         if (result.value) {
-            //             Swal.fire({
-            //                 title: 'Eliminado!',
-            //                 text: 'Horario eliminado.',
-            //                 icon: 'success',
-            //                 confirmButtonColor: "#34c38f"
-            //             });
-            //         };
-            //     });
-            // });
+            $('#datatable tbody').on('click', '.btn.delete', function () {
+                const groupId = this.dataset.groupId;
 
-            // $('#in-time-monday').on('change', function (e) {
-            //     const valMonday = e.target.value;
-
-            //     $('#in-time-tuesday')[0].value = valMonday;
-            //     $('#in-time-wednesday')[0].value = valMonday;
-            //     $('#in-time-thursday')[0].value = valMonday;
-            //     $('#in-time-friday')[0].value = valMonday;
-            // });
-
-            // $('#out-time-monday').on('change', function (e) {
-            //     const valMonday = e.target.value;
-
-            //     $('#out-time-tuesday')[0].value = valMonday;
-            //     $('#out-time-wednesday')[0].value = valMonday;
-            //     $('#out-time-thursday')[0].value = valMonday;
-            //     $('#out-time-friday')[0].value = valMonday;
-            // });
+                Swal.fire({
+                    title: '¿Eliminar?',
+                    text: "Estas seguro de eliminar este Grupo",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Eliminar',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonClass: 'btn btn-success mt-2',
+                    cancelButtonClass: 'btn btn-danger ms-2 mt-2',
+                    buttonsStyling: false
+                }).then(function (result) {
+                    if (result.value) {
+                        fetch(`{{ route('DeleteGroup', '') }}/${groupId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Content-Type': 'application/json',
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            Swal.fire({
+                                title: 'Eliminado!',
+                                text: 'Grupo eliminado.',
+                                icon: 'success',
+                                confirmButtonColor: "#34c38f"
+                            }).then(function () {
+                                window.location.reload();
+                            })
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Ocurrio un error al intentar eliminar el grupo.',
+                                icon: 'error',
+                                confirmButtonColor: "#34c38f"
+                            });
+                        });
+                    };
+                });
+            });
         });
     </script>
 @endsection
