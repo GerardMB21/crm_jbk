@@ -71,7 +71,20 @@ class ProfileController extends Controller
             array_push($advertisementId, $GA->advertisement_id);
         };
 
-        $advertisements = Advertisement::whereIn('id', $advertisementId)
+        $advertisements = Advertisement::whereIn('advertisements.id', $advertisementId)
+                                        ->select(
+                                            'files.name  as file_name',
+                                            'advertisements.id  as id',
+                                            'advertisements.state  as state',
+                                            'advertisements.text  as text',
+                                            'advertisements.title  as title',
+                                            'advertisements.updated_at  as updated_at',
+                                            'advertisements.updated_at_user  as updated_at_user',
+                                            'advertisements.created_at  as created_at',
+                                            'advertisements.created_at_user  as created_at_user',
+                                            'advertisements.upload_id  as upload_id',
+                                        )
+                                        ->leftjoin('files', 'files.id', '=', 'advertisements.upload_id')
                                         ->orderBy('created_at', 'desc')
                                         ->get();
 

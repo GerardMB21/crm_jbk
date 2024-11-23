@@ -29,7 +29,7 @@
                     <div>
                         <img src="{{ URL::asset('/assets/images/users/avatar-4.jpg') }}" alt="" class="avatar-lg rounded-circle img-thumbnail">
                     </div>
-                   
+                    <h5 class="mt-3 mb-1">{{ $user->name }}</h5>
                     <!-- <p class="text-muted">UI/UX Designer</p> -->
 
                     <!-- <div class="mt-4">
@@ -44,7 +44,28 @@
                     <div class="table-responsive mt-4">
                         <div>
                             <p class="mb-1">Nombre :</p>
-                        
+                            <h5 class="font-size-16">{{ $user->name }}</h5>
+                        </div>
+                        <div class="mt-4">
+                            <p class="mb-1">Correo :</p>
+                            <h5 class="font-size-16">{{ $user->email }}</h5>
+                        </div>
+                        <div class="mt-4">
+                            <p class="mb-1">Grupo :</p>
+                            <h5 class="font-size-16">{{ $group->name }}</h5>
+                        </div>
+                        <div class="mt-4">
+                            <p class="mb-1">Mobil :</p>
+                            <h5 class="font-size-16">{{ $user->telefono }}</h5>
+                        </div>
+                        <div class="mt-4">
+                            <p class="mb-1">Genero :</p>
+                            <h5 class="font-size-16">{{ $user->genero }}</h5>
+                        </div>
+                        <div class="mt-4">
+                            <p class="mb-1">Fecha de Nacimiento :</p>
+                            <h5 class="font-size-16">{{ $user->fecha_naci }}</h5>
+                        </div>
 
                     </div>
                 </div>
@@ -92,6 +113,11 @@
                                             <div class="event-date text-primar">{{ $advertisement->created_at->format('d M') }}</div>
                                             <h5>{{ $advertisement->title }}</h5>
                                             <p class="text-muted">{!! $advertisement->text !!}</p>
+                                            @if ($advertisement->file_name)
+                                                <div>
+                                                    <a href="/storage/uploads/{{ $advertisement->file_name }}" target="_blank" class="btn btn-success waves-effect waves-light mb-3">Descargar Adjunto</a>
+                                                </div>
+                                            @endif
                                         </li>
                                     @endforeach
                                 </ul>
@@ -108,7 +134,6 @@
 @section('script')
     <!-- fullcalendar -->
     <script src="{{ URL::asset('/assets/libs/fullcalendar/fullcalendar.min.js') }}"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');

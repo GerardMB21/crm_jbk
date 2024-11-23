@@ -37,6 +37,11 @@
                         {{ $user->genero }}
                     </div>
                 </td>
+                <td data-field="observaciones">
+                    <div data-user-id="{{ $user->id }}">
+                        {{ $user->obs }}
+                    </div>
+                </td>
                 <td data-field="state">
                     <div data-user-id="{{ $user->id }}">
                         {{ $user->state }}
@@ -49,6 +54,9 @@
                     <button type="button" class="btn btn-outline-danger btn-sm delete" title="Delete" data-user-id="{{ $user->id }}">
                         <i class="fas uil-trash-alt"></i>
                     </button>
+                    <button type="button" class="btn btn-outline-success btn-sm add-group" title="Delete" data-user-id="{{ $user->id }}">
+                        <i class="fas uil-users-alt"></i>
+                    </button>
                 </td>
             </tr>
         @endforeach
@@ -58,50 +66,138 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-3">
-                    <label class="form-label" for="company_id">Compañía:</label>
-                    <select class="form-select" id="company_id" name="company_id" value="0" required>
-                        <option value="0" selected>Seleccionar</option>
-                        @foreach ($companies as $company)
-                            <option value="{{ $company->id }}">{{ $company->name }}</option>
-                        @endforeach
-                    </select>
+                    <label class="form-label" for="name">Nombre Completo:</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
                     <div class="valid-feedback">Valido!</div>
-                    <div class="invalid-feedback">La compañia es requerida.</div>
+                    <div class="invalid-feedback">El nombre es requerido.</div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="mb-3">
-                    <label class="form-label" for="name">Nombre:</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+                    <label class="form-label" for="email">Email:</label>
+                    <input type="text" class="form-control" id="email" name="email" required>
                     <div class="valid-feedback">Valido!</div>
-                    <div class="invalid-feedback">El nombre es requerido.</div>
+                    <div class="invalid-feedback">El email es requerido.</div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-3">
-                    <label class="form-label" for="ip">IP:</label>
-                    <input type="text" class="form-control" id="ip" name="ip" required>
+                    <label class="form-label" for="password">Contraseña:</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
                     <div class="valid-feedback">Valido!</div>
-                    <div class="invalid-feedback">La IP es requerida.</div>
+                    <div class="invalid-feedback">La contraseña es requerida.</div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="mb-3">
-                    <label class="form-label" for="horario_id">Horario:</label>
-                    <select class="form-select" id="horario_id" name="horario_id" value="0" required>
+                    <label class="form-label" for="telefono">Teléfono:</label>
+                    <input type="text" class="form-control" id="telefono" name="telefono">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label" for="genero">Género:</label>
+                    <select class="form-select" id="genero" name="genero" value="0" required>
                         <option value="0" selected>Seleccionar</option>
-                        @foreach ($hours as $hour)
-                            <option value="{{ $hour->id }}">{{ $hour->name }}</option>
-                        @endforeach
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino">Femenino</option>
                     </select>
                     <div class="valid-feedback">Valido!</div>
-                    <div class="invalid-feedback">El horario es requerido.</div>
+                    <div class="invalid-feedback">El genero es requerido.</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label" for="fecha_naci">Fecha de nacimiento:</label>
+                    <input type="date" class="form-control" id="fecha_naci" name="fecha_naci" required>
+                    <div class="valid-feedback">Valido!</div>
+                    <div class="invalid-feedback">La fecha de nacimiento es requerida.</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mb-3">
+                    <label class="form-label" for="obs">Observaciones:</label>
+                    <textarea class="form-control" id="obs" name="obs"></textarea>
                 </div>
             </div>
         </div>
     </x-modal>
+
+    <div class="modal fade" id="addGroup" tabindex="-1" role="dialog" aria-labelledby="addGroup" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Grupos del Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="row" action="{{ route('AddGroup') }}" method="POST">
+                        @csrf
+                        <input id="user_id" name="user_id" style="display: none;">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <select class="form-select" id="group_id" name="group_id" value="0" required>
+                                    <option value="0" selected>Seleccionar</option>
+                                    @foreach ($groups_general as $group_general)
+                                        <option value="{{ $group_general->id }}">{{ $group_general->name }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="valid-feedback">Valido!</div>
+                                <div class="invalid-feedback">El grupo es requerido.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-success">Añadir</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+
+                                    <table id="datatable-group" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>GRUPO</th>
+                                                <th>OPCIONES</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    GRUPO
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-outline-danger btn-sm delete" title="Delete" data-group-id="0">
+                                                        <i class="fas uil-trash-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection
 @section('script')
@@ -111,86 +207,167 @@
         const company = @json($company);
         const groups_general = @json($groups_general);
         const users = @json($users);
-        const titleEditUser = $('#editUserTitle')[0];
+        const groups = @json($groups);
+        const titleEdit = $('#editUserTitle')[0];
 
         function reinitData() {
             $('#id')[0].value = "";
             $('#name')[0].value = "";
-            $('#ip')[0].value = "";
-            $('#company_id')[0].value = "0";
-            $('#horario_id')[0].value = "0";
+            $('#email')[0].value = "";
+            $('#password')[0].value = "";
+            $('#telefono')[0].value = "";
+            $('#genero')[0].value = "";
+            $('#fecha_naci')[0].value = "";
+            $('#obs')[0].value = "";
+
+            $('#user_id')[0].value = "";
+            $('#datatable-group tbody')[0].innerHTML = "";
         };
-        function loadData(groupId) {
-            let groupData;
+        function loadData(ID) {
+            const userGroups = groups.filter(i => i.user_id == +ID);
 
-            for (let i = 0; i < groups.length; i++) {
-                const group = groups[i];
+            let userData;
 
-                if (group.id == +groupId) groupData = group;
+            for (let i = 0; i < users.length; i++) {
+                const user = users[i];
+
+                if (user.id == +ID) userData = user;
             };
 
-            if (groupData) {
+            if (userData) {
                 const {
-                    campana_id,
-                    company_id,
-                    created_at,
-                    created_at_user,
-                    deleted_at,
-                    horario_id,
-                    horario_name,
                     id,
-                    ip,
                     name,
-                    perfil_id,
-                    permissions,
-                    state,
-                    updated_at,
-                    updated_at_user
-                } = groupData;
+                    email,
+                    password,
+                    telefono,
+                    genero,
+                    fecha_naci,
+                    obs
+                } = userData;
+                const HTMLgroups = [];
 
                 $('#id')[0].value = id;
                 $('#name')[0].value = name;
-                $('#ip')[0].value = ip;
-                $('#company_id')[0].value = company_id;
-                $('#horario_id')[0].value = horario_id;
+                $('#email')[0].value = email;
+                $('#password')[0].value = password;
+                $('#telefono')[0].value = telefono;
+                $('#genero')[0].value = genero;
+                $('#fecha_naci')[0].value = fecha_naci;
+                $('#obs')[0].value = obs;
+
+                $('#user_id')[0].value = id;
+                for (let i = 0; i < userGroups.length; i++) {
+                    const UG = userGroups[i];
+
+                    HTMLgroups.push(`<tr>
+                                        <td>
+                                            ${UG.group_name}
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-outline-danger btn-sm delete" title="Delete" data-group-id="${UG.id}">
+                                                <i class="fas uil-trash-alt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>`);
+                };
+
+                $('#datatable-group tbody')[0].innerHTML = HTMLgroups.join('');
             };
         };
 
         $(document).ready(function() {
             const table = $('#datatable').DataTable();
 
-            $('#newEditGroup').on('click', '', function () {
+            $('#newEditUser').on('click', '', function () {
                 reinitData();
-                titleEditGroup.innerText = "Nuevo Grupo";
+                titleEdit.innerText = "Nuevo Usuario";
             });
 
-            $('#editGroup').on('click', 'btn-close', function () {
+            $('#editUser').on('click', 'btn-close', function () {
                 reinitData();
             });
 
             $('#datatable tbody').on('click', '.btn.edit', function () {
-                titleEditGroup.innerText = "Editar Grupo";
+                titleEdit.innerText = "Editar Usuario";
 
                 reinitData();
 
-                const groupId = this.dataset.groupId;
+                const userId = this.dataset.userId;
 
-                loadData(groupId);
+                loadData(userId);
 
-                $('#editGroup').modal('show');
+                $('#editUser').modal('show');
+            });
+
+            $('#datatable tbody').on('click', '.btn.add-group', function () {
+                titleEdit.innerText = "Editar Usuario";
+
+                reinitData();
+
+                const userId = this.dataset.userId;
+
+                loadData(userId);
+
+                $('#addGroup').modal('show');
             });
 
             $('#datatable tbody').on('dblclick', 'tr td div', function () {
                 reinitData();
 
-                const hourId = this.dataset.hourId;
+                const userId = this.dataset.userId;
 
-                loadData(hourId);
+                loadData(userId);
 
-                $('#editGroup').modal('show');
+                $('#editUser').modal('show');
             });
 
             $('#datatable tbody').on('click', '.btn.delete', function () {
+                const userId = this.dataset.userId;
+
+                Swal.fire({
+                    title: '¿Eliminar?',
+                    text: "Estas seguro de eliminar este Usuario",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Eliminar',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonClass: 'btn btn-success mt-2',
+                    cancelButtonClass: 'btn btn-danger ms-2 mt-2',
+                    buttonsStyling: false
+                }).then(function (result) {
+                    if (result.value) {
+                        fetch(`{{ route('DeleteUser', '') }}/${userId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Content-Type': 'application/json',
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            Swal.fire({
+                                title: 'Eliminado!',
+                                text: 'Usuario eliminado.',
+                                icon: 'success',
+                                confirmButtonColor: "#34c38f"
+                            }).then(function () {
+                                window.location.reload();
+                            })
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Ocurrio un error al intentar eliminar el usuario.',
+                                icon: 'error',
+                                confirmButtonColor: "#34c38f"
+                            });
+                        });
+                    };
+                });
+            });
+
+            $('#datatable-group tbody').on('click', '.btn.delete', function () {
                 const groupId = this.dataset.groupId;
 
                 Swal.fire({
@@ -205,7 +382,7 @@
                     buttonsStyling: false
                 }).then(function (result) {
                     if (result.value) {
-                        fetch(`{{ route('DeleteGroup', '') }}/${groupId}`, {
+                        fetch(`{{ route('DeleteUserGroup', '') }}/${groupId}`, {
                             method: 'DELETE',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',

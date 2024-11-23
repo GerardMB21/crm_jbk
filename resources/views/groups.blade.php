@@ -178,9 +178,9 @@
             $('#datatable tbody').on('dblclick', 'tr td div', function () {
                 reinitData();
 
-                const hourId = this.dataset.hourId;
+                const groupId = this.dataset.groupId;
 
-                loadData(hourId);
+                loadData(groupId);
 
                 $('#editGroup').modal('show');
             });

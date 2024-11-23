@@ -54,7 +54,7 @@ class LoginController extends Controller
         $logins->created_at_user = Auth::user()->name;
         $logins->save();
 
-        return redirect()->intended($this->redirectTo);
+        return redirect()->intended('/');
     }
 
     public function logout(Request $request)

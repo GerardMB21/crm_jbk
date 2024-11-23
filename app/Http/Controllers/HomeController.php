@@ -34,7 +34,7 @@ class HomeController extends Controller
 
     public function root()
     {
-        return view('profile');
+        return view('index');
     }
 
     /*Language Translation*/

@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Log;
 
 use Illuminate\Http\Request;
 
-class GroupUsersController extends Controller
+class UsersController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -40,8 +40,16 @@ class GroupUsersController extends Controller
         $groups_general = Group::get();
         $company = Company::findOrFail(1);;
         $users = User::get();
+        $groups = UserGroup::select(
+            'user_groups.id  as id',
+            'user_groups.user_id  as user_id',
+            'groups.id as group_id',
+            'groups.name as group_name'
+        )
+            ->leftjoin('groups', 'groups.id', '=', 'user_groups.group_id')
+            ->get();
 
-        return view('users', compact('users','company','groups_general'));
+        return view('users', compact('users','company','groups_general','groups'));
     }
 
     public function validateForm()
@@ -91,22 +99,28 @@ class GroupUsersController extends Controller
         $user_id = request('user_id');
         $group_id = request('group_id');
 
-        $info = [
-            'type'  => 1,
-            'title' => 'Bien',
-            'msg'   => 'Grupo agregado con éxito.',
-        ];
-
         $element = new UserGroup();
         $element->user_id = $user_id;
         $element->group_id = $group_id;
         $element->save();
 
-        $list = $this->listGroup();
+        $groups_general = Group::get();
+        $company = Company::findOrFail(1);;
+        $users = User::get();
+        $groups = UserGroup::select(
+            'user_groups.id  as id',
+            'user_groups.user_id  as user_id',
+            'groups.id as group_id',
+            'groups.name as group_name'
+        )
+            ->leftjoin('groups', 'groups.id', '=', 'user_groups.group_id')
+            ->get();
 
-        return response()->json([
-            'info'  => $info,
-            'list'  => $list
+        return redirect()->back()->with([
+            'groups_general' => $groups_general,
+            'company' => $company,
+            'users' => $users,
+            'groups' => $groups,
         ]);
     }
 
@@ -131,7 +145,6 @@ class GroupUsersController extends Controller
             $element = new User();
         }
 
-
         $element->name = $name;
         $element->user = $user . $company->sufijo;
         $element->password = $password;
@@ -145,18 +158,25 @@ class GroupUsersController extends Controller
         $groups_general = Group::get();
         $company = Company::findOrFail(1);;
         $users = User::get();
+        $groups = UserGroup::select(
+            'user_groups.id  as id',
+            'user_groups.user_id  as user_id',
+            'groups.id as group_id',
+            'groups.name as group_name'
+        )
+            ->leftjoin('groups', 'groups.id', '=', 'user_groups.group_id')
+            ->get();
 
         return redirect()->back()->with([
-          'groups_general' => $groups_general,
-          'company' => $company,
-          'users' => $users
-      ]);
+            'groups_general' => $groups_general,
+            'company' => $company,
+            'users' => $users,
+            'groups' => $groups,
+        ]);
     }
 
-    public function DeleteUser()
+    public function DeleteUser($id)
     {
-
-        $id = request('id');
         $element = User::findOrFail($id);
         $element->delete();
 
@@ -164,11 +184,26 @@ class GroupUsersController extends Controller
         $title = 'Bien';
         $msg = 'Usuario eliminado exitosamente.';
 
-
         return response()->json([
             'type'  => $type,
             'title' => $title,
             'msg'   => $msg
+        ]);
+    }
+
+    public function DeleteUserGroup($id)
+    {
+        $group = UserGroup::findOrFail($id);
+        $group->delete();
+
+        $info = [
+            'type'  => 1,
+            'title' => 'Bien',
+            'msg'   => 'Se quitó el grupo con éxito.',
+        ];
+
+        return response()->json([
+            'info'  => $info,
         ]);
     }
 }

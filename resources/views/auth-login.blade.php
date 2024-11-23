@@ -24,7 +24,7 @@
                         <div class="card-body p-4">
                             <div class="text-center mt-2">
                                 <h5 class="text-primary">Welcome Back !</h5>
-                                <p class="text-muted">Sign in to continue to EVA CRM.</p>
+                                <p class="text-muted">Sign in to continue to Minible.</p>
                             </div>
                             <div class="p-2 mt-4">
                                 <form action="{{ url('index') }}">
@@ -97,7 +97,7 @@
                         <p>© <script>
                                 document.write(new Date().getFullYear())
 
-                            </script> Eva CRM. Crafted with <i class="mdi mdi-heart text-danger"></i> by JBK PERÚ</p>
+                            </script> Minible. Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand</p>
                     </div>
 
                 </div>
