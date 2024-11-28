@@ -2,8 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Campain;
+use App\Models\ModuleInGroup;
+use App\Models\Module;
+use App\Models\SectionInGroup;
+use App\Models\Section;
+use App\Models\SubSectionInGroup;
+use App\Models\SubSection;
+use App\Models\Group;
+use App\Models\UserGroup;
+use App\Models\Logins;
+use App\Models\Form;
+
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 
@@ -34,7 +47,129 @@ class HomeController extends Controller
 
     public function root()
     {
-        return view('index');
+        $userId = Auth::user()->id;
+        $userGroup = UserGroup::where('user_id', $userId)
+                                ->first();
+        $group = Group::where('id', $userGroup->group_id)
+                        ->first();
+        $modulesGroup = ModuleInGroup::where('group_id', $group->id)
+                                    ->get();
+
+        $modulesIds = [];
+        foreach ($modulesGroup as $moduleGroup) {
+            $modulesIds[] = $moduleGroup->module_id;
+        };
+
+        $modules = Module::whereIn('id', $modulesIds)
+                        ->get();
+
+        return view('index', compact('modules'));
+    }
+
+    public function enterprise()
+    {
+        $logins = Logins::orderBy('created_at', 'desc')
+                        ->get();
+        $userId = Auth::user()->id;
+        $userGroup = UserGroup::where('user_id', $userId)
+                                ->first();
+        $group = Group::where('id', $userGroup->group_id)
+                        ->first();
+        $sectionsGroup = SectionInGroup::where('group_id', $group->id)
+                                        ->get();
+        $subSectionsGroup = SubSectionInGroup::where('group_id', $group->id)
+                                            ->get();
+
+        $sectionsIds = [];
+        foreach ($sectionsGroup as $sectionGroup) {
+            $sectionsIds[] = $sectionGroup->section_id;
+        };
+
+        $subSectionsIds = [];
+        foreach ($subSectionsGroup as $subSectionGroup) {
+            $subSectionsIds[] = $subSectionGroup->sub_section_id;
+        };
+
+        $modules = Module::whereIn('id', [1])
+                        ->get();
+        $sections = Section::whereIn('id', $sectionsIds)
+                            ->orderBy('order','asc')
+                            ->get();
+        $subSections = SubSection::whereIn('id', $subSectionsIds)
+                                ->get();
+
+        $result = $modules->map(function ($module) use ($sections, $subSections) {
+
+            $moduleSections = $sections->where('module_id', $module->id)->map(function ($section) use ($subSections)
+            {
+                $sectionSubSections = $subSections->where('section_id', $section->id);
+
+                $section->subSections = $sectionSubSections->values();
+
+                return $section;
+            });
+
+            $module->sections = $moduleSections->values();
+
+            return $module;
+        });
+
+        $modules = $result;
+
+        return view('enterprise-timeline', compact('modules','logins'));
+    }
+
+    public function sales()
+    {
+        $forms = Form::orderBy('created_at', 'desc')
+                        ->get();
+        $userId = Auth::user()->id;
+        $userGroup = UserGroup::where('user_id', $userId)
+                                ->first();
+        $group = Group::where('id', $userGroup->group_id)
+                        ->first();
+        $sectionsGroup = SectionInGroup::where('group_id', $group->id)
+                                        ->get();
+        $subSectionsGroup = SubSectionInGroup::where('group_id', $group->id)
+                                            ->get();
+
+        $sectionsIds = [];
+        foreach ($sectionsGroup as $sectionGroup) {
+            $sectionsIds[] = $sectionGroup->section_id;
+        };
+
+        $subSectionsIds = [];
+        foreach ($subSectionsGroup as $subSectionGroup) {
+            $subSectionsIds[] = $subSectionGroup->sub_section_id;
+        };
+
+        $modules = Module::whereIn('id', [2])
+                        ->get();
+        $sections = Section::whereIn('id', $sectionsIds)
+                            ->orderBy('order','asc')
+                            ->get();
+        $subSections = SubSection::whereIn('id', $subSectionsIds)
+                                ->get();
+
+        $result = $modules->map(function ($module) use ($sections, $subSections) {
+
+            $moduleSections = $sections->where('module_id', $module->id)->map(function ($section) use ($subSections)
+            {
+                $sectionSubSections = $subSections->where('section_id', $section->id);
+
+                $section->subSections = $sectionSubSections->values();
+
+                return $section;
+            });
+
+            $module->sections = $moduleSections->values();
+
+            return $module;
+        });
+
+        $modules = $result;
+
+        return view('sales-timeline', compact('modules','forms'));
     }
 
     /*Language Translation*/

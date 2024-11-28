@@ -13,6 +13,9 @@ use App\Models\Horario;
 use App\Models\Day;
 use App\Models\File;
 use App\Models\Campain;
+use App\Models\Country;
+use App\Models\RangeDate;
+use App\Models\TabState;
 use App\Models\ModuleInGroup;
 use App\Models\Module;
 use App\Models\SectionInGroup;
@@ -27,7 +30,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class AdvertisementsController extends Controller
+class TabStatesController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -47,19 +50,31 @@ class AdvertisementsController extends Controller
     public function index()
     {
         $modules = $this->modules();
+        $id = NULL;
         $campaigns = Campain::get();
-        $advertisements = Advertisement::get();
-        $groups = Group::get();
-        $groups_advertisements = GroupAdvertisement::select(
-            'groups_advertisements.id  as id',
-            'groups_advertisements.advertisement_id  as advertisement_id',
-            'groups.id as group_id',
-            'groups.name as group_name'
-        )
-            ->leftjoin('groups', 'groups.id', '=', 'groups_advertisements.group_id')
-            ->get();
+        $tabStates = [];
 
-        return view('advertisements', compact('campaigns','advertisements','groups','groups_advertisements','modules'));
+        return view('tab-states', compact('id','campaigns','tabStates','modules'));
+    }
+
+    public function indexWithId($id)
+    {
+        $modules = $this->modules();
+        $campaigns = Campain::get();
+        $tabStates = TabState::leftjoin('campains', 'campains.id', '=', 'tab_states.campain_id')
+                                ->select(
+                                    'tab_states.id as id',
+                                    'campains.id as campaign_id',
+                                    'campains.name as campaign_name',
+                                    'tab_states.name as name',
+                                    'tab_states.order as order',
+                                    'tab_states.state as state',
+                                )
+                                ->where('campain_id', $id)
+                                ->orderBy('tab_states.order','asc')
+                                ->get();
+
+        return view('tab-states', compact('id','campaigns','tabStates','modules'));
     }
 
     public function modules()
@@ -91,7 +106,7 @@ class AdvertisementsController extends Controller
             $subSectionsIds[] = $subSectionGroup->sub_section_id;
         };
 
-        $modules = Module::whereIn('id', [1])
+        $modules = Module::whereIn('id', [2])
                         ->get();
         $sections = Section::whereIn('id', $sectionsIds)
                             ->orderBy('order','asc')
@@ -120,127 +135,120 @@ class AdvertisementsController extends Controller
         return $modules;
     }
 
-    public function validateModalForm()
+    public function validateForm()
     {
-
         $messages = [
-            'title.required'  => 'Debe completar el título.',
+            'campain_id.required'         => 'Debe seleccionar una campaña.',
         ];
 
         $rules = [
-            'title'           => 'required',
+            'campain_id'                  => 'required',
         ];
 
         request()->validate($rules, $messages);
         return request()->all();
     }
 
-    public function SaveAdvertisement(Request $request)
+    public function list()
+    {
+        $this->validateForm();
+
+        $campain_id = request('campain_id');
+
+        $tab_states = TabState::leftjoin('campains', 'campains.id', '=', 'tab_states.campain_id')
+            ->select(
+                'tab_states.id as id',
+                'campains.name as campain_name',
+                'tab_states.name as name',
+                'tab_states.order as order',
+                'tab_states.state as state',
+            )
+            ->where('campain_id', $campain_id)
+            ->orderBy('tab_states.order','asc')
+            ->get();
+
+        return $tab_states;
+    }
+
+    public function validateModalForm()
+    {
+
+        $messages = [
+            'name.required'         => 'Debe completar el nombre.',
+            'order.required'         => 'Debe completar el Orden.',
+        ];
+
+        $rules = [
+            'name'                  => 'required',
+            'order'                  => 'required',
+        ];
+
+        request()->validate($rules, $messages);
+        return request()->all();
+    }
+
+    public function SaveTabState()
     {
 
         $this->validateModalForm();
 
-        $campaigns = Campain::get();
         $id = request('id');
-        $title = request('title');
-        $text = request('text');
-        $upload_id = NULL;
-        $group_advertisement = request('group_advertisement_ids');
-        $state = 1;
-
-        if ($request->hasFile('file')) {
-            $fileUpload = $request->file('file');
-            $fileName = pathinfo($fileUpload->getClientOriginalName(), PATHINFO_FILENAME);
-            $fileExtension = $fileUpload->getClientOriginalExtension();
-
-            $uniqueFileName = $fileName . '_' . time() . '.' . $fileExtension;
-
-            $path = $fileUpload->storeAs('public/uploads', $uniqueFileName);
-
-            $file = new File();
-            $file->name = $uniqueFileName;
-            $file->path = $path;
-            $file->created_at_user = Auth::user()->name;
-            $file->save();
-
-            $upload_id = $file->id;
-        }
+        $campain_id = request('campaign_id');
+        $name = request('name');
+        $order = request('order');
+        $state = 1; //activo
 
         if (isset($id)) {
-            $advertisement =  Advertisement::findOrFail($id);
+            $tab_state =  TabState::findOrFail($id);
             $msg = 'Registro actualizado exitosamente';
-            $advertisement->updated_at_user = Auth::user()->name;
+            $tab_state->updated_at_user = Auth::user()->name;
         } else {
-            $advertisement = new Advertisement();
-            $advertisement->state = $state;
-            $advertisement->created_at_user = Auth::user()->name;
+            $tab_state = new TabState();
+            $tab_state->campain_id = $campain_id;
+            $tab_state->state = $state;
+            $tab_state->created_at_user = Auth::user()->name;
             $msg = 'Registro creado exitosamente';
         }
 
-        $advertisement->title = $title;
-        $advertisement->text = $text;
+        $tab_state->name = $name;
+        $tab_state->order = $order;
 
-        if ($upload_id) {
-            $advertisement->upload_id = $upload_id;
-        }
+        $tab_state->save();
 
-        $advertisement->save();
+        $campaigns = Campain::get();
+        $tabStates = TabState::leftjoin('campains', 'campains.id', '=', 'tab_states.campain_id')
+                                ->select(
+                                    'tab_states.id as id',
+                                    'campains.id as campaign_id',
+                                    'campains.name as campaign_name',
+                                    'tab_states.name as name',
+                                    'tab_states.order as order',
+                                    'tab_states.state as state',
+                                )
+                                ->where('campain_id', $campain_id)
+                                ->orderBy('tab_states.order','asc')
+                                ->get();
 
-        if (isset($id)) {
-            GroupAdvertisement::where('advertisement_id', $id)->delete();
-        }
-
-        $groupAdvertisement = [];
-
-        foreach ($group_advertisement as $groupId) {
-            $groupAdvertisement[] = [
-                'advertisement_id' => $advertisement->id,
-                'group_id' => $groupId,
-                'created_at_user' => Auth::user()->name,
-            ];
-        }
-
-        GroupAdvertisement::insert($groupAdvertisement);
-
-        $advertisements = Advertisement::get();
-        $groups = Group::get();
-        $groups_advertisements = GroupAdvertisement::select(
-            'groups_advertisements.id  as id',
-            'groups_advertisements.advertisement_id  as advertisement_id',
-            'groups.id as group_id',
-            'groups.name as group_name'
-        )
-            ->leftjoin('groups', 'groups.id', '=', 'groups_advertisements.group_id')
-            ->get();
+        $modules = $this->modules();
 
         return redirect()->back()->with([
-            'advertisements' => $advertisements,
-            'groups' => $groups,
+            'id' => $campain_id,
             'campaigns' => $campaigns,
+            'tabStates' => $tabStates,
+            'modules' => $modules,
         ]);
     }
 
-    public function getAdvertisement()
+    public function getTabState()
     {
         $id = request('id');
-        $advertisement = Advertisement::findOrFail($id);
-        $groups_advertisements = GroupAdvertisement::where('advertisement_id', $id)
-                                                            ->leftjoin('groups', 'groups.id', '=', 'groups_advertisements.group_id')
-                                                            ->select(
-                                                                'groups.id as id',
-                                                                'groups.name as name',
-                                                            )
-                                                            ->get();
-
-        return response()->json([
-                                'advertisement'       => $advertisement,
-                                'group_advertisement' => $groups_advertisements,
-                            ]);
+        $elements = TabState::findOrFail($id);
+        return $elements;
     }
 
-    public function DeleteAdvertisement($id)
+    public function DeleteTabState()
     {
-        $element = Advertisement::findOrFail($id);
+        $element = TabState::findOrFail(request('id'));
         $element->delete();
 
         $msg = 'Registro eliminado exitosamente';
@@ -254,9 +262,9 @@ class AdvertisementsController extends Controller
         ]);
     }
 
-    public function DeshabilitarAdvertisement($id)
+    public function DeshabilitarTabState()
     {
-        $element = Advertisement::findOrFail($id);
+        $element = TabState::findOrFail(request('id'));
         $element->state = 0;
         $element->save();
 
@@ -271,9 +279,9 @@ class AdvertisementsController extends Controller
         ]);
     }
 
-    public function HabilitarAdvertisement($id)
+    public function HabilitarTabState()
     {
-        $element = Advertisement::findOrFail($id);
+        $element = TabState::findOrFail(request('id'));
         $element->state = 1;
         $element->save();
 

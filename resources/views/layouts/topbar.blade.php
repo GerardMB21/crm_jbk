@@ -27,17 +27,17 @@
             </button>
 
             <!-- App Search-->
-            <form class="app-search d-none d-lg-block">
+            {{-- <form class="app-search d-none d-lg-block">
                 <div class="position-relative">
                     <input type="text" class="form-control" placeholder="@lang('translation.Search')...">
                     <span class="uil-search"></span>
                 </div>
-            </form>
+            </form> --}}
         </div>
 
         <div class="d-flex">
 
-            <div class="dropdown d-inline-block d-lg-none ms-2">
+            {{-- <div class="dropdown d-inline-block d-lg-none ms-2">
                 <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-search-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="uil-search"></i>
                 </button>
@@ -54,9 +54,9 @@
                         </div>
                     </form>
                 </div>
-            </div>
+            </div> --}}
 
-            <div class="dropdown d-inline-block language-switch">
+            {{-- <div class="dropdown d-inline-block language-switch">
                 <button type="button" class="btn header-item waves-effect" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     @switch(Session::get('lang'))
                     @case('ru')
@@ -102,9 +102,9 @@
                         <img src="{{ URL::asset('assets/images/flags/russia.jpg')}}" alt="user-image" class="me-1" height="12"> <span class="align-middle">Русский</span>
                     </a>
                 </div>
-            </div>
+            </div> --}}
 
-            <div class="dropdown d-none d-lg-inline-block ms-1">
+            {{-- <div class="dropdown d-none d-lg-inline-block ms-1">
                 <button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="uil-apps"></i>
                 </button>
@@ -153,7 +153,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <div class="dropdown d-none d-lg-inline-block ms-1">
                 <button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="fullscreen">
@@ -161,7 +161,7 @@
                 </button>
             </div>
 
-            <div class="dropdown d-inline-block">
+            {{-- <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="uil-bell"></i>
                     <span class="badge bg-danger rounded-pill">3</span>
@@ -252,7 +252,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -266,19 +266,19 @@
                         <i class="uil uil-user-circle font-size-18 align-middle text-muted me-1"></i>
                         <span class="align-middle">@lang('translation.View_Profile')</span>
                     </a>
-                    <a class="dropdown-item" href="#">
+                    {{-- <a class="dropdown-item" href="#">
                         <i class="uil uil-wallet font-size-18 align-middle me-1 text-muted"></i>
                         <span class="align-middle">@lang('translation.My_Wallet')</span>
-                    </a>
-                    <a class="dropdown-item d-block" href="#">
+                    </a> --}}
+                    {{-- <a class="dropdown-item d-block" href="#">
                         <i class="uil uil-cog font-size-18 align-middle me-1 text-muted"></i>
                         <span class="align-middle">@lang('translation.Settings')</span>
                         <span class="badge bg-success-subtle text-success rounded-pill mt-1 ms-2">03</span>
-                    </a>
-                    <a class="dropdown-item" href="#">
+                    </a> --}}
+                    {{-- <a class="dropdown-item" href="#">
                         <i class="uil uil-lock-alt font-size-18 align-middle me-1 text-muted"></i>
                         <span class="align-middle">@lang('translation.Lock_screen')</span>
-                    </a>
+                    </a> --}}
                     <a class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="uil uil-sign-out-alt font-size-18 align-middle me-1 text-muted"></i>
                         <span class="align-middle">@lang('translation.Sign_out')</span>

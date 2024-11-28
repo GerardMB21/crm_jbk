@@ -29,15 +29,16 @@
                 </td>
                 <td data-field="estado">
                     <div data-campaign-id="{{ $campaign->id }}">
-                        {{ $campaign->state }}
+                        <input type="checkbox" id="switch-{{ $campaign->id }}" switch="bool" {{ $campaign->state == "1" ? 'checked' : '' }} />
+                        <label for="switch-{{ $campaign->id }}" data-on-label="On" data-off-label="Off"></label>
                     </div>
                 </td>
                 <td data-field="parametros">
                     <div data-campaign-id="{{ $campaign->id }}">
-                        <a href="#" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(251, 85, 151); color: rgb(255, 255, 255);">Pestañas de Estados</a>
-                        <a href="#" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(255, 91, 87); color: rgb(255, 255, 255);">Estados</a>
-                        <a href="#" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(144, 202, 75); color: rgb(255, 255, 255);">Bloque de Campos</a>
-                        <a href="#" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(50, 169, 50); color: rgb(255, 255, 255);">Campos</a>
+                        <a href="{{ url('sales/tab-states', $campaign->id) }}" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(251, 85, 151); color: rgb(255, 255, 255);">Pestañas de Estados</a>
+                        <a href="{{ url('sales/states', $campaign->id) }}" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(255, 91, 87); color: rgb(255, 255, 255);">Estados</a>
+                        <a href="{{ url('sales/blocks', $campaign->id) }}" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(144, 202, 75); color: rgb(255, 255, 255);">Bloque de Campos</a>
+                        <a href="{{ url('sales/fields', $campaign->id) }}" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(50, 169, 50); color: rgb(255, 255, 255);">Campos</a>
                         <a href="#" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(114, 124, 182); color: rgb(255, 255, 255);">Categorías</a>
                         <a href="#" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(135, 83, 222); color: rgb(255, 255, 255);">Productos</a>
                         <a href="#" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(73, 182, 214); color: rgb(255, 255, 255);">Promociones</a>
@@ -85,91 +86,81 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="geolocation" name="geolocation">
-                        <label class="form-check-label" for="geolocation">Activar Geolocalización</label>
-                    </div>
+                <div class="mb-3 align-items-center justify-content-between" style="display: flex;">
+                    <label class="form-check-label" for="geolocation">Activar Geolocazación</label>
+                    <input type="checkbox" id="geolocation" name="geolocation" switch="bool" />
+                    <label class="mb-0" for="geolocation" data-on-label="On" data-off-label="Off"></label>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="view_products" name="view_products">
-                        <label class="form-check-label" for="view_products">Ver Productos</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="back_state" name="back_state">
-                        <label class="form-check-label" for="back_state">Retroceder Estado</label>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="sold_new_window" name="sold_new_window">
-                        <label class="form-check-label" for="sold_new_window">Venta nueva en otra pestaña</label>
-                    </div>
+                <div class="mb-3 align-items-center justify-content-between" style="display: flex;">
+                    <label class="form-check-label" for="view_products">Ver Productos</label>
+                    <input type="checkbox" id="view_products" name="view_products" switch="bool" />
+                    <label class="mb-0" for="view_products" data-on-label="On" data-off-label="Off"></label>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="sold_exists_window" name="sold_exists_window">
-                        <label class="form-check-label" for="sold_exists_window">Venta existente en otra pestaña</label>
-                    </div>
+                <div class="mb-3 align-items-center justify-content-between" style="display: flex;">
+                    <label class="form-check-label" for="back_state">Retroceder Estado</label>
+                    <input type="checkbox" id="back_state" name="back_state" switch="bool" />
+                    <label class="mb-0" for="back_state" data-on-label="On" data-off-label="Off"></label>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="sold_notes" name="sold_notes">
-                        <label class="form-check-label" for="sold_notes">Notas en la Venta</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="list_sold_notes" name="list_sold_notes">
-                        <label class="form-check-label" for="list_sold_notes">Notas en el listado de Ventas</label>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="change_state_list_sold" name="change_state_list_sold">
-                        <label class="form-check-label" for="change_state_list_sold">Permitir cambiar de estado</label>
-                    </div>
+                <div class="mb-3 align-items-center justify-content-between" style="display: flex;">
+                    <label class="form-check-label" for="sold_new_window">Venta nueva en otra pestaña</label>
+                    <input type="checkbox" id="sold_new_window" name="sold_new_window" switch="bool" />
+                    <label class="mb-0" for="sold_new_window" data-on-label="On" data-off-label="Off"></label>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="option_duplicate_sold" name="option_duplicate_sold">
-                        <label class="form-check-label" for="option_duplicate_sold">Habilitar Duplicar Venta</label>
-                    </div>
+                <div class="mb-3 align-items-center justify-content-between" style="display: flex;">
+                    <label class="form-check-label" for="sold_exists_window">Venta existente en otra pestaña</label>
+                    <input type="checkbox" id="sold_exists_window" name="sold_exists_window" switch="bool" />
+                    <label class="mb-0" for="sold_exists_window" data-on-label="On" data-off-label="Off"></label>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="show_history_sold" name="show_history_sold">
-                        <label class="form-check-label" for="show_history_sold">Ver historial de Ventas</label>
-                    </div>
+                <div class="mb-3 align-items-center justify-content-between" style="display: flex;">
+                    <label class="form-check-label" for="sold_notes">Notas en la venta</label>
+                    <input type="checkbox" id="sold_notes" name="sold_notes" switch="bool" />
+                    <label class="mb-0" for="sold_notes" data-on-label="On" data-off-label="Off"></label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3 align-items-center justify-content-between" style="display: flex;">
+                    <label class="form-check-label" for="list_sold_notes">Notas en el listado de Ventas</label>
+                    <input type="checkbox" id="list_sold_notes" name="list_sold_notes" switch="bool" />
+                    <label class="mb-0" for="list_sold_notes" data-on-label="On" data-off-label="Off"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3 align-items-center justify-content-between" style="display: flex;">
+                    <label class="form-check-label" for="change_state_list_sold">Permitir cambiar de Estado</label>
+                    <input type="checkbox" id="change_state_list_sold" name="change_state_list_sold" switch="bool" />
+                    <label class="mb-0" for="change_state_list_sold" data-on-label="On" data-off-label="Off"></label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3 align-items-center justify-content-between" style="display: flex;">
+                    <label class="form-check-label" for="option_duplicate_sold">Habilitar duplicar Venta</label>
+                    <input type="checkbox" id="option_duplicate_sold" name="option_duplicate_sold" switch="bool" />
+                    <label class="mb-0" for="option_duplicate_sold" data-on-label="On" data-off-label="Off"></label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3 align-items-center justify-content-between" style="display: flex;">
+                    <label class="form-check-label" for="show_history_sold">Ver historial de Ventas</label>
+                    <input type="checkbox" id="show_history_sold" name="show_history_sold" switch="bool" />
+                    <label class="mb-0" for="show_history_sold" data-on-label="On" data-off-label="Off"></label>
                 </div>
             </div>
         </div>
@@ -199,6 +190,66 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mb-3" style="display: flex; flex-direction: column;">
+                    <label class="form-label" for="show_sold_edit">Pueden ver quién(es) ha(n) abierto una venta en modo edición:</label>
+                    <select class="select2 form-control select2-multiple" id="show_sold_edit" name="show_sold_edit[]" multiple="multiple" data-placeholder="Selecciona">
+                        <option value="0" selected>Seleccionar</option>
+                        @foreach ($groups as $group)
+                            <option value="{{ $group->id }}">{{ $group->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mb-3" style="display: flex; flex-direction: column;">
+                    <label class="form-label" for="audit_data_sold">Pueden auditar los datos de trazabilidad de las ventas:</label>
+                    <select class="select2 form-control select2-multiple" id="audit_data_sold" name="audit_data_sold[]" multiple="multiple" data-placeholder="Selecciona">
+                        <option value="0" selected>Seleccionar</option>
+                        @foreach ($groups as $group)
+                            <option value="{{ $group->id }}">{{ $group->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mb-3" style="display: flex; flex-direction: column;">
+                    <label class="form-label" for="charge_massive_sold">Pueden cargar masivamente ventas:</label>
+                    <select class="select2 form-control select2-multiple" id="charge_massive_sold" name="charge_massive_sold[]" multiple="multiple" data-placeholder="Selecciona">
+                        <option value="0" selected>Seleccionar</option>
+                        @foreach ($groups as $group)
+                            <option value="{{ $group->id }}">{{ $group->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mb-3" style="display: flex; flex-direction: column;">
+                    <label class="form-label" for="autorize_duplicate_sold">Pueden autorizar ventas con valores duplicados:</label>
+                    <select class="select2 form-control select2-multiple" id="autorize_duplicate_sold" name="autorize_duplicate_sold[]" multiple="multiple" data-placeholder="Selecciona">
+                        <option value="0" selected>Seleccionar</option>
+                        @foreach ($groups as $group)
+                            <option value="{{ $group->id }}">{{ $group->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mb-3">
+                    <label class="form-label" for="description">Descripción:</label>
+                    <textarea class="form-control" id="description" name="description"></textarea>
+                </div>
+            </div>
+        </div>
     </x-modal>
 
 @endsection
@@ -212,6 +263,11 @@
         const groups = @json($groups);
         const countries = @json($countries);
         const rangeDates = @json($rangeDates);
+        const groupsAuthorizeDuplicateSold = @json($groupsAuthorizeDuplicateSold);
+        const groupsUploadMassiveSold = @json($groupsUploadMassiveSold);
+        const groupsExportSold = @json($groupsExportSold);
+        const groupsViewEdition = @json($groupsViewEdition);
+        const groupsAuditDataSold = @json($groupsAuditDataSold);
         const titleEdit = $('#editCampaignTitle')[0];
 
         function reinitData() {
@@ -229,10 +285,21 @@
             $('#option_duplicate_sold').prop("checked", 0);
             $('#show_history_sold').prop("checked", 0);
             $('#range_date_id').val("");
+            $('#description').val("");
             $('#export_list_solds').val([]).trigger('change');
+            $('#show_sold_edit').val([]).trigger('change');
+            $('#audit_data_sold').val([]).trigger('change');
+            $('#charge_massive_sold').val([]).trigger('change');
+            $('#autorize_duplicate_sold').val([]).trigger('change');
         };
         function loadData(ID) {
             let campaignData;
+
+            const exportSold = groupsExportSold.filter(i => i.campain_id == +ID);
+            const viewEdition = groupsViewEdition.filter(i => i.campain_id == +ID);
+            const auditDataSold = groupsAuditDataSold.filter(i => i.campain_id == +ID);
+            const uploadMassiveSold = groupsUploadMassiveSold.filter(i => i.campain_id == +ID);
+            const authorizeDuplicateSold = groupsAuthorizeDuplicateSold.filter(i => i.campain_id == +ID);
 
             for (let i = 0; i < campaigns.length; i++) {
                 const campaign = campaigns[i];
@@ -241,7 +308,6 @@
             };
 
             if (campaignData) {
-                console.log(campaignData)
                 const {
                     id,
                     name,
@@ -257,7 +323,14 @@
                     option_duplicate_sold,
                     show_history_sold,
                     range_date_id,
+                    description,
                 } = campaignData;
+
+                const exportSoldId = exportSold.map(i => i.group_id);
+                const viewEditionId = viewEdition.map(i => i.group_id);
+                const auditDataSoldId = auditDataSold.map(i => i.group_id);
+                const uploadMassiveSoldId = uploadMassiveSold.map(i => i.group_id);
+                const authorizeDuplicateSoldId = authorizeDuplicateSold.map(i => i.group_id);
 
                 $('#id').val(id);
                 $('#name').val(name);
@@ -273,7 +346,12 @@
                 $('#option_duplicate_sold').prop("checked", option_duplicate_sold);
                 $('#show_history_sold').prop("checked", show_history_sold);
                 $('#range_date_id').val(range_date_id);
-                $('#export_list_solds').val([]).trigger('change');
+                $('#description').val(description);
+                $('#export_list_solds').val(exportSoldId).trigger('change');
+                $('#show_sold_edit').val(viewEditionId).trigger('change');
+                $('#audit_data_sold').val(auditDataSoldId).trigger('change');
+                $('#charge_massive_sold').val(uploadMassiveSoldId).trigger('change');
+                $('#autorize_duplicate_sold').val(authorizeDuplicateSoldId).trigger('change');
             };
         };
 
@@ -282,18 +360,18 @@
             $('#export_list_solds').select2({
                 dropdownParent: $('#editCampaign')
             });
-            // ClassicEditor
-            //     .create(document.querySelector('#text-edit'))
-            //     .then(editor => {
-            //         window.editor = editor;
-
-            //         editor.model.document.on('change:data', () => {
-            //             $('#text').val(editor.getData());
-            //         });
-            //     })
-            //     .catch(error => {
-            //         console.error(error);
-            //     });
+            $('#show_sold_edit').select2({
+                dropdownParent: $('#editCampaign')
+            });
+            $('#audit_data_sold').select2({
+                dropdownParent: $('#editCampaign')
+            });
+            $('#charge_massive_sold').select2({
+                dropdownParent: $('#editCampaign')
+            });
+            $('#autorize_duplicate_sold').select2({
+                dropdownParent: $('#editCampaign')
+            });
 
             $('#newEditCampaign').on('click', '', function () {
                 reinitData();
@@ -362,7 +440,7 @@
                         .catch(error => {
                             Swal.fire({
                                 title: 'Error!',
-                                text: 'Ocurrio un error al intentar eliminar el anuncio.',
+                                text: 'Ocurrio un error al intentar eliminar la campaña.',
                                 icon: 'error',
                                 confirmButtonColor: "#34c38f"
                             });

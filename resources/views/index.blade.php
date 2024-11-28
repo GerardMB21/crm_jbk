@@ -3,43 +3,17 @@
 @section('content')
 @component('common-components.breadcrumb')
 @slot('pagetitle') Minible @endslot
-@slot('title') Dashboard @endslot
+@slot('title') Inicio @endslot
 @endcomponent
 
 <div class="row">
-    <div class="col-md-6 col-xl-3">
-        <div class="card">
-            <div class="card-body">
-                <div class="float-end mt-2">
-                    <div id="total-revenue-chart" data-colors='["--bs-primary"]'></div>
-                </div>
-                <div>
-                    <h4 class="mb-1 mt-1">$<span data-plugin="counterup">34,152</span></h4>
-                    <p class="text-muted mb-0">Total Revenue</p>
-                </div>
-                <p class="text-muted mt-3 mb-0"><span class="text-success me-1"><i class="mdi mdi-arrow-up-bold me-1"></i>2.65%</span> since last week
-                </p>
-            </div>
-        </div>
-    </div> <!-- end col-->
+    @foreach ($modules as $module)
+        <a href="{{url($module->id == 1 ? 'enterprise' : 'sales')}}" class="col-md-6">
+            <div id="{{ $module->id == 1 ? 'enterprise' : 'solds' }}" class="card"></div>
+        </a>
+    @endforeach
 
-    <div class="col-md-6 col-xl-3">
-        <div class="card">
-            <div class="card-body">
-                <div class="float-end mt-2">
-                    <div id="orders-chart" data-colors='["--bs-success"]'> </div>
-                </div>
-                <div>
-                    <h4 class="mb-1 mt-1"><span data-plugin="counterup">5,643</span></h4>
-                    <p class="text-muted mb-0">Orders</p>
-                </div>
-                <p class="text-muted mt-3 mb-0"><span class="text-danger me-1"><i class="mdi mdi-arrow-down-bold me-1"></i>0.82%</span> since last week
-                </p>
-            </div>
-        </div>
-    </div> <!-- end col-->
-
-    <div class="col-md-6 col-xl-3">
+    {{-- <div class="col-md-6 col-xl-3">
         <div class="card">
             <div class="card-body">
                 <div class="float-end mt-2">
@@ -53,9 +27,9 @@
                 </p>
             </div>
         </div>
-    </div> <!-- end col-->
+    </div> --}}
 
-    <div class="col-md-6 col-xl-3">
+    {{-- <div class="col-md-6 col-xl-3">
 
         <div class="card">
             <div class="card-body">
@@ -70,10 +44,10 @@
                 </p>
             </div>
         </div>
-    </div> <!-- end col-->
-</div> <!-- end row-->
+    </div> --}}
+</div>
 
-<div class="row">
+{{-- <div class="row">
     <div class="col-xl-8">
         <div class="card">
             <div class="card-body">
@@ -228,9 +202,9 @@
             </div> <!-- end card-body-->
         </div> <!-- end card-->
     </div> <!-- end Col -->
-</div> <!-- end row-->
+</div> --}}
 
-<div class="row">
+{{-- <div class="row">
     <div class="col-xl-4">
         <div class="card">
             <div class="card-body">
@@ -461,10 +435,9 @@
             </div>
         </div>
     </div>
-</div>
-<!-- end row -->
+</div> --}}
 
-<div class="row">
+{{-- <div class="row">
     <div class="col-lg-12">
         <div class="card">
             <div class="card-body">
@@ -660,13 +633,30 @@
             </div>
         </div>
     </div>
-</div>
-<!-- end row -->
+</div> --}}
 
 @endsection
 @section('script')
 <!-- apexcharts -->
 <script src="{{ URL::asset('/assets/libs/apexcharts/apexcharts.min.js') }}"></script>
-
 <script src="{{ URL::asset('/assets/js/pages/dashboard.init.js') }}"></script>
+
+<script>
+    const modules = @json($modules);
+
+    $('#enterprise').css('background-image', 'url("storage/uploads/enterprise.jpg")');
+    $('#solds').css('background-image', 'url("storage/uploads/sales.jpg")');
+
+    $('#enterprise').css('background-repeat', 'no-repeat');
+    $('#solds').css('background-repeat', 'no-repeat');
+
+    $('#enterprise').css('background-size', 'cover');
+    $('#solds').css('background-size', 'cover');
+
+    $('#enterprise').css('background-position', 'center');
+    $('#solds').css('background-position', 'center');
+
+    $('#enterprise').css('height', '300px');
+    $('#solds').css('height', '300px');
+</script>
 @endsection

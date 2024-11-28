@@ -3,7 +3,7 @@
 
     <!-- LOGO -->
     <div class="navbar-brand-box">
-        <a href="{{url('index')}}" class="logo logo-dark">
+        <a href="{{url('/')}}" class="logo logo-dark">
             <span class="logo-sm">
                 <img src="{{ URL::asset('/assets/images/logo-sm.png') }}" alt="" height="22">
             </span>
@@ -12,7 +12,7 @@
             </span>
         </a>
 
-        <a href="{{url('index')}}" class="logo logo-light">
+        <a href="{{url('/')}}" class="logo logo-light">
             <span class="logo-sm">
                 <img src="{{ URL::asset('/assets/images/logo-sm.png') }}" alt="" height="22">
             </span>
@@ -41,7 +41,36 @@
                     </a>
                 </li>
 
-                <li class="menu-title">Mi Empresa</li>
+                @if (isset($modules))
+                    @foreach ($modules as $module)
+                        <li class="{{ $module->url ? '' : 'menu-title' }}">
+                            {{ $module->name }}
+                        </li>
+
+                        @if (isset($module->sections))
+                            @foreach ($module->sections as $section)
+                                <li>
+                                    <a href="{{ $section->url ? url($section->url) : 'javascript: void(0);' }}" class="{{ $section->url ? '' : 'has-arrow waves-effect' }}">
+                                        <i class="{{ $section->icon }}"></i>
+                                        <span>{{ $section->name }}</span>
+                                    </a>
+                                </li>
+
+                                <ul class="sub-menu" aria-expanded="false">
+                                    @if ($section->subSections)
+                                        @foreach ($section->subSections as $subSection)
+                                            <li>
+                                                <a href="{{url($subSection->url)}}">{{ $subSection->name }}</a>
+                                            </li>
+                                        @endforeach
+                                    @endif
+                                </ul>
+                            @endforeach
+                        @endif
+                    @endforeach
+                @endif
+
+                {{-- <li class="menu-title">Mi Empresa</li>
 
                 <li>
                     <a href="{{url('enterprise/config')}}">
@@ -96,9 +125,9 @@
                             <a href="{{url('enterprise/popups')}}">Popups</a>
                         </li>
                     </ul>
-                </li>
+                </li> --}}
 
-                <li class="menu-title">Ventas</li>
+                {{-- <li class="menu-title">Ventas</li>
 
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -110,16 +139,16 @@
                             <a href="{{url('sales/campaigns')}}">Campañas</a>
                         </li>
                         <li>
-                            <a href="{{url('sales/tabs-states')}}">Pestañas de Estado</a>
+                            <a href="{{url('sales/tab-states')}}">Pestañas de Estado</a>
                         </li>
                         <li>
                             <a href="{{url('sales/states')}}">Estados</a>
                         </li>
                         <li>
-                            <a href="{{url('sales/blocks-camps')}}">Bloques de Campos</a>
+                            <a href="{{url('sales/blocks')}}">Bloques de Campos</a>
                         </li>
                         <li>
-                            <a href="{{url('sales/camps')}}">Campos</a>
+                            <a href="{{url('sales/fields')}}">Campos</a>
                         </li>
                     </ul>
                 </li>
@@ -130,8 +159,14 @@
                         <span>Ventas</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
+                        @foreach ($campaigns as $campaign)
+                            <li>
+                                <a href="{{url('sales/solds', $campaign->id)}}">{{ $campaign->name }}</a>
+                            </li>
+                        @endforeach
                     </ul>
-                </li>
+                </li> --}}
+
                 {{-- <li class="menu-title">@lang('translation.Menu')</li>
 
                 <li>

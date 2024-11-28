@@ -15,6 +15,17 @@ use App\Models\File;
 use App\Models\Campain;
 use App\Models\Country;
 use App\Models\RangeDate;
+use App\Models\GroupCampainAuthorizateDuplicateSold;
+use App\Models\GroupCampainUploadMassiveSold;
+use App\Models\GroupCampainExportSold;
+use App\Models\GroupCampainViewEdition;
+use App\Models\GroupCampainAuditDataSold;
+use App\Models\ModuleInGroup;
+use App\Models\Module;
+use App\Models\SectionInGroup;
+use App\Models\Section;
+use App\Models\SubSectionInGroup;
+use App\Models\SubSection;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -42,12 +53,76 @@ class CampaignsController extends Controller
      */
     public function index()
     {
+        $modules = $this->modules();
         $campaigns = Campain::get();
         $countries = Country::get();
         $rangeDates = RangeDate::get();
         $groups = Group::get();
+        $groupsAuthorizeDuplicateSold = GroupCampainAuthorizateDuplicateSold::get();
+        $groupsUploadMassiveSold = GroupCampainUploadMassiveSold::get();
+        $groupsExportSold = GroupCampainExportSold::get();
+        $groupsViewEdition = GroupCampainViewEdition::get();
+        $groupsAuditDataSold = GroupCampainAuditDataSold::get();
 
-        return view('campaigns', compact('campaigns','groups','countries','rangeDates'));
+        return view('campaigns', compact('campaigns','groups','countries','rangeDates','groupsAuthorizeDuplicateSold','groupsUploadMassiveSold','groupsExportSold','groupsViewEdition','groupsAuditDataSold','modules'));
+    }
+
+    public function modules()
+    {
+        $userId = Auth::user()->id;
+        $userGroup = UserGroup::where('user_id', $userId)
+                                ->first();
+        $group = Group::where('id', $userGroup->group_id)
+                        ->first();
+        $modulesGroup = ModuleInGroup::where('group_id', $group->id)
+                                    ->get();
+        $sectionsGroup = SectionInGroup::where('group_id', $group->id)
+                                        ->get();
+        $subSectionsGroup = SubSectionInGroup::where('group_id', $group->id)
+                                            ->get();
+
+        $modulesIds = [];
+        foreach ($modulesGroup as $moduleGroup) {
+            $modulesIds[] = $moduleGroup->module_id;
+        };
+
+        $sectionsIds = [];
+        foreach ($sectionsGroup as $sectionGroup) {
+            $sectionsIds[] = $sectionGroup->section_id;
+        };
+
+        $subSectionsIds = [];
+        foreach ($subSectionsGroup as $subSectionGroup) {
+            $subSectionsIds[] = $subSectionGroup->sub_section_id;
+        };
+
+        $modules = Module::whereIn('id', [2])
+                        ->get();
+        $sections = Section::whereIn('id', $sectionsIds)
+                            ->orderBy('order','asc')
+                            ->get();
+        $subSections = SubSection::whereIn('id', $subSectionsIds)
+                                ->get();
+
+        $result = $modules->map(function ($module) use ($sections, $subSections) {
+
+            $moduleSections = $sections->where('module_id', $module->id)->map(function ($section) use ($subSections)
+            {
+                $sectionSubSections = $subSections->where('section_id', $section->id);
+
+                $section->subSections = $sectionSubSections->values();
+
+                return $section;
+            });
+
+            $module->sections = $moduleSections->values();
+
+            return $module;
+        });
+
+        $modules = $result;
+
+        return $modules;
     }
 
     public function list()
@@ -93,18 +168,12 @@ class CampaignsController extends Controller
         $change_state_list_sold = request('change_state_list_sold');
         $option_duplicate_sold = request('option_duplicate_sold');
         $show_history_sold = request('show_history_sold');
-        $user_group_export_sold_ids = request('group_export_sold_ids');
-        $user_group_view_edition_ids = request('group_view_edition_ids');
-        $user_group_upload_massive_sold_ids = request('group_upload_massive_sold_ids');
-        $user_group_authorizate_duplicate_sold_ids = request('group_authorizate_duplicate_sold_ids');
-        $user_group_audit_data_sold_ids = request('group_audit_data_sold_ids');
+        $group_campain_export_solds = request('export_list_solds');
+        $group_campain_view_edition = request('show_sold_edit');
+        $group_campain_audit_data_sold = request('audit_data_sold');
+        $group_campain_upload_massive_sold = request('charge_massive_sold');
+        $group_campain_authorizate_duplicate_solds = request('autorize_duplicate_sold');
         $state = 1; //activo
-
-        $group_campain_export_solds = json_decode($user_group_export_sold_ids);
-        $group_campain_view_edition = json_decode($user_group_view_edition_ids);
-        $group_campain_upload_massive_sold = json_decode($user_group_upload_massive_sold_ids);
-        $group_campain_authorizate_duplicate_solds = json_decode($user_group_authorizate_duplicate_sold_ids);
-        $group_campain_audit_data_sold = json_decode($user_group_audit_data_sold_ids);
 
         if (isset($id)) {
             $campain =  Campain::findOrFail($id);
@@ -153,48 +222,58 @@ class CampaignsController extends Controller
         }
 
         $groupCampainExportSolds = [];
-        foreach ($group_campain_export_solds as $groupId) {
-            $groupCampainExportSolds[] = [
-                'campain_id' => $campain->id,
-                'group_id' => $groupId,
-                'created_at_user' => Auth::user()->name,
-            ];
+        if ($group_campain_export_solds) {
+            foreach ($group_campain_export_solds as $groupId) {
+                $groupCampainExportSolds[] = [
+                    'campain_id' => $campain->id,
+                    'group_id' => $groupId,
+                    'created_at_user' => Auth::user()->name,
+                ];
+            }
         }
 
         $groupCampainViewEdition = [];
-        foreach ($group_campain_view_edition as $groupId) {
-            $groupCampainViewEdition[] = [
-                'campain_id' => $campain->id,
-                'group_id' => $groupId,
-                'created_at_user' => Auth::user()->name,
-            ];
+        if ($group_campain_view_edition) {
+            foreach ($group_campain_view_edition as $groupId) {
+                $groupCampainViewEdition[] = [
+                    'campain_id' => $campain->id,
+                    'group_id' => $groupId,
+                    'created_at_user' => Auth::user()->name,
+                ];
+            }
         }
 
         $groupCampainAuthorizateDuplicateSolds = [];
-        foreach ($group_campain_authorizate_duplicate_solds as $groupId) {
-            $groupCampainAuthorizateDuplicateSolds[] = [
-                'campain_id' => $campain->id,
-                'group_id' => $groupId,
-                'created_at_user' => Auth::user()->name,
-            ];
+        if ($group_campain_authorizate_duplicate_solds) {
+            foreach ($group_campain_authorizate_duplicate_solds as $groupId) {
+                $groupCampainAuthorizateDuplicateSolds[] = [
+                    'campain_id' => $campain->id,
+                    'group_id' => $groupId,
+                    'created_at_user' => Auth::user()->name,
+                ];
+            }
         }
 
         $groupCampainAuditDataSold = [];
-        foreach ($group_campain_audit_data_sold as $groupId) {
-            $groupCampainAuditDataSold[] = [
-                'campain_id' => $campain->id,
-                'group_id' => $groupId,
-                'created_at_user' => Auth::user()->name,
-            ];
+        if ($group_campain_audit_data_sold) {
+            foreach ($group_campain_audit_data_sold as $groupId) {
+                $groupCampainAuditDataSold[] = [
+                    'campain_id' => $campain->id,
+                    'group_id' => $groupId,
+                    'created_at_user' => Auth::user()->name,
+                ];
+            }
         }
 
         $groupCampainUploadMassiveSold = [];
-        foreach ($group_campain_upload_massive_sold as $groupId) {
-            $groupCampainUploadMassiveSold[] = [
-                'campain_id' => $campain->id,
-                'group_id' => $groupId,
-                'created_at_user' => Auth::user()->name,
-            ];
+        if ($group_campain_upload_massive_sold) {
+            foreach ($group_campain_upload_massive_sold as $groupId) {
+                $groupCampainUploadMassiveSold[] = [
+                    'campain_id' => $campain->id,
+                    'group_id' => $groupId,
+                    'created_at_user' => Auth::user()->name,
+                ];
+            }
         }
 
         GroupCampainExportSold::insert($groupCampainExportSolds);
@@ -207,12 +286,25 @@ class CampaignsController extends Controller
         $countries = Country::get();
         $rangeDates = RangeDate::get();
         $groups = Group::get();
+        $groupsAuthorizeDuplicateSold = GroupCampainAuthorizateDuplicateSold::get();
+        $groupsUploadMassiveSold = GroupCampainUploadMassiveSold::get();
+        $groupsExportSold = GroupCampainExportSold::get();
+        $groupsViewEdition = GroupCampainViewEdition::get();
+        $groupsAuditDataSold = GroupCampainAuditDataSold::get();
+
+        $modules = $this->modules();
 
         return redirect()->back()->with([
             'campaigns' => $campaigns,
             'countries' => $countries,
             'rangeDates' => $rangeDates,
             'groups' => $groups,
+            'groupsAuthorizeDuplicateSold' => $groupsAuthorizeDuplicateSold,
+            'groupsUploadMassiveSold' => $groupsUploadMassiveSold,
+            'groupsExportSold' => $groupsExportSold,
+            'groupsViewEdition' => $groupsViewEdition,
+            'groupsAuditDataSold' => $groupsAuditDataSold,
+            'modules' => $modules,
         ]);
     }
 

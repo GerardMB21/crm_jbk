@@ -11,6 +11,13 @@ use App\Models\Advertisement;
 use App\Models\Logins;
 use App\Models\Horario;
 use App\Models\Day;
+use App\Models\Campain;
+use App\Models\ModuleInGroup;
+use App\Models\Module;
+use App\Models\SectionInGroup;
+use App\Models\Section;
+use App\Models\SubSectionInGroup;
+use App\Models\SubSection;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -37,6 +44,8 @@ class UsersController extends Controller
      */
     public function index()
     {
+        $modules = $this->modules();
+        $campaigns = Campain::get();
         $groups_general = Group::get();
         $company = Company::findOrFail(1);;
         $users = User::get();
@@ -49,7 +58,65 @@ class UsersController extends Controller
             ->leftjoin('groups', 'groups.id', '=', 'user_groups.group_id')
             ->get();
 
-        return view('users', compact('users','company','groups_general','groups'));
+        return view('users', compact('users','company','groups_general','groups','campaigns','modules'));
+    }
+
+    public function modules()
+    {
+        $userId = Auth::user()->id;
+        $userGroup = UserGroup::where('user_id', $userId)
+                                ->first();
+        $group = Group::where('id', $userGroup->group_id)
+                        ->first();
+        $modulesGroup = ModuleInGroup::where('group_id', $group->id)
+                                    ->get();
+        $sectionsGroup = SectionInGroup::where('group_id', $group->id)
+                                        ->get();
+        $subSectionsGroup = SubSectionInGroup::where('group_id', $group->id)
+                                            ->get();
+
+        $modulesIds = [];
+        foreach ($modulesGroup as $moduleGroup) {
+            $modulesIds[] = $moduleGroup->module_id;
+        };
+
+        $sectionsIds = [];
+        foreach ($sectionsGroup as $sectionGroup) {
+            $sectionsIds[] = $sectionGroup->section_id;
+        };
+
+        $subSectionsIds = [];
+        foreach ($subSectionsGroup as $subSectionGroup) {
+            $subSectionsIds[] = $subSectionGroup->sub_section_id;
+        };
+
+        $modules = Module::whereIn('id', [1])
+                        ->get();
+        $sections = Section::whereIn('id', $sectionsIds)
+                            ->orderBy('order','asc')
+                            ->get();
+        $subSections = SubSection::whereIn('id', $subSectionsIds)
+                                ->get();
+
+        $result = $modules->map(function ($module) use ($sections, $subSections) {
+
+            $moduleSections = $sections->where('module_id', $module->id)->map(function ($section) use ($subSections)
+            {
+                $sectionSubSections = $subSections->where('section_id', $section->id);
+
+                $section->subSections = $sectionSubSections->values();
+
+                return $section;
+            });
+
+            $module->sections = $moduleSections->values();
+
+            return $module;
+        });
+
+        $modules = $result;
+
+        return $modules;
     }
 
     public function validateForm()
@@ -96,6 +163,8 @@ class UsersController extends Controller
     {
         $this->validateModalGroup();
 
+        $campaigns = Campain::get();
+
         $user_id = request('user_id');
         $group_id = request('group_id');
 
@@ -116,11 +185,15 @@ class UsersController extends Controller
             ->leftjoin('groups', 'groups.id', '=', 'user_groups.group_id')
             ->get();
 
+        $modules = $this->modules();
+
         return redirect()->back()->with([
             'groups_general' => $groups_general,
             'company' => $company,
             'users' => $users,
             'groups' => $groups,
+            'campaigns' => $campaigns,
+            'modules' => $modules,
         ]);
     }
 
@@ -128,6 +201,7 @@ class UsersController extends Controller
     {
         $this->validateForm();
 
+        $campaigns = Campain::get();
         $company = Company::findOrFail(1);;
 
         $id = request('id');
@@ -167,11 +241,15 @@ class UsersController extends Controller
             ->leftjoin('groups', 'groups.id', '=', 'user_groups.group_id')
             ->get();
 
+        $modules = $this->modules();
+
         return redirect()->back()->with([
             'groups_general' => $groups_general,
             'company' => $company,
             'users' => $users,
             'groups' => $groups,
+            'campaigns' => $campaigns,
+            'modules' => $modules,
         ]);
     }
 

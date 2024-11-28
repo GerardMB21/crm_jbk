@@ -9,6 +9,13 @@ use App\Models\UserGroup;
 use App\Models\GroupAdvertisement;
 use App\Models\Advertisement;
 use App\Models\Logins;
+use App\Models\Campain;
+use App\Models\ModuleInGroup;
+use App\Models\Module;
+use App\Models\SectionInGroup;
+use App\Models\Section;
+use App\Models\SubSectionInGroup;
+use App\Models\SubSection;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -33,6 +40,60 @@ class ProfileController extends Controller
      */
     public function index()
     {
+        $userId = Auth::user()->id;
+        $userGroup = UserGroup::where('user_id', $userId)
+                                ->first();
+        $group = Group::where('id', $userGroup->group_id)
+                        ->first();
+        $modulesGroup = ModuleInGroup::where('group_id', $group->id)
+                                    ->get();
+        $sectionsGroup = SectionInGroup::where('group_id', $group->id)
+                                        ->get();
+        $subSectionsGroup = SubSectionInGroup::where('group_id', $group->id)
+                                            ->get();
+
+        $modulesIds = [];
+        foreach ($modulesGroup as $moduleGroup) {
+            $modulesIds[] = $moduleGroup->module_id;
+        };
+
+        $sectionsIds = [];
+        foreach ($sectionsGroup as $sectionGroup) {
+            $sectionsIds[] = $sectionGroup->section_id;
+        };
+
+        $subSectionsIds = [];
+        foreach ($subSectionsGroup as $subSectionGroup) {
+            $subSectionsIds[] = $subSectionGroup->sub_section_id;
+        };
+
+        $modules = Module::whereIn('id', $modulesIds)
+                        ->get();
+        $sections = Section::whereIn('id', $sectionsIds)
+                            ->orderBy('order','asc')
+                            ->get();
+        $subSections = SubSection::whereIn('id', $subSectionsIds)
+                                ->get();
+
+        $result = $modules->map(function ($module) use ($sections, $subSections) {
+
+            $moduleSections = $sections->where('module_id', $module->id)->sortBy('order')->map(function ($section) use ($subSections)
+            {
+                $sectionSubSections = $subSections->where('section_id', $section->id)->sortBy('order');
+
+                $section->subSections = $sectionSubSections->values();
+
+                return $section;
+            });
+
+            $module->sections = $moduleSections->values();
+
+            return $module;
+        });
+
+        $modules = $result;
+
+        $campaigns = Campain::get();
         $userId = Auth::user()->id;
         $user = User::where('id', $userId)->first();
         $logins = Logins::where('user_id', $userId)
@@ -88,6 +149,6 @@ class ProfileController extends Controller
                                         ->orderBy('created_at', 'desc')
                                         ->get();
 
-        return view('profile', compact('user','events','advertisements','group'));
+        return view('profile', compact('user','events','advertisements','group','campaigns','modules'));
     }
 }
