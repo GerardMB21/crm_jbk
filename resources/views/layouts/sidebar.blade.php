@@ -14,10 +14,13 @@
 
         <a href="{{url('/')}}" class="logo logo-light">
             <span class="logo-sm">
-                <img src="{{ URL::asset('/assets/images/logo-sm.png') }}" alt="" height="22">
+                {{-- <img src="{{ URL::asset('/assets/images/logo-sm.png') }}" alt="" height="22"> --}}
+                <img src="{{ url('/storage/uploads', $company->logo) }}" alt="" height="22">
             </span>
             <span class="logo-lg">
-                <img src="{{ URL::asset('/assets/images/logo-light.png') }}" alt="" height="20">
+                {{-- <img src="{{ URL::asset('/assets/images/logo-light.png') }}" alt="" height="20"> --}}
+                <img src="{{ url('/storage/uploads', $company->logo) }}" alt="" height="20">
+                <span class="">{{ $company->name }}</span>
             </span>
         </a>
     </div>
@@ -43,10 +46,19 @@
 
                 @if (isset($modules))
                     @foreach ($modules as $module)
-                        <li class="{{ $module->url ? '' : 'menu-title' }}">
-                            {{ $module->name }}
-                        </li>
+                        <!-- Título del módulo -->
+                        @if ($module->url)
+                            <li>
+                                <a href="{{ url($module->url) }}" class="waves-effect">
+                                    <i class="{{ $module->icon }}"></i>
+                                    <span>{{ $module->name }}</span>
+                                </a>
+                            </li>
+                        @else
+                            <li class="menu-title">{{ $module->name }}</li>
+                        @endif
 
+                        <!-- Secciones -->
                         @if (isset($module->sections))
                             @foreach ($module->sections as $section)
                                 <li>
@@ -54,21 +66,22 @@
                                         <i class="{{ $section->icon }}"></i>
                                         <span>{{ $section->name }}</span>
                                     </a>
-                                </li>
-
-                                <ul class="sub-menu" aria-expanded="false">
-                                    @if ($section->subSections)
-                                        @foreach ($section->subSections as $subSection)
-                                            <li>
-                                                <a href="{{url($subSection->url)}}">{{ $subSection->name }}</a>
-                                            </li>
-                                        @endforeach
+                                    <!-- Submenú -->
+                                    @if (isset($section->subSections) && count($section->subSections) > 0)
+                                        <ul class="sub-menu" aria-expanded="false">
+                                            @foreach ($section->subSections as $subSection)
+                                                <li>
+                                                    <a href="{{ url($subSection->url) }}">{{ $subSection->name }}</a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
                                     @endif
-                                </ul>
+                                </li>
                             @endforeach
                         @endif
                     @endforeach
                 @endif
+            
 
                 {{-- <li class="menu-title">Mi Empresa</li>
 

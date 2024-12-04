@@ -53,8 +53,11 @@ class TabStatesController extends Controller
         $id = NULL;
         $campaigns = Campain::get();
         $tabStates = [];
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
-        return view('tab-states', compact('id','campaigns','tabStates','modules'));
+        return view('tab-states', compact('id','campaigns','tabStates','modules','user','company'));
     }
 
     public function indexWithId($id)
@@ -73,8 +76,11 @@ class TabStatesController extends Controller
                                 ->where('campain_id', $id)
                                 ->orderBy('tab_states.order','asc')
                                 ->get();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
-        return view('tab-states', compact('id','campaigns','tabStates','modules'));
+        return view('tab-states', compact('id','campaigns','tabStates','modules','user','company'));
     }
 
     public function modules()
@@ -106,7 +112,7 @@ class TabStatesController extends Controller
             $subSectionsIds[] = $subSectionGroup->sub_section_id;
         };
 
-        $modules = Module::whereIn('id', [2])
+        $modules = Module::whereIn('id', $modulesIds)
                         ->get();
         $sections = Section::whereIn('id', $sectionsIds)
                             ->orderBy('order','asc')
@@ -116,7 +122,7 @@ class TabStatesController extends Controller
 
         $result = $modules->map(function ($module) use ($sections, $subSections) {
 
-            $moduleSections = $sections->where('module_id', $module->id)->map(function ($section) use ($subSections)
+            $moduleSections = $sections->sortBy('order')->where('module_id', $module->id)->map(function ($section) use ($subSections)
             {
                 $sectionSubSections = $subSections->where('section_id', $section->id);
 
@@ -230,12 +236,17 @@ class TabStatesController extends Controller
                                 ->get();
 
         $modules = $this->modules();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
         return redirect()->back()->with([
             'id' => $campain_id,
             'campaigns' => $campaigns,
             'tabStates' => $tabStates,
             'modules' => $modules,
+            'user' => $user,
+            'company' => $company,
         ]);
     }
 
@@ -262,9 +273,9 @@ class TabStatesController extends Controller
         ]);
     }
 
-    public function DeshabilitarTabState()
+    public function DisallowTabState($id)
     {
-        $element = TabState::findOrFail(request('id'));
+        $element = TabState::findOrFail($id);
         $element->state = 0;
         $element->save();
 
@@ -279,9 +290,9 @@ class TabStatesController extends Controller
         ]);
     }
 
-    public function HabilitarTabState()
+    public function AllowTabState($id)
     {
-        $element = TabState::findOrFail(request('id'));
+        $element = TabState::findOrFail($id);
         $element->state = 1;
         $element->save();
 

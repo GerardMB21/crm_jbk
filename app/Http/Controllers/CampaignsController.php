@@ -63,8 +63,11 @@ class CampaignsController extends Controller
         $groupsExportSold = GroupCampainExportSold::get();
         $groupsViewEdition = GroupCampainViewEdition::get();
         $groupsAuditDataSold = GroupCampainAuditDataSold::get();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
-        return view('campaigns', compact('campaigns','groups','countries','rangeDates','groupsAuthorizeDuplicateSold','groupsUploadMassiveSold','groupsExportSold','groupsViewEdition','groupsAuditDataSold','modules'));
+        return view('campaigns', compact('campaigns','groups','countries','rangeDates','groupsAuthorizeDuplicateSold','groupsUploadMassiveSold','groupsExportSold','groupsViewEdition','groupsAuditDataSold','modules','user','company'));
     }
 
     public function modules()
@@ -96,7 +99,7 @@ class CampaignsController extends Controller
             $subSectionsIds[] = $subSectionGroup->sub_section_id;
         };
 
-        $modules = Module::whereIn('id', [2])
+        $modules = Module::whereIn('id', $modulesIds)
                         ->get();
         $sections = Section::whereIn('id', $sectionsIds)
                             ->orderBy('order','asc')
@@ -106,7 +109,7 @@ class CampaignsController extends Controller
 
         $result = $modules->map(function ($module) use ($sections, $subSections) {
 
-            $moduleSections = $sections->where('module_id', $module->id)->map(function ($section) use ($subSections)
+            $moduleSections = $sections->sortBy('order')->where('module_id', $module->id)->map(function ($section) use ($subSections)
             {
                 $sectionSubSections = $subSections->where('section_id', $section->id);
 
@@ -293,6 +296,9 @@ class CampaignsController extends Controller
         $groupsAuditDataSold = GroupCampainAuditDataSold::get();
 
         $modules = $this->modules();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
         return redirect()->back()->with([
             'campaigns' => $campaigns,
@@ -305,6 +311,8 @@ class CampaignsController extends Controller
             'groupsViewEdition' => $groupsViewEdition,
             'groupsAuditDataSold' => $groupsAuditDataSold,
             'modules' => $modules,
+            'user' => $user,
+            'company' => $company,
         ]);
     }
 
@@ -374,9 +382,9 @@ class CampaignsController extends Controller
         ]);
     }
 
-    public function DeshabilitarCampaign()
+    public function DisallowCampaign($id)
     {
-        $element = Campain::findOrFail(request('id'));
+        $element = Campain::findOrFail($id);
         $element->state = 0;
         $element->save();
 
@@ -391,9 +399,9 @@ class CampaignsController extends Controller
         ]);
     }
 
-    public function HabilitarCampaign()
+    public function AllowCampaign($id)
     {
-        $element = Campain::findOrFail(request('id'));
+        $element = Campain::findOrFail($id);
         $element->state = 1;
         $element->save();
 

@@ -58,8 +58,11 @@ class AdvertisementsController extends Controller
         )
             ->leftjoin('groups', 'groups.id', '=', 'groups_advertisements.group_id')
             ->get();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
-        return view('advertisements', compact('campaigns','advertisements','groups','groups_advertisements','modules'));
+        return view('advertisements', compact('campaigns','advertisements','groups','groups_advertisements','modules','user','company'));
     }
 
     public function modules()
@@ -91,7 +94,7 @@ class AdvertisementsController extends Controller
             $subSectionsIds[] = $subSectionGroup->sub_section_id;
         };
 
-        $modules = Module::whereIn('id', [1])
+        $modules = Module::whereIn('id', $modulesIds)
                         ->get();
         $sections = Section::whereIn('id', $sectionsIds)
                             ->orderBy('order','asc')
@@ -101,7 +104,7 @@ class AdvertisementsController extends Controller
 
         $result = $modules->map(function ($module) use ($sections, $subSections) {
 
-            $moduleSections = $sections->where('module_id', $module->id)->map(function ($section) use ($subSections)
+            $moduleSections = $sections->sortBy('order')->where('module_id', $module->id)->map(function ($section) use ($subSections)
             {
                 $sectionSubSections = $subSections->where('section_id', $section->id);
 
@@ -192,15 +195,19 @@ class AdvertisementsController extends Controller
 
         $groupAdvertisement = [];
 
-        foreach ($group_advertisement as $groupId) {
-            $groupAdvertisement[] = [
-                'advertisement_id' => $advertisement->id,
-                'group_id' => $groupId,
-                'created_at_user' => Auth::user()->name,
-            ];
+        if (isset($group_advertisement)) {
+            foreach ($group_advertisement as $groupId) {
+                $groupAdvertisement[] = [
+                    'advertisement_id' => $advertisement->id,
+                    'group_id' => $groupId,
+                    'created_at_user' => Auth::user()->name,
+                ];
+            }
         }
 
-        GroupAdvertisement::insert($groupAdvertisement);
+        if (isset($groupAdvertisement)) {
+            GroupAdvertisement::insert($groupAdvertisement);
+        }
 
         $advertisements = Advertisement::get();
         $groups = Group::get();
@@ -212,11 +219,16 @@ class AdvertisementsController extends Controller
         )
             ->leftjoin('groups', 'groups.id', '=', 'groups_advertisements.group_id')
             ->get();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
         return redirect()->back()->with([
             'advertisements' => $advertisements,
             'groups' => $groups,
             'campaigns' => $campaigns,
+            'user' => $user,
+            'company' => $company,
         ]);
     }
 
@@ -254,7 +266,7 @@ class AdvertisementsController extends Controller
         ]);
     }
 
-    public function DeshabilitarAdvertisement($id)
+    public function DisallowAdvertisement($id)
     {
         $element = Advertisement::findOrFail($id);
         $element->state = 0;
@@ -271,7 +283,7 @@ class AdvertisementsController extends Controller
         ]);
     }
 
-    public function HabilitarAdvertisement($id)
+    public function AllowAdvertisement($id)
     {
         $element = Advertisement::findOrFail($id);
         $element->state = 1;

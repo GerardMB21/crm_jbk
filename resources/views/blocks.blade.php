@@ -37,7 +37,8 @@
                     </td>
                     <td data-field="estado">
                         <div data-block-id="{{ $block->id }}">
-                            {{ $block->block }}
+                            <input type="checkbox" class="switch" id="switch-{{ $block->id }}" switch="bool" data-block-id="{{ $block->id }}" {{ $block->state == "1" ? 'checked' : '' }} />
+                            <label for="switch-{{ $block->id }}" data-on-label="On" data-off-label="Off"></label>
                         </div>
                     </td>
                     <td style="width: 100px" data-field="opciones">
@@ -206,6 +207,43 @@
                 const campaignId = $('#id_campaign').val();
 
                 window.location.assign(`{{ url('sales/blocks/${campaignId}') }}`);
+            });
+
+            $('#datatable input.switch').on('change', function (e) {
+                const val = this.checked;
+                const blockId = this.dataset.blockId;
+
+                if (val) {
+                    fetch(`{{ route('AllowBlock', '') }}/${blockId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
+                } else {
+                    fetch(`{{ route('DisallowBlock', '') }}/${blockId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
+                };
             });
         });
     </script>

@@ -8,11 +8,10 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="text-center">
-                        <a href="{{ url('index') }}" class="mb-5 d-block auth-logo">
-                            <img src="{{ URL::asset('/assets/images/logo-dark.png') }}" alt="" height="22"
-                                class="logo logo-dark">
-                            <img src="{{ URL::asset('/assets/images/logo-light.png') }}" alt="" height="22"
-                                class="logo logo-light">
+                        <a href="{{ url('index') }}" class="mb-5 d-block auth-logo auth-title">
+                            Zicacenter
+                            {{-- <img src="{{ URL::asset('/assets/images/logo-dark.png') }}" alt="" height="22" class="logo logo-dark">
+                            <img src="{{ URL::asset('/assets/images/logo-light.png') }}" alt="" height="22" class="logo logo-light"> --}}
                         </a>
                     </div>
                 </div>
@@ -23,8 +22,8 @@
 
                         <div class="card-body p-4">
                             <div class="text-center mt-2">
-                                <h5 class="text-primary">Welcome Back !</h5>
-                                <p class="text-muted">Sign in to continue to Minible.</p>
+                                <h5 class="text-primary">Bienvenido !</h5>
+                                <p class="text-muted">Inicia sesión para continuar en el sistema.</p>
                             </div>
                             <div class="p-2 mt-4">
                                 <form method="POST" action="{{ route('login') }}">
@@ -44,12 +43,12 @@
 
                                     <div class="mb-3">
                                         <div class="float-end">
-                                            @if (Route::has('password.request'))
+                                            {{-- @if (Route::has('password.request'))
                                                 <a href="{{ route('password.request') }}" class="text-muted">Forgot
                                                     password?</a>
-                                            @endif
+                                            @endif --}}
                                         </div>
-                                        <label class="form-label" for="userpassword">Password</label>
+                                        <label class="form-label" for="userpassword">Contraseña</label>
                                         <input type="password" class="form-control @error('password') is-invalid @enderror"
                                             value="12345678" name="password" id="userpassword" placeholder="Enter password">
                                         @error('password')
@@ -62,15 +61,14 @@
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" id="auth-remember-check"
                                             name="remember" {{ old('remember') ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="auth-remember-check">Remember me</label>
+                                        <label class="form-check-label" for="auth-remember-check">Recordarme</label>
                                     </div>
 
                                     <div class="mt-3 text-end">
-                                        <button class="btn btn-primary w-sm waves-effect waves-light" type="submit">Log
-                                            In</button>
+                                        <button class="btn btn-primary w-sm waves-effect waves-light" type="submit">Ingresar</button>
                                     </div>
 
-                                    <div class="mt-4 text-center">
+                                    {{-- <div class="mt-4 text-center">
                                         <div class="signin-other-title">
                                             <h5 class="font-size-14 mb-3 title">Sign in with</h5>
                                         </div>
@@ -101,7 +99,7 @@
                                     <div class="mt-4 text-center">
                                         <p class="mb-0">Don't have an account ? <a href="{{ url('register') }}"
                                                 class="fw-medium text-primary"> Signup now </a> </p>
-                                    </div>
+                                    </div> --}}
                                 </form>
                             </div>
 
@@ -112,7 +110,7 @@
                         <p>© <script>
                                 document.write(new Date().getFullYear())
 
-                            </script> Minible. Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand</p>
+                            </script> Zicacenter</p>
                     </div>
 
                 </div>

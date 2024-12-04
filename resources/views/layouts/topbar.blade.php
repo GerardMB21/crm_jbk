@@ -3,21 +3,23 @@
         <div class="d-flex">
             <!-- LOGO -->
             <div class="navbar-brand-box">
-                <a href="{{url('index')}}" class="logo logo-dark">
+                {{-- <a href="{{url('index')}}" class="logo logo-dark">
                     <span class="logo-sm">
                         <img src="{{ URL::asset('/assets/images/logo-sm.png') }}" alt="" height="22">
                     </span>
                     <span class="logo-lg">
                         <img src="{{ URL::asset('/assets/images/logo-dark.png') }}" alt="" height="20">
                     </span>
-                </a>
+                </a> --}}
 
                 <a href="{{url('index')}}" class="logo logo-light">
                     <span class="logo-sm">
-                        <img src="{{ URL::asset('/assets/images/logo-sm.png') }}" alt="" height="22">
+                        {{-- <img src="{{ URL::asset('/assets/images/logo-sm.png') }}" alt="" height="22"> --}}
+                        <img src="{{ url('/storage/uploads', $company->logo) }}" alt="" height="22">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{ URL::asset('/assets/images/logo-light.png') }}" alt="" height="20">
+                        {{-- <img src="{{ URL::asset('/assets/images/logo-light.png') }}" alt="" height="20"> --}}
+                        <img src="{{ url('/storage/uploads', $company->logo) }}" alt="" height="20">
                     </span>
                 </a>
             </div>
@@ -256,7 +258,9 @@
 
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle header-profile-user" src="{{ URL::asset('/assets/images/users/avatar-4.jpg') }}" alt="Header Avatar">
+                    @if ($user->foto_perfil)
+                        <img class="rounded-circle header-profile-user" src="{{ url('/storage/uploads', $user->foto_perfil) }}" alt="{{ $user->name }}">
+                    @endif
                     <span class="d-none d-xl-inline-block ms-1 fw-medium font-size-15">{{Str::ucfirst(Auth::user()->name)}}</span>
                     <i class="uil-angle-down d-none d-xl-inline-block font-size-15"></i>
                 </button>

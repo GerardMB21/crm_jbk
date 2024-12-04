@@ -29,12 +29,20 @@ Route::get('index/{locale}', [App\Http\Controllers\HomeController::class, 'lang'
 
 Route::post('/formsubmit', [App\Http\Controllers\HomeController::class, 'FormSubmit'])->name('FormSubmit');
 
+Route::post('/profile/save-image-profile', [App\Http\Controllers\ProfileController::class, 'SaveImageProfile'])->name('SaveImageProfile');
 Route::post('/enterprise/save-company', [App\Http\Controllers\EnterpriseController::class, 'SaveCompany'])->name('SaveCompany');
 Route::post('/enterprise/save-hour', [App\Http\Controllers\HoursController::class, 'SaveHour'])->name('SaveHour');
 Route::post('/enterprise/save-group', [App\Http\Controllers\GroupUsersController::class, 'SaveGroup'])->name('SaveGroup');
 Route::post('/enterprise/save-user', [App\Http\Controllers\UsersController::class, 'SaveUser'])->name('SaveUser');
 Route::post('/enterprise/add-group-user', [App\Http\Controllers\UsersController::class, 'AddGroup'])->name('AddGroup');
 Route::post('/enterprise/save-advertisement', [App\Http\Controllers\AdvertisementsController::class, 'SaveAdvertisement'])->name('SaveAdvertisement');
+
+Route::patch('/enterprise/disallow-hour/{id}', [App\Http\Controllers\HoursController::class, 'DisallowHour'])->name('DisallowHour');
+Route::patch('/enterprise/allow-hour/{id}', [App\Http\Controllers\HoursController::class, 'AllowHour'])->name('AllowHour');
+Route::patch('/enterprise/disallow-group/{id}', [App\Http\Controllers\GroupUsersController::class, 'DisallowGroup'])->name('DisallowGroup');
+Route::patch('/enterprise/allow-group/{id}', [App\Http\Controllers\GroupUsersController::class, 'AllowGroup'])->name('AllowGroup');
+Route::patch('/enterprise/disallow-advertisement/{id}', [App\Http\Controllers\AdvertisementsController::class, 'DisallowAdvertisement'])->name('DisallowAdvertisement');
+Route::patch('/enterprise/allow-advertisement/{id}', [App\Http\Controllers\AdvertisementsController::class, 'AllowAdvertisement'])->name('AllowAdvertisement');
 
 Route::delete('/enterprise/delete-hour/{id}', [App\Http\Controllers\HoursController::class, 'DeleteHour'])->name('DeleteHour');
 Route::delete('/enterprise/delete-group/{id}', [App\Http\Controllers\GroupUsersController::class, 'DeleteGroup'])->name('DeleteGroup');
@@ -55,6 +63,19 @@ Route::post('/sales/save-state', [App\Http\Controllers\StatesController::class, 
 Route::post('/sales/save-block', [App\Http\Controllers\BlockCampsController::class, 'SaveBlock'])->name('SaveBlock');
 Route::post('/sales/save-field', [App\Http\Controllers\FieldsController::class, 'SaveField'])->name('SaveField');
 Route::post('/sales/save-sold', [App\Http\Controllers\SoldsController::class, 'SaveSold'])->name('SaveSold');
+
+Route::patch('/sales/disallow-campaign/{id}', [App\Http\Controllers\CampaignsController::class, 'DisallowCampaign'])->name('DisallowCampaign');
+Route::patch('/sales/allow-campaign/{id}', [App\Http\Controllers\CampaignsController::class, 'AllowCampaign'])->name('AllowCampaign');
+Route::patch('/sales/disallow-tab-state/{id}', [App\Http\Controllers\TabStatesController::class, 'DisallowTabState'])->name('DisallowTabState');
+Route::patch('/sales/allow-tab-state/{id}', [App\Http\Controllers\TabStatesController::class, 'AllowTabState'])->name('AllowTabState');
+Route::patch('/sales/disallow-state/{id}', [App\Http\Controllers\StatesController::class, 'DisallowState'])->name('DisallowState');
+Route::patch('/sales/allow-state/{id}', [App\Http\Controllers\StatesController::class, 'AllowState'])->name('AllowState');
+Route::patch('/sales/disallow-block/{id}', [App\Http\Controllers\BlockCampsController::class, 'DisallowBlock'])->name('DisallowBlock');
+Route::patch('/sales/allow-block/{id}', [App\Http\Controllers\BlockCampsController::class, 'AllowBlock'])->name('AllowBlock');
+Route::patch('/sales/disallow-field/{id}', [App\Http\Controllers\FieldsController::class, 'DisallowField'])->name('DisallowField');
+Route::patch('/sales/allow-field/{id}', [App\Http\Controllers\FieldsController::class, 'AllowField'])->name('AllowField');
+Route::patch('/sales/disallow-sold/{id}', [App\Http\Controllers\SoldsController::class, 'DisallowSold'])->name('DisallowSold');
+Route::patch('/sales/allow-sold/{id}', [App\Http\Controllers\SoldsController::class, 'AllowSold'])->name('AllowSold');
 
 Route::delete('/sales/delete-campaign/{id}', [App\Http\Controllers\CampaignsController::class, 'DeleteCampaign'])->name('DeleteCampaign');
 Route::delete('/sales/delete-tab-state/{id}', [App\Http\Controllers\TabStatesController::class, 'DeleteTabState'])->name('DeleteTabState');

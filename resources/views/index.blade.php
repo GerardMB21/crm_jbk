@@ -7,11 +7,16 @@
 @endcomponent
 
 <div class="row">
-    @foreach ($modules as $module)
+    <div class="col-md-12">
+        <div style="width: 50%; height: auto; margin-left: auto; margin-right: auto;">
+            <img src="{{ url('/storage/uploads', $company->logo) }}" alt="logo" style="width: 100%; height: auto; margin-left: auto; margin-right: auto;">
+        </div>
+    </div>
+    {{-- @foreach ($modules as $module)
         <a href="{{url($module->id == 1 ? 'enterprise' : 'sales')}}" class="col-md-6">
             <div id="{{ $module->id == 1 ? 'enterprise' : 'solds' }}" class="card"></div>
         </a>
-    @endforeach
+    @endforeach --}}
 
     {{-- <div class="col-md-6 col-xl-3">
         <div class="card">

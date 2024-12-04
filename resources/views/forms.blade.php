@@ -81,9 +81,11 @@
                             @elseif($f['type_field_id'] == 7)
                                 <input class="form-control" type="number" id="{{ $f['id'] }}" name="{{ $block->id }}[{{ $f['id'] }}]">
                             @elseif($f['type_field_id'] == 8)
-                                <div class="form-check form-switch form-switch-md">
+                                <input type="checkbox" switch="bool" id="{{ $f['id'] }}" name="{{ $block->id }}[{{ $f['id'] }}]" />
+                                <label for="{{ $f['id'] }}" class="mb-0" data-on-label="On" data-off-label="Off"></label>
+                                {{-- <div class="form-check form-switch form-switch-md">
                                     <input class="form-check-input" type="checkbox" id="{{ $f['id'] }}" name="{{ $block->id }}[{{ $f['id'] }}]">
-                                </div>
+                                </div> --}}
                             @elseif($f['type_field_id'] == 9)
                                 <input class="form-control" type="file" id="{{ $f['id'] }}" name="{{ $block->id }}[{{ $f['id'] }}]">
                             @elseif($f['type_field_id'] == 10)

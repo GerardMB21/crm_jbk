@@ -44,11 +44,14 @@ class HoursController extends Controller
      */
     public function index()
     {
+        $company = Company::findOrFail(1);
         $campaigns = Campain::get();
         $horarios = $this->getHorarios();
         $modules = $this->modules();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
 
-        return view('hours', compact('horarios','campaigns','modules'));
+        return view('hours', compact('horarios','campaigns','modules','user','company'));
     }
 
     public function modules()
@@ -80,7 +83,7 @@ class HoursController extends Controller
             $subSectionsIds[] = $subSectionGroup->sub_section_id;
         };
 
-        $modules = Module::whereIn('id', [1])
+        $modules = Module::whereIn('id', $modulesIds)
                         ->get();
         $sections = Section::whereIn('id', $sectionsIds)
                             ->orderBy('order','asc')
@@ -90,7 +93,7 @@ class HoursController extends Controller
 
         $result = $modules->map(function ($module) use ($sections, $subSections) {
 
-            $moduleSections = $sections->where('module_id', $module->id)->map(function ($section) use ($subSections)
+            $moduleSections = $sections->sortBy('order')->where('module_id', $module->id)->map(function ($section) use ($subSections)
             {
                 $sectionSubSections = $subSections->where('section_id', $section->id);
 
@@ -291,11 +294,16 @@ class HoursController extends Controller
 
         $horarios = $this->getHorarios();
         $modules = $this->modules();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
         return redirect()->back()->with([
             'horarios' => $horarios,
             'campaigns' => $campaigns,
             'modules' => $modules,
+            'user' => $user,
+            'company' => $company,
         ]);
     }
 
@@ -318,4 +326,39 @@ class HoursController extends Controller
             'msg'   => $msg,
         ]);
     }
+
+    public function DisallowHour($id)
+    {
+        $element = Horario::findOrFail($id);
+        $element->state = 0;
+        $element->save();
+
+        $msg = 'Registro deshabilitado exitosamente';
+        $type = 1;
+        $title = '¡Ok!';
+
+        return response()->json([
+            'type'    => $type,
+            'title'    => $title,
+            'msg'    => $msg,
+        ]);
+    }
+
+    public function AllowHour($id)
+    {
+        $element = Horario::findOrFail($id);
+        $element->state = 1;
+        $element->save();
+
+        $msg = 'Registro deshabilitado exitosamente';
+        $type = 1;
+        $title = '¡Ok!';
+
+        return response()->json([
+            'type'    => $type,
+            'title'    => $title,
+            'msg'    => $msg,
+        ]);
+    }
+
 }

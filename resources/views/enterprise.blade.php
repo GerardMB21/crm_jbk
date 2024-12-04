@@ -20,7 +20,7 @@
                 <div class="card-body">
                     <h4 class="card-title mb-5">Mi Empresa</h4>
 
-                    <form class="needs-validation" action="{{ route('SaveCompany') }}" method="POST" novalidate>
+                    <form class="needs-validation" action="{{ route('SaveCompany') }}" method="POST" enctype="multipart/form-data" novalidate>
                         @csrf
                         <input type="text" id="id" name="id" value="{{ $company->id }}" style="display: none;">
                         <div class="row">
@@ -82,8 +82,8 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label class="form-label" for="menu-color">Color del Menú</label>
-                                    <input type="text" class="form-control" id="menu-color" name="menu_color" value="{{ $company->menu_color }}" required>
+                                    <label class="form-label" for="logo">Logo de la Empresa</label>
+                                    <input type="file" class="form-control" id="logo" name="logo" value="{{ $company->logo }}" required>
                                     <div class="valid-feedback">Valido!</div>
                                     <div class="invalid-feedback">El color del menu es requerido.</div>
                                 </div>
@@ -92,10 +92,8 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label class="form-label" for="text-color">Color del Textos</label>
-                                    <input type="text" class="form-control" id="text-color" name="text_color" value="{{ $company->text_color }}" required>
-                                    <div class="valid-feedback">Valido!</div>
-                                    <div class="invalid-feedback">El color de los textos es requerido.</div>
+                                    <label class="form-label" for="logo">Logo</label>
+                                    <img src="{{ url('/storage/uploads', $company->logo) }}" alt="logo" style="width: 100%; height: auto;">
                                 </div>
                             </div>
                         </div>
@@ -110,18 +108,6 @@
 @section('script')
 <script src="{{ URL::asset('/assets/libs/spectrum-colorpicker/spectrum-colorpicker.min.js') }}"></script>
 <script>
-    $(document).ready(function() {
-        $("#menu-color").spectrum();
-        $("#text-color").spectrum();
-
-        $("#menu-color").on("change.spectrum", function(e, color) {
-            const selectedColor = color.toHexString();
-            console.log(selectedColor);
-        });
-        $("#text-color").on("change.spectrum", function(e, color) {
-            const selectedColor = color.toHexString();
-            console.log(selectedColor);
-        });
-    });
+    $(document).ready(function() {});
 </script>
 @endsection

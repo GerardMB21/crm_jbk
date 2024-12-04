@@ -41,7 +41,6 @@
 </body>
 
 <script>
-    // Escuchar cambios en el diseño
     function saveBodyAttributes() {
         const body = document.body;
         const attributes = {};
@@ -53,7 +52,6 @@
         localStorage.setItem('bodyAttributes', JSON.stringify(attributes));
     }
 
-    // Restaurar los atributos al cargar la página
     function restoreBodyAttributes() {
         const body = document.body;
         const attributes = JSON.parse(localStorage.getItem('bodyAttributes') || '{}');
@@ -63,15 +61,33 @@
         });
     }
 
-    // Restaurar al cargar la página
     document.addEventListener('DOMContentLoaded', restoreBodyAttributes);
 
-    // Guardar cada vez que se cambian atributos
     document.querySelectorAll('.form-check-inline .form-check-input').forEach(button => {
         button.addEventListener('click', saveBodyAttributes);
     });
     document.querySelectorAll('.sidebar-setting .form-check-input').forEach(button => {
         button.addEventListener('click', saveBodyAttributes);
+    });
+
+    $('#data-light').on('click', function(e) {
+        document.body.setAttribute('data-bs-theme', 'light');
+        document.body.setAttribute('data-topbar', 'light');
+        document.body.setAttribute('data-sidebar', 'light');
+    });
+    $('#data-dark').on('click', function(e) {
+        document.body.setAttribute('data-bs-theme', 'dark');
+        document.body.setAttribute('data-topbar', 'dark');
+        document.body.setAttribute('data-sidebar', 'dark');
+    });
+    $('#data-size-lg').on('click', function(e) {
+        document.body.setAttribute('data-sidebar-size', 'lg');
+    });
+    $('#data-size-small').on('click', function(e) {
+        document.body.setAttribute('data-sidebar-size', 'small');
+    });
+    $('#data-size-sm').on('click', function(e) {
+        document.body.setAttribute('data-sidebar-size', 'sm');
     });
 </script>
 

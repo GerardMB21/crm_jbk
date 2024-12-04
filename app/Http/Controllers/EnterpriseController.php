@@ -9,6 +9,7 @@ use App\Models\UserGroup;
 use App\Models\GroupAdvertisement;
 use App\Models\Advertisement;
 use App\Models\Logins;
+use App\Models\File;
 use App\Models\Campain;
 use App\Models\ModuleInGroup;
 use App\Models\Module;
@@ -45,8 +46,10 @@ class EnterpriseController extends Controller
         $modules = $this->modules();
         $campaigns = Campain::get();
         $company = Company::findOrFail(1);
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
 
-        return view('enterprise', compact('company','campaigns','modules'));
+        return view('enterprise', compact('company','campaigns','modules','user'));
     }
 
     public function modules()
@@ -78,7 +81,7 @@ class EnterpriseController extends Controller
             $subSectionsIds[] = $subSectionGroup->sub_section_id;
         };
 
-        $modules = Module::whereIn('id', [1])
+        $modules = Module::whereIn('id', $modulesIds)
                         ->get();
         $sections = Section::whereIn('id', $sectionsIds)
                         ->orderBy('order','asc')
@@ -88,9 +91,9 @@ class EnterpriseController extends Controller
 
         $result = $modules->map(function ($module) use ($sections, $subSections) {
 
-            $moduleSections = $sections->where('module_id', $module->id)->map(function ($section) use ($subSections)
+            $moduleSections = $sections->sortBy('order')->where('module_id', $module->id)->map(function ($section) use ($subSections)
             {
-                $sectionSubSections = $subSections->where('section_id', $section->id);
+                $sectionSubSections = $subSections->where('section_id', $section->id)->sortBy('order');
 
                 $section->subSections = $sectionSubSections->values();
 
@@ -116,9 +119,25 @@ class EnterpriseController extends Controller
         $pais = request('pais');
         $asist_type = request('asist_type');
         $sufijo = request('sufijo');
-        $menu_color = request('menu_color');
-        $text_color = request('text_color');
         $logo = request('logo');
+
+        if (isset($logo)) {
+            $file = $logo;
+            $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $fileExtension = $file->getClientOriginalExtension();
+
+            $uniqueFileName = $fileName . '_' . time() . '.' . $fileExtension;
+
+            $path = $file->storeAs('public/uploads', $uniqueFileName);
+
+            $file = new File();
+            $file->name = $uniqueFileName;
+            $file->path = $path;
+            $file->created_at_user = Auth::user()->name;
+            $file->save();
+
+            $logo = $uniqueFileName;
+        }
 
         $company = Company::findOrFail($id);
         $company->name = $name;
@@ -126,17 +145,18 @@ class EnterpriseController extends Controller
         $company->pais = $pais;
         $company->asist_type = $asist_type;
         $company->sufijo = $sufijo;
-        $company->menu_color = $menu_color;
-        $company->text_color = $text_color;
+        $company->logo = $logo;
 
         $company->save();
-
         $modules = $this->modules();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
 
         return redirect()->back()->with([
             'company' => $company,
             'campaigns' => $campaigns,
-            'modules' => $modules
+            'modules' => $modules,
+            'user' => $user,
         ]);
     }
 }

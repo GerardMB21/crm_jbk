@@ -62,7 +62,8 @@
                     </td>
                     <td data-field="estado">
                         <div data-state-id="{{ $state->id }}">
-                            {{ $state->state }}
+                            <input type="checkbox" id="switch-{{ $state->id }}" switch="bool" {{ $state->state == "1" ? 'checked' : '' }} />
+                            <label for="switch-{{ $state->id }}" data-on-label="On" data-off-label="Off"></label>
                         </div>
                     </td>
                     <td style="width: 100px" data-field="opciones">
@@ -151,29 +152,26 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="not" name="not">
-                        <label class="form-check-label" for="not">Resaltar en notificaciones</label>
-                    </div>
+                <div class="mb-3" style="display: flex; align-items: center; justify-content: start; column-gap: 4px;">
+                    <input type="checkbox" switch="bool" id="not" name="not" />
+                    <label for="not" class="mb-0" data-on-label="On" data-off-label="Off"></label>
+                    <label class="form-check-label" for="not">Resaltar en notificaciones</label>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="age" name="age">
-                        <label class="form-check-label" for="age">Estado es agendado</label>
-                    </div>
+                <div class="mb-3" style="display: flex; align-items: center; justify-content: start; column-gap: 4px;">
+                    <input type="checkbox" switch="bool" id="age" name="age" />
+                    <label for="age" class="mb-0" data-on-label="On" data-off-label="Off"></label>
+                    <label class="form-check-label" for="age">Estado es agendado</label>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="com" name="com">
-                        <label class="form-check-label" for="com">Estado es comisionable</label>
-                    </div>
+                <div class="mb-3" style="display: flex; align-items: center; justify-content: start; column-gap: 4px;">
+                    <input type="checkbox" switch="bool" id="com" name="com" />
+                    <label for="com" class="mb-0" data-on-label="On" data-off-label="Off"></label>
+                    <label class="form-check-label" for="com">Estado es comisionable</label>
                 </div>
             </div>
         </div>

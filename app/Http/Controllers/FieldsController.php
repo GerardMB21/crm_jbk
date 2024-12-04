@@ -65,8 +65,11 @@ class FieldsController extends Controller
         $groupFieldView = GroupFieldView::get();
         $groupFieldHaveComment = GroupFieldHaveComment::get();
         $tabStateField = TabStateField::get();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
-        return view('fields', compact('id','campaigns','blocks','type_fields','widths','groups','tab_states','states','fields','groupFieldEdit','groupFieldView','groupFieldHaveComment','tabStateField','modules'));
+        return view('fields', compact('id','campaigns','blocks','type_fields','widths','groups','tab_states','states','fields','groupFieldEdit','groupFieldView','groupFieldHaveComment','tabStateField','modules','user','company'));
     }
 
     public function indexWithId($id)
@@ -104,8 +107,11 @@ class FieldsController extends Controller
         $groupFieldView = GroupFieldView::get();
         $groupFieldHaveComment = GroupFieldHaveComment::get();
         $tabStateField = TabStateField::get();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
-        return view('fields', compact('id','campaigns','blocks','type_fields','widths','groups','tab_states','states','fields','groupFieldEdit','groupFieldView','groupFieldHaveComment','tabStateField','modules'));
+        return view('fields', compact('id','campaigns','blocks','type_fields','widths','groups','tab_states','states','fields','groupFieldEdit','groupFieldView','groupFieldHaveComment','tabStateField','modules','user','company'));
     }
 
     public function modules()
@@ -147,7 +153,7 @@ class FieldsController extends Controller
 
         $result = $modules->map(function ($module) use ($sections, $subSections) {
 
-            $moduleSections = $sections->where('module_id', $module->id)->map(function ($section) use ($subSections)
+            $moduleSections = $sections->sortBy('order')->where('module_id', $module->id)->map(function ($section) use ($subSections)
             {
                 $sectionSubSections = $subSections->where('section_id', $section->id);
 
@@ -383,6 +389,9 @@ class FieldsController extends Controller
                         ->where('fields.campain_id', $id)
                         ->orderBy('fields.order','asc')
                         ->get();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
         return redirect()->back()->with([
             'id' => $campain_id,
@@ -394,6 +403,8 @@ class FieldsController extends Controller
             'tab_states' => $tab_states,
             'states' => $states,
             'fields' => $fields,
+            'user' => $user,
+            'company' => $company,
         ]);
     }
 
@@ -486,9 +497,9 @@ class FieldsController extends Controller
         ]);
     }
 
-    public function deshabilitar()
+    public function DisallowField($id)
     {
-        $element = Field::findOrFail(request('id'));
+        $element = Field::findOrFail($id);
         $element->state = 0;
         $element->save();
 
@@ -503,9 +514,9 @@ class FieldsController extends Controller
         ]);
     }
 
-    public function habilitar()
+    public function AllowField($id)
     {
-        $element = Field::findOrFail(request('id'));
+        $element = Field::findOrFail($id);
         $element->state = 1;
         $element->save();
 

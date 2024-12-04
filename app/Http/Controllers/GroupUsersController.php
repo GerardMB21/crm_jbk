@@ -44,7 +44,9 @@ class GroupUsersController extends Controller
      */
     public function index()
     {
+        $company = Company::findOrFail(1);
         $modules = $this->modules();
+        $allModules = $this->allModules();
         $campaigns = Campain::get();
         $companies = Company::get();
         $groups = Group::leftjoin('horarios', 'horarios.id', '=', 'groups.horario_id')
@@ -67,8 +69,13 @@ class GroupUsersController extends Controller
                         )
                         ->get();
         $hours = Horario::get();
+        $modulesGroup = ModuleInGroup::get();
+        $sectionsGroup = SectionInGroup::get();
+        $subSectionsGroup = SubSectionInGroup::get();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
 
-        return view('groups', compact('companies','groups','hours','campaigns','modules'));
+        return view('groups', compact('companies','groups','hours','campaigns','modules','allModules','modulesGroup','sectionsGroup','subSectionsGroup','user','company'));
     }
 
     public function modules()
@@ -100,13 +107,40 @@ class GroupUsersController extends Controller
             $subSectionsIds[] = $subSectionGroup->sub_section_id;
         };
 
-        $modules = Module::whereIn('id', [1])
+        $modules = Module::whereIn('id', $modulesIds)
                         ->get();
         $sections = Section::whereIn('id', $sectionsIds)
                         ->orderBy('order','asc')
                         ->get();
         $subSections = SubSection::whereIn('id', $subSectionsIds)
                                 ->get();
+
+        $result = $modules->map(function ($module) use ($sections, $subSections) {
+
+            $moduleSections = $sections->where('module_id', $module->id)->map(function ($section) use ($subSections)
+            {
+                $sectionSubSections = $subSections->where('section_id', $section->id);
+
+                $section->subSections = $sectionSubSections->values();
+
+                return $section;
+            });
+
+            $module->sections = $moduleSections->values();
+
+            return $module;
+        });
+
+        $modules = $result;
+
+        return $modules;
+    }
+
+    public function allModules()
+    {
+        $modules = Module::get();
+        $sections = Section::get();
+        $subSections = SubSection::get();
 
         $result = $modules->map(function ($module) use ($sections, $subSections) {
 
@@ -158,9 +192,43 @@ class GroupUsersController extends Controller
         $ip = request('ip');
         $permissions = request('permissions');
         $horario_id = request('horario_id');
+        $selectedNodes = json_decode(request('selected_nodes'), true);
+
+        $moduleIds = [];
+        $sectionIds = [];
+        $subSectionIds = [];
+
+        foreach ($selectedNodes as $item) {
+            if (preg_match('/^module_(\d+)/', $item, $matches)) {
+                $moduleIds[] = (int)$matches[1];
+            } elseif (preg_match('/^section_(\d+)/', $item, $matches)) {
+                $sectionIds[] = (int)$matches[1];
+            } elseif (preg_match('/^subSection_(\d+)/', $item, $matches)) {
+                $subSectionIds[] = (int)$matches[1];
+            }
+        }
+
+        $sections = Section::whereIn('id', $sectionIds)
+                            ->get();
+        $subSections = SubSection::whereIn('id', $subSectionIds)
+                            ->get();
+
+        foreach ($sections as $section) {
+            $moduleIds[] = $section->module_id;
+        };
+        foreach ($subSections as $subSection) {
+            $sectionIds[] = $subSection->section_id;
+        };
+
+        $moduleIds = array_unique($moduleIds);
+        $sectionIds = array_unique($sectionIds);
+        $subSectionIds = array_unique($subSectionIds);
 
         if (isset($id)) {
             $element = Group::findOrFail($id);
+            ModuleInGroup::where('group_id', $id)->delete();
+            SectionInGroup::where('group_id', $id)->delete();
+            SubSectionInGroup::where('group_id', $id)->delete();
             $element->updated_at_user = Auth::user()->name;
             $msg = 'Grupo actualizado exitosamente.';
         } else {
@@ -175,6 +243,30 @@ class GroupUsersController extends Controller
         $element->permissions = $permissions;
         $element->horario_id = $horario_id;
         $element->save();
+
+        foreach ($moduleIds as $moduleId) {
+            $new = new ModuleInGroup();
+            $new->module_id = $moduleId;
+            $new->group_id = $element->id;
+            $new->created_at_user = Auth::user()->name;
+            $new->save();
+        }
+
+        foreach ($sectionIds as $sectionId) {
+            $new = new SectionInGroup();
+            $new->section_id = $sectionId;
+            $new->group_id = $element->id;
+            $new->created_at_user = Auth::user()->name;
+            $new->save();
+        }
+
+        foreach ($subSectionIds as $subSectionId) {
+            $new = new SubSectionInGroup();
+            $new->sub_section_id = $subSectionId;
+            $new->group_id = $element->id;
+            $new->created_at_user = Auth::user()->name;
+            $new->save();
+        }
 
         $companies = Company::get();
         $groups = Group::leftjoin('horarios', 'horarios.id', '=', 'groups.horario_id')
@@ -199,6 +291,14 @@ class GroupUsersController extends Controller
         $hours = Horario::get();
 
         $modules = $this->modules();
+        $allModules = $this->allModules();
+
+        $modulesGroup = ModuleInGroup::get();
+        $sectionsGroup = SectionInGroup::get();
+        $subSectionsGroup = SubSectionInGroup::get();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
         return redirect()->back()->with([
             'companies' => $companies,
@@ -206,6 +306,12 @@ class GroupUsersController extends Controller
             'hours' => $hours,
             'campaigns' => $campaigns,
             'modules' => $modules,
+            'allModules' => $allModules,
+            'modulesGroup' => $modulesGroup,
+            'sectionsGroup' => $sectionsGroup,
+            'subSectionsGroup' => $subSectionsGroup,
+            'user' => $user,
+            'company' => $company,
         ]);
     }
 
@@ -225,6 +331,40 @@ class GroupUsersController extends Controller
             'type'  => $type,
             'title' => $title,
             'msg'   => $msg,
+        ]);
+    }
+
+    public function DisallowGroup($id)
+    {
+        $element = Group::findOrFail($id);
+        $element->state = 0;
+        $element->save();
+
+        $msg = 'Registro deshabilitado exitosamente';
+        $type = 1;
+        $title = '¡Ok!';
+
+        return response()->json([
+            'type'    => $type,
+            'title'    => $title,
+            'msg'    => $msg,
+        ]);
+    }
+
+    public function AllowGroup($id)
+    {
+        $element = Group::findOrFail($id);
+        $element->state = 1;
+        $element->save();
+
+        $msg = 'Registro deshabilitado exitosamente';
+        $type = 1;
+        $title = '¡Ok!';
+
+        return response()->json([
+            'type'    => $type,
+            'title'    => $title,
+            'msg'    => $msg,
         ]);
     }
 }

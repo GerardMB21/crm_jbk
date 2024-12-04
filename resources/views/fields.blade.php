@@ -42,7 +42,8 @@
                     </td>
                     <td data-field="estado">
                         <div data-field-id="{{ $field->id }}">
-                            {{ $field->field }}
+                            <input type="checkbox" class="switch" id="switch-{{ $field->id }}" switch="bool" data-field-id="{{ $field->id }}" {{ $field->state == "1" ? 'checked' : '' }} />
+                            <label for="switch-{{ $field->id }}" data-on-label="On" data-off-label="Off"></label>
                         </div>
                     </td>
                     <td style="width: 100px" data-field="opciones">
@@ -177,65 +178,58 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="required" name="required">
-                        <label class="form-check-label" for="required">Campo obligatorio</label>
-                    </div>
+                <div class="mb-3" style="display: flex; align-items: center; justify-content: start; column-gap: 4px;">
+                    <input type="checkbox" switch="bool" id="required" name="required" />
+                    <label for="required" class="mb-0" data-on-label="On" data-off-label="Off"></label>
+                    <label class="form-check-label" for="required">Campo Obligatorio</label>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="unique" name="unique">
-                        <label class="form-check-label" for="unique">Campo unico</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="bloq_mayus" name="bloq_mayus">
-                        <label class="form-check-label" for="bloq_mayus">Campo es en mayúsculas</label>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="in_solds_list" name="in_solds_list">
-                        <label class="form-check-label" for="in_solds_list">Agregar campo al listado de ventas</label>
-                    </div>
+                <div class="mb-3" style="display: flex; align-items: center; justify-content: start; column-gap: 4px;">
+                    <input type="checkbox" switch="bool" id="unique" name="unique" />
+                    <label for="unique" class="mb-0" data-on-label="On" data-off-label="Off"></label>
+                    <label class="form-check-label" for="unique">Campo Único</label>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="in_notifications" name="in_notifications">
-                        <label class="form-check-label" for="in_notifications">Agregar campo a las notificaciones</label>
-                    </div>
+                <div class="mb-3" style="display: flex; align-items: center; justify-content: start; column-gap: 4px;">
+                    <input type="checkbox" switch="bool" id="bloq_mayus" name="bloq_mayus" />
+                    <label for="bloq_mayus" class="mb-0" data-on-label="On" data-off-label="Off"></label>
+                    <label class="form-check-label" for="bloq_mayus">Campo es en Mayúsculas</label>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="in_general_search" name="in_general_search">
-                        <label class="form-check-label" for="in_general_search">Agregar campo en el buscador general</label>
-                    </div>
+                <div class="mb-3" style="display: flex; align-items: center; justify-content: start; column-gap: 4px;">
+                    <input type="checkbox" switch="bool" id="in_solds_list" name="in_solds_list" />
+                    <label for="in_solds_list" class="mb-0" data-on-label="On" data-off-label="Off"></label>
+                    <label class="form-check-label" for="in_solds_list">Agregar campo al listado de Ventas</label>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="has_edit" name="has_edit">
-                        <label class="form-check-label" for="has_edit">Puede editarse en el listado de ventas</label>
-                    </div>
+                <div class="mb-3" style="display: flex; align-items: center; justify-content: start; column-gap: 4px;">
+                    <input type="checkbox" switch="bool" id="in_notifications" name="in_notifications" />
+                    <label for="in_notifications" class="mb-0" data-on-label="On" data-off-label="Off"></label>
+                    <label class="form-check-label" for="in_notifications">Agregar campo a las notificaciones</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3" style="display: flex; align-items: center; justify-content: start; column-gap: 4px;">
+                    <input type="checkbox" switch="bool" id="in_general_search" name="in_general_search" />
+                    <label for="in_general_search" class="mb-0" data-on-label="On" data-off-label="Off"></label>
+                    <label class="form-check-label" for="in_general_search">Agregar campo en el buscador general</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3" style="display: flex; align-items: center; justify-content: start; column-gap: 4px;">
+                    <input type="checkbox" switch="bool" id="has_edit" name="has_edit" />
+                    <label for="has_edit" class="mb-0" data-on-label="On" data-off-label="Off"></label>
+                    <label class="form-check-label" for="has_edit">Puede editarse en el listado de ventas</label>
                 </div>
             </div>
         </div>
@@ -456,6 +450,43 @@
                 const campaignId = $('#id_campaign').val();
 
                 window.location.assign(`{{ url('sales/fields/${campaignId}') }}`);
+            });
+
+            $('#datatable input.switch').on('change', function (e) {
+                const val = this.checked;
+                const fieldId = this.dataset.fieldId;
+
+                if (val) {
+                    fetch(`{{ route('AllowField', '') }}/${fieldId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
+                } else {
+                    fetch(`{{ route('DisallowField', '') }}/${fieldId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
+                };
             });
         });
     </script>

@@ -73,7 +73,8 @@
                                                 </td>
                                                 <td data-form="estado">
                                                     <div data-form-id="{{ $d['id'] }}">
-                                                        {{ $d['state'] }}
+                                                        <input type="checkbox" class="switch" id="switch-{{ $d['id'] }}" switch="bool" data-form-id="{{ $d['id'] }}" {{ $d['state'] == "1" ? 'checked' : '' }} />
+                                                        <label for="switch-{{ $d['id'] }}" data-on-label="On" data-off-label="Off"></label>
                                                     </div>
                                                 </td>
                                                 <td style="width: 100px" data-form="opciones">
@@ -185,6 +186,43 @@
                         });
                     };
                 });
+            });
+
+            $('.datatable input.switch').on('change', function (e) {
+                const val = this.checked;
+                const formId = this.dataset.formId;
+
+                if (val) {
+                    fetch(`{{ route('AllowSold', '') }}/${formId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
+                } else {
+                    fetch(`{{ route('DisallowSold', '') }}/${formId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
+                };
             });
         });
     </script>

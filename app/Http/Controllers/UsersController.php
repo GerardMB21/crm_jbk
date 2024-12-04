@@ -57,8 +57,11 @@ class UsersController extends Controller
         )
             ->leftjoin('groups', 'groups.id', '=', 'user_groups.group_id')
             ->get();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
-        return view('users', compact('users','company','groups_general','groups','campaigns','modules'));
+        return view('users', compact('users','company','groups_general','groups','campaigns','modules','user','company'));
     }
 
     public function modules()
@@ -90,7 +93,7 @@ class UsersController extends Controller
             $subSectionsIds[] = $subSectionGroup->sub_section_id;
         };
 
-        $modules = Module::whereIn('id', [1])
+        $modules = Module::whereIn('id', $modulesIds)
                         ->get();
         $sections = Section::whereIn('id', $sectionsIds)
                             ->orderBy('order','asc')
@@ -100,7 +103,7 @@ class UsersController extends Controller
 
         $result = $modules->map(function ($module) use ($sections, $subSections) {
 
-            $moduleSections = $sections->where('module_id', $module->id)->map(function ($section) use ($subSections)
+            $moduleSections = $sections->sortBy('order')->where('module_id', $module->id)->map(function ($section) use ($subSections)
             {
                 $sectionSubSections = $subSections->where('section_id', $section->id);
 
@@ -123,22 +126,20 @@ class UsersController extends Controller
     {
         $messages = [
             'name.required'         => 'Debe ingresar un nombre.',
-            'user.required'         => 'Debe ingresar un Usuario.',
+            'email.required'         => 'Debe ingresar un Email.',
             'password.required'     => 'Debe ingresar una contraseña.',
             'telefono.required'     => 'Debe ingresar un teléfono.',
             'genero.required'       => 'Debe seleccionar el género.',
             'fecha_naci.required'   => 'Debe ingresar la fecha de nacimiento.',
-            'obs.required'          => 'Debe ingresar una observación.'
         ];
 
         $rules = [
             'name'                  => 'required',
-            'user'                  => 'required',
+            'email'                  => 'required',
             'password'              => 'required',
             'telefono'              => 'required',
             'genero'                => 'required',
             'fecha_naci'            => 'required',
-            'obs'                   => 'required'
         ];
 
         request()->validate($rules, $messages);
@@ -186,6 +187,9 @@ class UsersController extends Controller
             ->get();
 
         $modules = $this->modules();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
         return redirect()->back()->with([
             'groups_general' => $groups_general,
@@ -194,6 +198,8 @@ class UsersController extends Controller
             'groups' => $groups,
             'campaigns' => $campaigns,
             'modules' => $modules,
+            'user' => $user,
+            'company' => $company,
         ]);
     }
 
@@ -202,11 +208,11 @@ class UsersController extends Controller
         $this->validateForm();
 
         $campaigns = Campain::get();
-        $company = Company::findOrFail(1);;
+        $company = Company::findOrFail(1);
 
         $id = request('id');
         $name = request('name');
-        $user = request('user');
+        $email = request('email');
         $password = bcrypt(request('password'));
         $telefono = request('telefono');
         $genero = request('genero');
@@ -218,16 +224,6 @@ class UsersController extends Controller
         } else {
             $element = new User();
         }
-
-        $element->name = $name;
-        $element->user = $user . $company->sufijo;
-        $element->password = $password;
-        $element->remember_token = $password;
-        $element->telefono = $telefono;
-        $element->genero = $genero;
-        $element->fecha_naci = $fecha_naci;
-        $element->obs = $obs;
-        $element->save();
 
         $groups_general = Group::get();
         $company = Company::findOrFail(1);;
@@ -243,6 +239,19 @@ class UsersController extends Controller
 
         $modules = $this->modules();
 
+        $element->name = $name;
+        $element->email = $email . $company->sufijo;
+        $element->password = $password;
+        $element->remember_token = $password;
+        $element->telefono = $telefono;
+        $element->genero = $genero;
+        $element->fecha_naci = $fecha_naci;
+        $element->obs = $obs;
+        $element->save();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
+
         return redirect()->back()->with([
             'groups_general' => $groups_general,
             'company' => $company,
@@ -250,6 +259,8 @@ class UsersController extends Controller
             'groups' => $groups,
             'campaigns' => $campaigns,
             'modules' => $modules,
+            'user' => $user,
+            'company' => $company,
         ]);
     }
 
@@ -284,4 +295,5 @@ class UsersController extends Controller
             'info'  => $info,
         ]);
     }
+
 }

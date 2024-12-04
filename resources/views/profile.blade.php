@@ -26,8 +26,16 @@
                         </div>
                     </div> -->
                     <div class="clearfix"></div>
-                    <div>
-                        <img src="{{ URL::asset('/assets/images/users/avatar-4.jpg') }}" alt="" class="avatar-lg rounded-circle img-thumbnail">
+                    <div id="image-profile-button" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target=".image-profile">
+                        @if ($user->foto_perfil)
+                            <img src="{{ url('/storage/uploads', $user->foto_perfil) }}" alt="{{ $user->name }}" class="avatar-lg rounded-circle img-thumbnail">
+                        @else
+                            <div class="avatar-lg mx-auto mb-4">
+                                <div class="avatar-title bg-primary-subtle rounded-circle text-primary">
+                                    <i class="mdi mdi-account-circle display-4 m-0 text-primary"></i>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                     <h5 class="mt-3 mb-1">{{ $user->name }}</h5>
                     <!-- <p class="text-muted">UI/UX Designer</p> -->
@@ -129,6 +137,35 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade image-profile" id="image-profile" tabindex="-1" role="dialog" aria-labelledby="image-profile" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <form class="modal-content" action="{{ route('SaveImageProfile') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input id="id" name="id" style="display: none;" value="{{ $user->id }}">
+            <div class="modal-header">
+                <h5 class="modal-title">Imagen de Perfil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label class="form-label" for="foto_perfil">Foto de Perfil</label>
+                            <input type="file" class="form-control" id="foto_perfil" name="foto_perfil" required>
+                        </div>
+                        <img id="preview-profile" src="{{ url('/storage/uploads', $user->foto_perfil) }}" alt="{{ $user->foto_perfil }}" style="width: 100%; height: auto;">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
 <!-- end row -->
 @endsection
 @section('script')
@@ -159,6 +196,20 @@
                 }
             });
             calendar.render();
+
+            $('#foto_perfil').on('change', function() {
+                const file = this.files[0];
+
+                if (file) {
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('#preview-profile').attr('src', e.target.result).show();
+                    };
+
+                    reader.readAsDataURL(file);
+                };
+            })
         });
     </script>
 @endsection

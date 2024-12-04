@@ -49,8 +49,10 @@ class StatesController extends Controller
         $tabStates = [];
         $states = [];
         $stateStates = [];
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
 
-        return view('states', compact('id','campaigns','tabStates','states','stateStates','modules'));
+        return view('states', compact('id','campaigns','tabStates','states','stateStates','modules','user'));
     }
 
     public function indexWithId($id)
@@ -90,8 +92,11 @@ class StatesController extends Controller
                         ->orderBy('states.order', 'asc')
                         ->get();
         $stateStates = StateState::get();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
-        return view('states', compact('id','campaigns','tabStates','states','stateStates','modules'));
+        return view('states', compact('id','campaigns','tabStates','states','stateStates','modules','user','company'));
     }
 
     public function modules()
@@ -123,7 +128,7 @@ class StatesController extends Controller
             $subSectionsIds[] = $subSectionGroup->sub_section_id;
         };
 
-        $modules = Module::whereIn('id', [2])
+        $modules = Module::whereIn('id', $modulesIds)
                         ->get();
         $sections = Section::whereIn('id', $sectionsIds)
                             ->orderBy('order','asc')
@@ -133,7 +138,7 @@ class StatesController extends Controller
 
         $result = $modules->map(function ($module) use ($sections, $subSections) {
 
-            $moduleSections = $sections->where('module_id', $module->id)->map(function ($section) use ($subSections)
+            $moduleSections = $sections->sortBy('order')->where('module_id', $module->id)->map(function ($section) use ($subSections)
             {
                 $sectionSubSections = $subSections->where('section_id', $section->id);
 
@@ -305,13 +310,18 @@ class StatesController extends Controller
                         ->orderBy('states.order', 'asc')
                         ->get();
         $stateStates = StateState::get();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
         return redirect()->back()->with([
             'id' => $campaign_id,
             'campaigns' => $campaigns,
             'tabStates' => $tabStates,
             'states' => $states,
-            'stateStates' => $stateStates
+            'stateStates' => $stateStates,
+            'user' => $user,
+            'company' => $company,
         ]);
     }
 
@@ -355,9 +365,9 @@ class StatesController extends Controller
         ]);
     }
 
-    public function DeshabilitarState()
+    public function DisallowState($id)
     {
-        $element = State::findOrFail(request('id'));
+        $element = State::findOrFail($id);
         $element->state = 0;
         $element->save();
 
@@ -372,9 +382,9 @@ class StatesController extends Controller
         ]);
     }
 
-    public function HabilitarState()
+    public function AllowState($id)
     {
-        $element = State::findOrFail(request('id'));
+        $element = State::findOrFail($id);
         $element->state = 1;
         $element->save();
 

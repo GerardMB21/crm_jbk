@@ -116,8 +116,11 @@ class SoldsController extends Controller
         };
 
         $fields = $fields_obj;
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
-        return view('solds', compact('id','tab_state_id','campaigns','campaign','tab_states','tab_states_fields','forms','fields','modules'));
+        return view('solds', compact('id','tab_state_id','campaigns','campaign','tab_states','tab_states_fields','forms','fields','modules','user','company'));
     }
 
     public function indexWithTabStateId($id, $tab_state_id)
@@ -160,8 +163,11 @@ class SoldsController extends Controller
         $fields = $fields->toArray();
 
         $form = NULL;
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
-        return view('forms', compact('id','form_id','campaigns','tab_state_id','campaign','fields','blocks','states','form','modules'));
+        return view('forms', compact('id','form_id','campaigns','tab_state_id','campaign','fields','blocks','states','form','modules','user','company'));
     }
 
     public function indexWithFormId($id, $tab_state_id, $form_id)
@@ -219,8 +225,11 @@ class SoldsController extends Controller
                             'forms.state as state',
                         )
                         ->first();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
-        return view('forms', compact('id','form_id','campaigns','tab_state_id','campaign','fields','blocks','states','form','modules'));
+        return view('forms', compact('id','form_id','campaigns','tab_state_id','campaign','fields','blocks','states','form','modules','user','company'));
     }
 
     public function modules()
@@ -252,7 +261,7 @@ class SoldsController extends Controller
             $subSectionsIds[] = $subSectionGroup->sub_section_id;
         };
 
-        $modules = Module::whereIn('id', [2])
+        $modules = Module::whereIn('id', $modulesIds)
                         ->get();
         $sections = Section::whereIn('id', $sectionsIds)
                             ->orderBy('order','asc')
@@ -262,7 +271,7 @@ class SoldsController extends Controller
 
         $result = $modules->map(function ($module) use ($sections, $subSections) {
 
-            $moduleSections = $sections->where('module_id', $module->id)->map(function ($section) use ($subSections)
+            $moduleSections = $sections->sortBy('order')->where('module_id', $module->id)->map(function ($section) use ($subSections)
             {
                 $sectionSubSections = $subSections->where('section_id', $section->id);
 
@@ -388,6 +397,9 @@ class SoldsController extends Controller
 
         $url = '/sales/solds';
         $url .= '/'. $campain_id;
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
         return redirect()->intended($url)->with([
             'id' => $campain_id,
@@ -398,6 +410,8 @@ class SoldsController extends Controller
             'tab_states_fields' => $tab_states_fields,
             'forms' => $forms,
             'fields' => $fields,
+            'user' => $user,
+            'company' => $company,
         ]);
     }
 
@@ -417,4 +431,37 @@ class SoldsController extends Controller
                         ]);
     }
 
+    public function DisallowSold($id)
+    {
+        $element = Form::findOrFail($id);
+        $element->state = 0;
+        $element->save();
+
+        $msg = 'Registro deshabilitado exitosamente';
+        $type = 1;
+        $title = '¡Ok!';
+
+        return response()->json([
+            'type'    => $type,
+            'title'    => $title,
+            'msg'    => $msg,
+        ]);
+    }
+
+    public function AllowSold($id)
+    {
+        $element = Form::findOrFail($id);
+        $element->state = 1;
+        $element->save();
+
+        $msg = 'Registro deshabilitado exitosamente';
+        $type = 1;
+        $title = '¡Ok!';
+
+        return response()->json([
+            'type'    => $type,
+            'title'    => $title,
+            'msg'    => $msg,
+        ]);
+    }
 }

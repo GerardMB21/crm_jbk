@@ -24,7 +24,8 @@
                 </td>
                 <td data-field="estado">
                     <div data-advertisement-id="{{ $advertisement->id }}">
-                        {{ $advertisement->state }}
+                        <input type="checkbox" class="switch" id="switch-{{ $advertisement->id }}" switch="bool" data-advertisement-id="{{ $advertisement->id }}" {{ $advertisement->state == "1" ? 'checked' : '' }} />
+                        <label for="switch-{{ $advertisement->id }}" data-on-label="On" data-off-label="Off"></label>
                     </div>
                 </td>
                 <td style="width: 100px">
@@ -228,6 +229,43 @@
                     };
                 });
             });
+        });
+
+        $('#datatable input.switch').on('change', function (e) {
+            const val = this.checked;
+            const advertisementId = this.dataset.advertisementId;
+
+            if (val) {
+                fetch(`{{ route('AllowAdvertisement', '') }}/${advertisementId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+            } else {
+                fetch(`{{ route('DisallowAdvertisement', '') }}/${advertisementId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+            };
         });
     </script>
 @endsection

@@ -31,12 +31,12 @@
     <x-table :idCreateButton="'newEditHour'" :idModal="'editHour'" :textButton="'Crear Horario'" :headers="['NOMBRE','HORARIO','TOLERANCIA','ESTADO','OPCIONES']">
         @foreach ($horarios as $horario)
             <tr data-id="{{ $horario->id }}">
-                <td data-field="name">
+                <td data-field="nombre">
                     <div data-hour-id="{{ $horario->id }}">
                         {{ $horario->name }}
                     </div>
                 </td>
-                <td data-field="hour">
+                <td data-field="horario">
                     <div data-hour-id="{{ $horario->id }}">
                         <ul id="horarios_{{ $horario->id }}" style="list-style-type: none; padding-left: 0;">
                             @if (!empty($horario->days))
@@ -92,9 +92,10 @@
                         {{ $horario->tolerancia_min }}
                     </div>
                 </td>
-                <td data-field="state">
+                <td data-field="estado">
                     <div data-hour-id="{{ $horario->id }}">
-                        {{ $horario->state }}
+                        <input type="checkbox" class="switch" id="switch-{{ $horario->id }}" switch="bool" {{ $horario->state == "1" ? 'checked' : '' }} data-hour-id="{{ $horario->id }}" />
+                        <label for="switch-{{ $horario->id }}" data-on-label="On" data-off-label="Off"></label>
                     </div>
                 </td>
                 <td style="width: 100px">
@@ -130,37 +131,33 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="motivo_tardanza" name="motivo_tardanza">
-                        <label class="form-check-label" for="motivo_tardanza">Motivo de tardanza</label>
-                    </div>
+                <div class="mb-3" style="display: flex; align-items: center; justify-content: start; column-gap: 4px;">
+                    <input type="checkbox" switch="bool" id="motivo_tardanza" name="motivo_tardanza" />
+                    <label for="motivo_tardanza" class="mb-0" data-on-label="On" data-off-label="Off"></label>
+                    <label class="form-check-label" for="motivo_tardanza">Motivo de tardanza</label>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="motivo_temprano" name="motivo_temprano">
-                        <label class="form-check-label" for="motivo_temprano">Motivo salir antes</label>
-                    </div>
+                <div class="mb-3" style="display: flex; align-items: center; justify-content: start; column-gap: 4px;">
+                    <input type="checkbox" switch="bool" id="motivo_temprano" name="motivo_temprano" />
+                    <label for="motivo_temprano" class="mb-0" data-on-label="On" data-off-label="Off"></label>
+                    <label class="form-check-label" for="motivo_temprano">Motivo salir antes</label>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="restringir_last" name="restringir_last">
-                        <label class="form-check-label" for="restringir_last">Sin acceso fuera de horario</label>
-                    </div>
+                <div class="mb-3" style="display: flex; align-items: center; justify-content: start; column-gap: 4px;">
+                    <input type="checkbox" switch="bool" id="restringir_last" name="restringir_last" />
+                    <label for="restringir_last" class="mb-0" data-on-label="On" data-off-label="Off"></label>
+                    <label class="form-check-label" for="restringir_last">Sin acceso fuera de horario</label>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="mb-3">
-                    <div class="form-check form-switch form-switch-md">
-                        <input type="checkbox" class="form-check-input" id="restringir_gest" name="restringir_gest">
-                        <label class="form-check-label" for="restringir_gest">No gestion fuera de horario</label>
-                    </div>
+                <div class="mb-3" style="display: flex; align-items: center; justify-content: start; column-gap: 4px;">
+                    <input type="checkbox" switch="bool" id="restringir_gest" name="restringir_gest" />
+                    <label for="restringir_gest" class="mb-0" data-on-label="On" data-off-label="Off"></label>
+                    <label class="form-check-label" for="restringir_gest">No gestión fuera de horario</label>
                 </div>
             </div>
         </div>
@@ -506,6 +503,43 @@
                 $('#out-time-wednesday')[0].value = valMonday;
                 $('#out-time-thursday')[0].value = valMonday;
                 $('#out-time-friday')[0].value = valMonday;
+            });
+
+            $('#datatable input.switch').on('change', function (e) {
+                const val = this.checked;
+                const hourId = this.dataset.hourId;
+
+                if (val) {
+                    fetch(`{{ route('AllowHour', '') }}/${hourId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
+                } else {
+                    fetch(`{{ route('DisallowHour', '') }}/${hourId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
+                };
             });
         });
     </script>

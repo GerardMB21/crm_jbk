@@ -45,8 +45,11 @@ class BlockCampsController extends Controller
         $id = 0;
         $campaigns = Campain::get();
         $blocks = [];
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
-        return view('blocks', compact('id','campaigns','blocks','modules'));
+        return view('blocks', compact('id','campaigns','blocks','modules','user','company'));
     }
 
     public function indexWithId($id)
@@ -65,8 +68,11 @@ class BlockCampsController extends Controller
                         ->where('campain_id', $id)
                         ->orderBy('blocks.order','asc')
                         ->get();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
-        return view('blocks', compact('id','campaigns','blocks','modules'));
+        return view('blocks', compact('id','campaigns','blocks','modules','user','company'));
     }
 
     public function modules()
@@ -98,7 +104,7 @@ class BlockCampsController extends Controller
             $subSectionsIds[] = $subSectionGroup->sub_section_id;
         };
 
-        $modules = Module::whereIn('id', [2])
+        $modules = Module::whereIn('id', $modulesIds)
                         ->get();
         $sections = Section::whereIn('id', $sectionsIds)
                             ->orderBy('order','asc')
@@ -108,7 +114,7 @@ class BlockCampsController extends Controller
 
         $result = $modules->map(function ($module) use ($sections, $subSections) {
 
-            $moduleSections = $sections->where('module_id', $module->id)->map(function ($section) use ($subSections)
+            $moduleSections = $sections->sortBy('order')->where('module_id', $module->id)->map(function ($section) use ($subSections)
             {
                 $sectionSubSections = $subSections->where('section_id', $section->id);
 
@@ -187,11 +193,16 @@ class BlockCampsController extends Controller
                         ->where('campain_id', $campain_id)
                         ->orderBy('blocks.order','asc')
                         ->get();
+        $userId = Auth::user()->id;
+        $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
         return redirect()->back()->with([
             'id' => $campain_id,
             'campaigns' => $campaigns,
             'blocks' => $blocks,
+            'user' => $user,
+            'company' => $company,
         ]);
     }
 
@@ -218,9 +229,9 @@ class BlockCampsController extends Controller
         ]);
     }
 
-    public function deshabilitar()
+    public function DisallowBlock($id)
     {
-        $element = Block::findOrFail(request('id'));
+        $element = Block::findOrFail($id);
         $element->state = 0;
         $element->save();
 
@@ -235,9 +246,9 @@ class BlockCampsController extends Controller
         ]);
     }
 
-    public function habilitar()
+    public function AllowBlock($id)
     {
-        $element = Block::findOrFail(request('id'));
+        $element = Block::findOrFail($id);
         $element->state = 1;
         $element->save();
 

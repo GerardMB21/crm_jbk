@@ -17,7 +17,7 @@
     <x-table :idCreateButton="'newEditUser'" :idModal="'editUser'" :textButton="'Crear Usuario'" :headers="['NOMBRE','EMAIL','TELEFONO','GENERO','NACIMIENTO','OBSERVACIONES','OPCIONES']">
         @foreach ($users as $user)
             <tr data-id="{{ $user->id }}">
-                <td data-field="name">
+                <td data-field="nombre">
                     <div data-user-id="{{ $user->id }}">
                         {{ $user->name }}
                     </div>
@@ -37,14 +37,14 @@
                         {{ $user->genero }}
                     </div>
                 </td>
+                <td data-field="nacimiento">
+                    <div data-user-id="{{ $user->id }}">
+                        {{ $user->fecha_naci }}
+                    </div>
+                </td>
                 <td data-field="observaciones">
                     <div data-user-id="{{ $user->id }}">
                         {{ $user->obs }}
-                    </div>
-                </td>
-                <td data-field="state">
-                    <div data-user-id="{{ $user->id }}">
-                        {{ $user->state }}
                     </div>
                 </td>
                 <td style="width: 100px">
@@ -75,7 +75,11 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label" for="email">Email:</label>
-                    <input type="text" class="form-control" id="email" name="email" required>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="email" name="email" placeholder="Email">
+                        <div class="input-group-text">{{ $company->sufijo }}</div>
+                    </div>
+                    {{-- <input type="text" class="form-control" id="email" name="email" required> --}}
                     <div class="valid-feedback">Valido!</div>
                     <div class="invalid-feedback">El email es requerido.</div>
                 </div>
@@ -93,7 +97,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label" for="telefono">Teléfono:</label>
-                    <input type="text" class="form-control" id="telefono" name="telefono">
+                    <input type="number" class="form-control" id="telefono" name="telefono">
                 </div>
             </div>
         </div>
@@ -102,7 +106,7 @@
                 <div class="mb-3">
                     <label class="form-label" for="genero">Género:</label>
                     <select class="form-select" id="genero" name="genero" value="0" required>
-                        <option value="0" selected>Seleccionar</option>
+                        <option value="0" disabled selected>Seleccionar</option>
                         <option value="Masculino">Masculino</option>
                         <option value="Femenino">Femenino</option>
                     </select>
@@ -247,9 +251,11 @@
                 } = userData;
                 const HTMLgroups = [];
 
+                const userName = email.split('@');
+
                 $('#id')[0].value = id;
                 $('#name')[0].value = name;
-                $('#email')[0].value = email;
+                $('#email')[0].value = userName[0];
                 $('#password')[0].value = password;
                 $('#telefono')[0].value = telefono;
                 $('#genero')[0].value = genero;
@@ -412,5 +418,6 @@
                 });
             });
         });
+
     </script>
 @endsection
