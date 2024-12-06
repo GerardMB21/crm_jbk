@@ -139,13 +139,22 @@ class EnterpriseController extends Controller
             $logo = $uniqueFileName;
         }
 
+        if (isset($sufijo)) {
+            \DB::table('users')->update([
+                'email' => \DB::raw("CONCAT(SUBSTRING_INDEX(email, '@', 1), '@$sufijo')")
+            ]);
+        }
+
         $company = Company::findOrFail($id);
         $company->name = $name;
         $company->contact = $contact;
         $company->pais = $pais;
         $company->asist_type = $asist_type;
         $company->sufijo = $sufijo;
-        $company->logo = $logo;
+
+        if (isset($logo)) {
+            $company->logo = $logo;
+        }
 
         $company->save();
         $modules = $this->modules();

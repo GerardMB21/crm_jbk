@@ -51,8 +51,9 @@ class StatesController extends Controller
         $stateStates = [];
         $userId = Auth::user()->id;
         $user = User::findOrFail($userId);
+        $company = Company::findOrFail(1);
 
-        return view('states', compact('id','campaigns','tabStates','states','stateStates','modules','user'));
+        return view('states', compact('id','campaigns','tabStates','states','stateStates','modules','user','company'));
     }
 
     public function indexWithId($id)

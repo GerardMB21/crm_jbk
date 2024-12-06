@@ -128,18 +128,12 @@ class UsersController extends Controller
             'name.required'         => 'Debe ingresar un nombre.',
             'email.required'         => 'Debe ingresar un Email.',
             'password.required'     => 'Debe ingresar una contraseña.',
-            'telefono.required'     => 'Debe ingresar un teléfono.',
-            'genero.required'       => 'Debe seleccionar el género.',
-            'fecha_naci.required'   => 'Debe ingresar la fecha de nacimiento.',
         ];
 
         $rules = [
             'name'                  => 'required',
             'email'                  => 'required',
             'password'              => 'required',
-            'telefono'              => 'required',
-            'genero'                => 'required',
-            'fecha_naci'            => 'required',
         ];
 
         request()->validate($rules, $messages);
