@@ -392,6 +392,7 @@ class FieldsController extends Controller
         $userId = Auth::user()->id;
         $user = User::findOrFail($userId);
         $company = Company::findOrFail(1);
+        $modules = $this->modules();
 
         return redirect()->back()->with([
             'id' => $campain_id,
@@ -405,6 +406,7 @@ class FieldsController extends Controller
             'fields' => $fields,
             'user' => $user,
             'company' => $company,
+            'modules' => $modules,
         ]);
     }
 
@@ -481,9 +483,9 @@ class FieldsController extends Controller
                         ]);
     }
 
-    public function DeleteField()
+    public function DeleteField($id)
     {
-        $element = Field::findOrFail(request('id'));
+        $element = Field::findOrFail($id);
         $element->delete();
 
         $msg = 'Registro eliminado exitosamente';

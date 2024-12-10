@@ -2,18 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Campain;
 use App\Models\Company;
-use App\Models\User;
-use App\Models\UserGroup;
-use App\Models\Group;
+use App\Models\Campain;
 use App\Models\Block;
+use App\Models\TypeField;
+use App\Models\Width;
+use App\Models\Field;
+use App\Models\GroupFieldEdit;
+use App\Models\GroupFieldView;
+use App\Models\GroupFieldHaveComment;
+use App\Models\TabStateField;
+use App\Models\User;
+use App\Models\Group;
+use App\Models\UserGroup;
+use App\Models\TabState;
+use App\Models\State;
 use App\Models\ModuleInGroup;
 use App\Models\Module;
 use App\Models\SectionInGroup;
 use App\Models\Section;
 use App\Models\SubSectionInGroup;
 use App\Models\SubSection;
+use App\Models\BackOffice;
+use App\Models\SupInBack;
+use App\Models\Sup;
+use App\Models\AgentInSup;
+use App\Models\Agent;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +36,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class BlockCampsController extends Controller
+class AgentsController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -44,35 +58,42 @@ class BlockCampsController extends Controller
         $modules = $this->modules();
         $id = 0;
         $campaigns = Campain::get();
-        $blocks = [];
+
+        $agents = [];
+        $users = [];
+
         $userId = Auth::user()->id;
         $user = User::findOrFail($userId);
         $company = Company::findOrFail(1);
 
-        return view('blocks', compact('id','campaigns','blocks','modules','user','company'));
+        return view('agents', compact('id','campaigns','modules','user','company','agents','users'));
     }
 
     public function indexWithId($id)
     {
         $modules = $this->modules();
         $campaigns = Campain::get();
-        $blocks = Block::leftjoin('campains', 'campains.id', '=', 'blocks.campain_id')
-                        ->select(
-                            'blocks.id as id',
-                            'campains.id as campaign_id',
-                            'campains.name as campaign_name',
-                            'blocks.name as name',
-                            'blocks.order as order',
-                            'blocks.state as state',
-                        )
-                        ->where('campain_id', $id)
-                        ->orderBy('blocks.order','asc')
-                        ->get();
+
+        $agents = Agent::leftjoin('users', 'users.id', '=', 'agents.user_id')
+                    ->leftjoin('campains', 'campains.id', '=', 'agents.camp_id')
+                    ->select(
+                        'agents.id as id',
+                        'agents.user_id as user_id',
+                        'agents.camp_id as camp_id',
+                        'agents.state as state',
+                        'campains.name as camp_name',
+                        'users.name as user_name',
+                        'users.email as user_email',
+                    )
+                    ->where('camp_id', $id)
+                    ->get();
+        $users = User::get();
+
         $userId = Auth::user()->id;
         $user = User::findOrFail($userId);
         $company = Company::findOrFail(1);
 
-        return view('blocks', compact('id','campaigns','blocks','modules','user','company'));
+        return view('agents', compact('id','campaigns','modules','user','company','agents','users'));
     }
 
     public function modules()
@@ -104,7 +125,7 @@ class BlockCampsController extends Controller
             $subSectionsIds[] = $subSectionGroup->sub_section_id;
         };
 
-        $modules = Module::whereIn('id', $modulesIds)
+        $modules = Module::whereIn('id', [2])
                         ->get();
         $sections = Section::whereIn('id', $sectionsIds)
                             ->orderBy('order','asc')
@@ -137,87 +158,78 @@ class BlockCampsController extends Controller
     {
 
         $messages = [
-            'name.required'         => 'Debe completar el nombre.',
-            'order.required'         => 'Debe completar el Orden.',
-            'campain_id.required'         => 'Debe elegir una Campaña.',
+            'user_id.required'         => 'Debe completar el usuario.',
+            'campaign_id.required'         => 'Debe completar la campaña.',
         ];
 
         $rules = [
-            'name'                  => 'required',
-            'order'                  => 'required',
-            'campain_id'                  => 'required',
+            'user_id'                  => 'required',
+            'campaign_id'                  => 'required',
         ];
 
         request()->validate($rules, $messages);
         return request()->all();
     }
 
-    public function SaveBlock()
+    public function SaveAgent()
     {
 
         $this->validateModalForm();
 
         $id = request('id');
-        $campain_id = request('campaign_id');
-        $name = request('name');
-        $order = request('order');
-        $state = 1; //activo
+        $user_id = request('user_id');
+        $camp_id = request('campaign_id');
 
         if (isset($id)) {
-            $tab_state =  Block::findOrFail($id);
+            $agent =  Agent::findOrFail($id);
             $msg = 'Registro actualizado exitosamente';
-            $tab_state->updated_at_user = Auth::user()->name;
+            $agent->updated_at_user = Auth::user()->name;
         } else {
-            $tab_state = new Block();
-            $tab_state->campain_id = $campain_id;
-            $tab_state->state = $state;
-            $tab_state->created_at_user = Auth::user()->name;
+            $agent = new Agent();
+            $agent->user_id = $user_id;
+            $agent->camp_id = $camp_id;
+            $agent->created_at_user = Auth::user()->name;
             $msg = 'Registro creado exitosamente';
         }
 
-        $tab_state->name = $name;
-        $tab_state->order = $order;
+        $agent->save();
 
-        $tab_state->save();
-
+        $modules = $this->modules();
         $campaigns = Campain::get();
-        $blocks = Block::leftjoin('campains', 'campains.id', '=', 'blocks.campain_id')
-                        ->select(
-                            'blocks.id as id',
-                            'campains.id as campaign_id',
-                            'campains.name as campaign_name',
-                            'blocks.name as name',
-                            'blocks.order as order',
-                            'blocks.state as state',
-                        )
-                        ->where('campain_id', $campain_id)
-                        ->orderBy('blocks.order','asc')
-                        ->get();
+
+        $agents = Agent::leftjoin('users', 'users.id', '=', 'agents.user_id')
+                    ->leftjoin('campains', 'campains.id', '=', 'agents.camp_id')
+                    ->select(
+                        'agents.id as id',
+                        'agents.user_id as user_id',
+                        'agents.camp_id as camp_id',
+                        'agents.state as state',
+                        'campains.name as camp_name',
+                        'users.name as user_name',
+                        'users.email as user_email',
+                    )
+                    ->where('camp_id', $id)
+                    ->get();
+        $users = User::get();
+
         $userId = Auth::user()->id;
         $user = User::findOrFail($userId);
         $company = Company::findOrFail(1);
-        $modules = $this->modules();
 
         return redirect()->back()->with([
-            'id' => $campain_id,
+            'id' => $camp_id,
             'campaigns' => $campaigns,
-            'blocks' => $blocks,
+            'modules' => $modules,
             'user' => $user,
             'company' => $company,
-            'modules' => $modules,
+            'agents' => $agents,
+            'users' => $users
         ]);
     }
 
-    public function getBlock()
+    public function DeleteAgent($id)
     {
-        $id = request('id');
-        $elements = Block::findOrFail($id);
-        return $elements;
-    }
-
-    public function DeleteBlock($id)
-    {
-        $element = Block::findOrFail($id);
+        $element = Agent::findOrFail($id);
         $element->delete();
 
         $msg = 'Registro eliminado exitosamente';
@@ -231,9 +243,9 @@ class BlockCampsController extends Controller
         ]);
     }
 
-    public function DisallowBlock($id)
+    public function DisallowAgent($id)
     {
-        $element = Block::findOrFail($id);
+        $element = Agent::findOrFail($id);
         $element->state = 0;
         $element->save();
 
@@ -248,9 +260,9 @@ class BlockCampsController extends Controller
         ]);
     }
 
-    public function AllowBlock($id)
+    public function AllowAgent($id)
     {
-        $element = Block::findOrFail($id);
+        $element = Agent::findOrFail($id);
         $element->state = 1;
         $element->save();
 

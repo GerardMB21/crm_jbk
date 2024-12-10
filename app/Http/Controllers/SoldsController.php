@@ -400,6 +400,7 @@ class SoldsController extends Controller
         $userId = Auth::user()->id;
         $user = User::findOrFail($userId);
         $company = Company::findOrFail(1);
+        $modules = $this->modules();
 
         return redirect()->intended($url)->with([
             'id' => $campain_id,
@@ -412,6 +413,7 @@ class SoldsController extends Controller
             'fields' => $fields,
             'user' => $user,
             'company' => $company,
+            'modules' => $modules,
         ]);
     }
 

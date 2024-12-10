@@ -222,6 +222,7 @@ class AdvertisementsController extends Controller
         $userId = Auth::user()->id;
         $user = User::findOrFail($userId);
         $company = Company::findOrFail(1);
+        $modules = $this->modules();
 
         return redirect()->back()->with([
             'advertisements' => $advertisements,
@@ -229,6 +230,7 @@ class AdvertisementsController extends Controller
             'campaigns' => $campaigns,
             'user' => $user,
             'company' => $company,
+            'modules' => $modules,
         ]);
     }
 

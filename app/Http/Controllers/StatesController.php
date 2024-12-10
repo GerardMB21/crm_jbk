@@ -314,6 +314,7 @@ class StatesController extends Controller
         $userId = Auth::user()->id;
         $user = User::findOrFail($userId);
         $company = Company::findOrFail(1);
+        $modules = $this->modules();
 
         return redirect()->back()->with([
             'id' => $campaign_id,
@@ -323,6 +324,7 @@ class StatesController extends Controller
             'stateStates' => $stateStates,
             'user' => $user,
             'company' => $company,
+            'modules' => $modules,
         ]);
     }
 

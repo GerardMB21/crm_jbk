@@ -4,7 +4,7 @@
             <form class="card-body" id="{{ $idForm }}">
                 <label class="form-label" for="{{ $idSelect }}">{{ $nameLabel }}:</label>
                 <select class="form-select" id="{{ $idSelect }}" name="{{ $idSelect }}" value="0" required>
-                    <option value="0" selected>Seleccionar</option>
+                    <option value="0" disabled selected>Seleccionar</option>
                     @foreach ($options as $option)
                         <option value="{{ $option->id }}">{{ $option->name }}</option>
                     @endforeach

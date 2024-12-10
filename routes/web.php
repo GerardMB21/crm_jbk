@@ -62,6 +62,9 @@ Route::post('/sales/save-tab-state', [App\Http\Controllers\TabStatesController::
 Route::post('/sales/save-state', [App\Http\Controllers\StatesController::class, 'SaveState'])->name('SaveState');
 Route::post('/sales/save-block', [App\Http\Controllers\BlockCampsController::class, 'SaveBlock'])->name('SaveBlock');
 Route::post('/sales/save-field', [App\Http\Controllers\FieldsController::class, 'SaveField'])->name('SaveField');
+Route::post('/sales/save-back', [App\Http\Controllers\BackOfficesController::class, 'SaveBack'])->name('SaveBack');
+Route::post('/sales/save-sup', [App\Http\Controllers\SupsController::class, 'SaveSup'])->name('SaveSup');
+Route::post('/sales/save-agent', [App\Http\Controllers\AgentsController::class, 'SaveAgent'])->name('SaveAgent');
 Route::post('/sales/save-sold', [App\Http\Controllers\SoldsController::class, 'SaveSold'])->name('SaveSold');
 
 Route::patch('/sales/disallow-campaign/{id}', [App\Http\Controllers\CampaignsController::class, 'DisallowCampaign'])->name('DisallowCampaign');
@@ -74,6 +77,12 @@ Route::patch('/sales/disallow-block/{id}', [App\Http\Controllers\BlockCampsContr
 Route::patch('/sales/allow-block/{id}', [App\Http\Controllers\BlockCampsController::class, 'AllowBlock'])->name('AllowBlock');
 Route::patch('/sales/disallow-field/{id}', [App\Http\Controllers\FieldsController::class, 'DisallowField'])->name('DisallowField');
 Route::patch('/sales/allow-field/{id}', [App\Http\Controllers\FieldsController::class, 'AllowField'])->name('AllowField');
+Route::patch('/sales/disallow-back/{id}', [App\Http\Controllers\BackOfficesController::class, 'DisallowBack'])->name('DisallowBack');
+Route::patch('/sales/allow-back/{id}', [App\Http\Controllers\BackOfficesController::class, 'AllowBack'])->name('AllowBack');
+Route::patch('/sales/disallow-sup/{id}', [App\Http\Controllers\SupsController::class, 'DisallowSup'])->name('DisallowSup');
+Route::patch('/sales/allow-sup/{id}', [App\Http\Controllers\SupsController::class, 'AllowSup'])->name('AllowSup');
+Route::patch('/sales/disallow-agent/{id}', [App\Http\Controllers\AgentsController::class, 'DisallowAgent'])->name('DisallowAgent');
+Route::patch('/sales/allow-agent/{id}', [App\Http\Controllers\AgentsController::class, 'AllowAgent'])->name('AllowAgent');
 Route::patch('/sales/disallow-sold/{id}', [App\Http\Controllers\SoldsController::class, 'DisallowSold'])->name('DisallowSold');
 Route::patch('/sales/allow-sold/{id}', [App\Http\Controllers\SoldsController::class, 'AllowSold'])->name('AllowSold');
 
@@ -82,6 +91,9 @@ Route::delete('/sales/delete-tab-state/{id}', [App\Http\Controllers\TabStatesCon
 Route::delete('/sales/delete-state/{id}', [App\Http\Controllers\StatesController::class, 'DeleteState'])->name('DeleteState');
 Route::delete('/sales/delete-block/{id}', [App\Http\Controllers\BlockCampsController::class, 'DeleteBlock'])->name('DeleteBlock');
 Route::delete('/sales/delete-field/{id}', [App\Http\Controllers\FieldsController::class, 'DeleteField'])->name('DeleteField');
+Route::delete('/sales/delete-back/{id}', [App\Http\Controllers\BackOfficesController::class, 'DeleteBack'])->name('DeleteBack');
+Route::delete('/sales/delete-sup/{id}', [App\Http\Controllers\SupsController::class, 'DeleteSup'])->name('DeleteSup');
+Route::delete('/sales/delete-agent/{id}', [App\Http\Controllers\AgentsController::class, 'DeleteAgent'])->name('DeleteAgent');
 Route::delete('/sales/delete-sold/{id}', [App\Http\Controllers\SoldsController::class, 'DeleteSold'])->name('DeleteSold');
 
 Route::get('/sales/campaigns', [App\Http\Controllers\CampaignsController::class, 'index']);
@@ -93,6 +105,12 @@ Route::get('/sales/blocks', [App\Http\Controllers\BlockCampsController::class, '
 Route::get('/sales/blocks/{id}', [App\Http\Controllers\BlockCampsController::class, 'indexWithId']);
 Route::get('/sales/fields', [App\Http\Controllers\FieldsController::class, 'index']);
 Route::get('/sales/fields/{id}', [App\Http\Controllers\FieldsController::class, 'indexWithId']);
+Route::get('/sales/backs', [App\Http\Controllers\BackOfficesController::class, 'index']);
+Route::get('/sales/backs/{id}', [App\Http\Controllers\BackOfficesController::class, 'indexWithId']);
+Route::get('/sales/sups', [App\Http\Controllers\SupsController::class, 'index']);
+Route::get('/sales/sups/{id}', [App\Http\Controllers\SupsController::class, 'indexWithId']);
+Route::get('/sales/agents', [App\Http\Controllers\AgentsController::class, 'index']);
+Route::get('/sales/agents/{id}', [App\Http\Controllers\AgentsController::class, 'indexWithId']);
 Route::get('/sales/solds/{id}', [App\Http\Controllers\SoldsController::class, 'index']);
 Route::get('/sales/solds/{id}/{tab_state_id}', [App\Http\Controllers\SoldsController::class, 'indexWithTabStateId']);
 Route::get('/sales/solds/{id}/{tab_state_id}/{form_id}', [App\Http\Controllers\SoldsController::class, 'indexWithFormId']);

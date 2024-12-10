@@ -42,8 +42,8 @@
                         <a href="#" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(114, 124, 182); color: rgb(255, 255, 255);">Categorías</a>
                         <a href="#" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(135, 83, 222); color: rgb(255, 255, 255);">Productos</a>
                         <a href="#" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(73, 182, 214); color: rgb(255, 255, 255);">Promociones</a>
-                        <a href="#" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(255, 217, 0); color: rgb(255, 255, 255);">Supervisores</a>
-                        <a href="#" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(245, 156, 26); color: rgb(255, 255, 255);">Agentes</a>
+                        <a href="{{ url('sales/sups', $campaign->id) }}" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(255, 217, 0); color: rgb(255, 255, 255);">Supervisores</a>
+                        <a href="{{ url('sales/agents', $campaign->id) }}" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(245, 156, 26); color: rgb(255, 255, 255);">Agentes</a>
                         <a href="#" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(57, 66, 74); color: rgb(255, 255, 255);">Listas</a>
                         <a href="#" class="py-px px-1 text-2xs rounded-1 no-underline" style="background-color: rgb(167, 182, 191); color: rgb(255, 255, 255);">Tipificaciones</a>
                     </div>
