@@ -26,6 +26,8 @@ use App\Models\SectionInGroup;
 use App\Models\Section;
 use App\Models\SubSectionInGroup;
 use App\Models\SubSection;
+use App\Models\Form;
+use App\Models\Field;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -366,9 +368,18 @@ class CampaignsController extends Controller
                             ]);
     }
 
-    public function DeleteCampaign()
+    public function DeleteCampaign($id)
     {
-        $element = Campain::findOrFail(request('id'));
+        $fields = Field::where('campain_id', $id)->get();
+        $forms = Form::where('campain_id', $id)->get();
+
+        if (count($fields) || count($forms)) {
+            return response()->json([
+                'error' => 'La campaña tiene campos y/o ventas asociadas.',
+            ], 400);
+        }
+
+        $element = Campain::findOrFail($id);
         $element->delete();
 
         $msg = 'Registro eliminado exitosamente';

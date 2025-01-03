@@ -141,7 +141,7 @@ class EnterpriseController extends Controller
 
         if (isset($sufijo)) {
             \DB::table('users')->update([
-                'email' => \DB::raw("CONCAT(SUBSTRING_INDEX(email, '@', 1), '@$sufijo')")
+                'email' => \DB::raw("CONCAT(SUBSTRING_INDEX(email, '@', 1), '$sufijo')")
             ]);
         }
 

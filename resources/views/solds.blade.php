@@ -50,34 +50,39 @@
 
                                     <tbody>
                                         @foreach ($data as $d)
-                                            <tr data-id="{{ $d['id'] }}">
-                                                <td data-form="id">
+                                            @php
+                                                $state_name = collect($states)->firstWhere('id', $d['state_id']);
+                                                $row_color = $state_name['color'] ?? 'transparent';
+                                            @endphp
+                                            <tr data-id="{{ $d['id'] }}" style="background-color: {{ $row_color }}">
+                                                <td data-form="id" style="background-color: {{ $row_color }}">
                                                     <div data-form-id="{{ $d['id'] }}">
                                                         {{ $d['id'] }}
                                                     </div>
                                                 </td>
-                                                <td data-form="fecha de creacion">
+                                                <td data-form="fecha de creacion" style="background-color: {{ $row_color }}">
                                                     <div data-form-id="{{ $d['id'] }}">
                                                         {{ \Carbon\Carbon::parse($d['created_at'])->format('d/m/Y H:i') }}
                                                     </div>
                                                 </td>
-                                                <td data-form="fecha de edición">
+                                                <td data-form="fecha de edición" style="background-color: {{ $row_color }}">
                                                     <div data-form-id="{{ $d['id'] }}">
                                                         {{ \Carbon\Carbon::parse($d['updated_at'])->format('d/m/Y H:i') }}
                                                     </div>
                                                 </td>
-                                                <td data-form="agente">
+                                                <td data-form="agente" style="background-color: {{ $row_color }}">
                                                     <div data-form-id="{{ $d['id'] }}">
                                                         {{ $d['created_at_user'] }}
                                                     </div>
                                                 </td>
-                                                <td data-form="estado">
+                                                <td data-form="estado" style="background-color: {{ $row_color }}">
                                                     <div data-form-id="{{ $d['id'] }}">
-                                                        <input type="checkbox" class="switch" id="switch-{{ $d['id'] }}" switch="bool" data-form-id="{{ $d['id'] }}" {{ $d['state'] == "1" ? 'checked' : '' }} />
-                                                        <label for="switch-{{ $d['id'] }}" data-on-label="On" data-off-label="Off"></label>
+                                                        {{-- <input type="checkbox" class="switch" id="switch-{{ $d['id'] }}" switch="bool" data-form-id="{{ $d['id'] }}" {{ $d['state'] == "1" ? 'checked' : '' }} />
+                                                        <label for="switch-{{ $d['id'] }}" data-on-label="On" data-off-label="Off"></label> --}}
+                                                        {{ $state_name['name'] ?? '' }}
                                                     </div>
                                                 </td>
-                                                <td style="width: 100px" data-form="opciones">
+                                                <td data-form="opciones" style="width:100px; background-color: {{ $row_color }}">
                                                     <button type="button" class="btn btn-outline-info btn-sm edit" title="Edit" data-form-id="{{ $d['id'] }}" data-tab-id="{{ $form }}">
                                                         <i class="fas fa-pencil-alt"></i>
                                                     </button>

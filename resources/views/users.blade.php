@@ -77,7 +77,7 @@
                     <label class="form-label" for="email">Email:</label>
                     <div class="input-group">
                         <input type="text" class="form-control" id="email" name="email" placeholder="Email">
-                        <div class="input-group-text">{{ "@" }}{{ $company->sufijo }}</div>
+                        <div class="input-group-text">{{ $company->sufijo }}</div>
                     </div>
                     {{-- <input type="text" class="form-control" id="email" name="email" required> --}}
                     <div class="valid-feedback">Valido!</div>
@@ -117,7 +117,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label" for="fecha_naci">Fecha de nacimiento:</label>
-                    <input type="date" class="form-control" id="fecha_naci" name="fecha_naci" required>
+                    <input type="date" class="form-control" id="fecha_naci" name="fecha_naci" max="{{ now()->subYears(18)->format('Y-m-d') }}" required>
                     <div class="valid-feedback">Valido!</div>
                     <div class="invalid-feedback">La fecha de nacimiento es requerida.</div>
                 </div>

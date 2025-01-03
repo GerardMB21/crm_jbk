@@ -61,10 +61,20 @@ class SoldsController extends Controller
                                 ->get();
 
         $tab_state_id = 0;
+        $tab_state_ids = [];
 
         if (!$tab_states->isEmpty()) {
             $tab_state_id = $tab_states[0]->id;
         };
+        for ($i=0; $i < count($tab_states); $i++) { 
+            $ts = $tab_states[$i];
+
+            array_push($tab_state_ids, $ts->id);
+        };
+
+        $states = State::whereIn('tab_state_id', $tab_state_ids)
+                                ->orderBy('states.order','asc')
+                                ->get();
 
         $tab_states_fields = TabStateField::get();
         $field_ids = [];
@@ -85,6 +95,7 @@ class SoldsController extends Controller
                             'states.name as state_name',
                             'forms.campain_id as campain_id',
                             'forms.tab_state_id as tab_state_id',
+                            'forms.state_id as state_id',
                             'forms.data as data',
                             'forms.created_at_user as created_at_user',
                             'forms.created_at as created_at',
@@ -120,7 +131,7 @@ class SoldsController extends Controller
         $user = User::findOrFail($userId);
         $company = Company::findOrFail(1);
 
-        return view('solds', compact('id','tab_state_id','campaigns','campaign','tab_states','tab_states_fields','forms','fields','modules','user','company'));
+        return view('solds', compact('id','tab_state_id','campaigns','campaign','tab_states','tab_states_fields','forms','fields','modules','user','company','states'));
     }
 
     public function indexWithTabStateId($id, $tab_state_id)
@@ -352,10 +363,20 @@ class SoldsController extends Controller
                                 ->get();
 
         $tab_state_id = 0;
+        $tab_state_ids = [];
 
         if (!$tab_states->isEmpty()) {
             $tab_state_id = $tab_states[0]->id;
         };
+        for ($i=0; $i < count($tab_states); $i++) { 
+            $ts = $tab_states[$i];
+
+            array_push($tab_state_ids, $ts->id);
+        };
+
+        $states = State::whereIn('tab_state_id', $tab_state_ids)
+                                ->orderBy('states.order','asc')
+                                ->get();
 
         $tab_states_fields = TabStateField::get();
         $field_ids = [];
@@ -414,6 +435,7 @@ class SoldsController extends Controller
             'user' => $user,
             'company' => $company,
             'modules' => $modules,
+            'states' => $states,
         ]);
     }
 
