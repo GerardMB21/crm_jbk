@@ -192,7 +192,11 @@ class CampaignsController extends Controller
         }
 
         $campain->name = $name;
-        $campain->description = $description;
+        if ($description) {
+            $campain->description = $description;
+        } else {
+            $campain->description = "";
+        }
         $campain->country_id = $country_id;
         $campain->range_date_id = $range_date_id;
         $campain->geolocation = 0;
@@ -217,6 +221,15 @@ class CampaignsController extends Controller
         if ($show_history_sold) $campain->show_history_sold = 1;
 
         $campain->save();
+
+        if (empty($id)) {
+            $sub_section = new SubSection();
+            $sub_section->name = $name;
+            $sub_section->section_id = 5;
+            $sub_section->url = "sales/solds/$campain->id";
+            $sub_section->created_at_user = Auth::user()->name;
+            $sub_section->save();
+        }
 
         if (isset($id)) {
             GroupCampainAuthorizateDuplicateSold::where('campain_id', $id)->delete();
@@ -380,6 +393,13 @@ class CampaignsController extends Controller
         }
 
         $element = Campain::findOrFail($id);
+
+        $camp = SubSection::where('name', $element->name)->first();
+
+        if ($camp) {
+            $camp->delete();
+        }
+
         $element->delete();
 
         $msg = 'Registro eliminado exitosamente';

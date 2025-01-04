@@ -48,7 +48,34 @@ class UsersController extends Controller
         $campaigns = Campain::get();
         $groups_general = Group::get();
         $company = Company::findOrFail(1);;
-        $users = User::get();
+        $users = User::select(
+            'users.id as id',
+            'users.name as name',
+            'users.email as email',
+            'users.user_verified_at as user_verified_at',
+            'users.created_at as created_at',
+            'users.updated_at as updated_at',
+            'users.telefono as telefono',
+            'users.genero as genero',
+            'users.fecha_naci as fecha_naci',
+            'users.group_perfil_id as group_perfil_id',
+            'users.obs as obs',
+            'users.pass_change as pass_change',
+            'users.document_type_id as document_type_id',
+            'users.document_number as document_number',
+            'users.bank_id as bank_id',
+            'users.bank_account as bank_account',
+            'users.bank_cci as bank_cci',
+            'users.fecha_inicio as fecha_inicio',
+            'users.fecha_cese as fecha_cese',
+            'users.fecha_inicap as fecha_inicap',
+            'users.fecha_fincap as fecha_fincap',
+            'users.foto_perfil as foto_perfil',
+            'users.foto_doc as foto_doc',
+            'users.curriculum as curriculum',
+            'users.contrato as contrato',
+        )
+        ->get();
         $groups = UserGroup::select(
             'user_groups.id  as id',
             'user_groups.user_id  as user_id',
@@ -169,8 +196,35 @@ class UsersController extends Controller
         $element->save();
 
         $groups_general = Group::get();
-        $company = Company::findOrFail(1);;
-        $users = User::get();
+        $company = Company::findOrFail(1);
+        $users = User::select(
+            'users.id as id',
+            'users.name as name',
+            'users.email as email',
+            'users.user_verified_at as user_verified_at',
+            'users.created_at as created_at',
+            'users.updated_at as updated_at',
+            'users.telefono as telefono',
+            'users.genero as genero',
+            'users.fecha_naci as fecha_naci',
+            'users.group_perfil_id as group_perfil_id',
+            'users.obs as obs',
+            'users.pass_change as pass_change',
+            'users.document_type_id as document_type_id',
+            'users.document_number as document_number',
+            'users.bank_id as bank_id',
+            'users.bank_account as bank_account',
+            'users.bank_cci as bank_cci',
+            'users.fecha_inicio as fecha_inicio',
+            'users.fecha_cese as fecha_cese',
+            'users.fecha_inicap as fecha_inicap',
+            'users.fecha_fincap as fecha_fincap',
+            'users.foto_perfil as foto_perfil',
+            'users.foto_doc as foto_doc',
+            'users.curriculum as curriculum',
+            'users.contrato as contrato',
+        )
+        ->get();
         $groups = UserGroup::select(
             'user_groups.id  as id',
             'user_groups.user_id  as user_id',
@@ -199,7 +253,6 @@ class UsersController extends Controller
 
     public function SaveUser()
     {
-        $this->validateForm();
 
         $campaigns = Campain::get();
         $company = Company::findOrFail(1);
@@ -215,13 +268,81 @@ class UsersController extends Controller
 
         if (isset($id)) {
             $element = User::findOrFail($id);
+
+            if ($name) {
+                $element->name = $name;
+            }
+
+            if ($email) {
+                $element->email = $email . $company->sufijo;
+            }
+
+            if ($password) {
+                $element->password = $password;
+                $element->remember_token = $password;
+            }
+
+            if ($telefono) {
+                $element->telefono = $telefono;
+            }
+
+            if ($genero) {
+                $element->genero = $genero;
+            }
+
+            if ($fecha_naci) {
+                $element->fecha_naci = $fecha_naci;
+            }
+
+            if ($obs) {
+                $element->obs = $obs;
+            }
         } else {
+            $this->validateForm();
+
             $element = new User();
+            $element->name = $name;
+            $element->email = $email . $company->sufijo;
+            $element->password = $password;
+            $element->remember_token = $password;
+            $element->telefono = $telefono;
+            $element->genero = $genero;
+            $element->fecha_naci = $fecha_naci;
+            $element->obs = $obs;
         }
 
+        $element->save();
+
         $groups_general = Group::get();
-        $company = Company::findOrFail(1);;
-        $users = User::get();
+        $company = Company::findOrFail(1);
+        $users = User::select(
+            'users.id as id',
+            'users.name as name',
+            'users.email as email',
+            'users.user_verified_at as user_verified_at',
+            'users.created_at as created_at',
+            'users.updated_at as updated_at',
+            'users.telefono as telefono',
+            'users.genero as genero',
+            'users.fecha_naci as fecha_naci',
+            'users.group_perfil_id as group_perfil_id',
+            'users.obs as obs',
+            'users.pass_change as pass_change',
+            'users.document_type_id as document_type_id',
+            'users.document_number as document_number',
+            'users.bank_id as bank_id',
+            'users.bank_account as bank_account',
+            'users.bank_cci as bank_cci',
+            'users.fecha_inicio as fecha_inicio',
+            'users.fecha_cese as fecha_cese',
+            'users.fecha_inicap as fecha_inicap',
+            'users.fecha_fincap as fecha_fincap',
+            'users.foto_perfil as foto_perfil',
+            'users.foto_doc as foto_doc',
+            'users.curriculum as curriculum',
+            'users.contrato as contrato',
+        )
+        ->get();
         $groups = UserGroup::select(
             'user_groups.id  as id',
             'user_groups.user_id  as user_id',
@@ -233,15 +354,6 @@ class UsersController extends Controller
 
         $modules = $this->modules();
 
-        $element->name = $name;
-        $element->email = $email . $company->sufijo;
-        $element->password = $password;
-        $element->remember_token = $password;
-        $element->telefono = $telefono;
-        $element->genero = $genero;
-        $element->fecha_naci = $fecha_naci;
-        $element->obs = $obs;
-        $element->save();
         $userId = Auth::user()->id;
         $user = User::findOrFail($userId);
         $company = Company::findOrFail(1);

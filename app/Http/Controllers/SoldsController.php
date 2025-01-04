@@ -54,7 +54,8 @@ class SoldsController extends Controller
     public function index($id)
     {
         $modules = $this->modules();
-        $campaigns = Campain::get();
+        // $campaigns = Campain::get();
+        $campaigns = Campain::whereNull('deleted_at')->get();
         $campaign = Campain::findOrFail($id);
         $tab_states = TabState::where('campain_id', $id)
                                 ->orderBy('tab_states.order','asc')
@@ -138,7 +139,7 @@ class SoldsController extends Controller
     {
         $modules = $this->modules();
         $form_id = 0;
-        $campaigns = Campain::get();
+        $campaigns = Campain::whereNull('deleted_at')->get();
         $campaign = Campain::findOrFail($id);
 
         $tab_states_fields = TabStateField::where('tab_state_id', $tab_state_id)
@@ -184,7 +185,7 @@ class SoldsController extends Controller
     public function indexWithFormId($id, $tab_state_id, $form_id)
     {
         $modules = $this->modules();
-        $campaigns = Campain::get();
+        $campaigns = Campain::whereNull('deleted_at')->get();
         $campaign = Campain::findOrFail($id);
 
         $tab_states_fields = TabStateField::where('tab_state_id', $tab_state_id)
@@ -356,7 +357,7 @@ class SoldsController extends Controller
 
         $form->save();
 
-        $campaigns = Campain::get();
+        $campaigns = Campain::whereNull('deleted_at')->get();
         $campaign = Campain::findOrFail($campain_id);
         $tab_states = TabState::where('campain_id', $campain_id)
                                 ->orderBy('tab_states.order','asc')

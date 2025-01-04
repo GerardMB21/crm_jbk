@@ -243,7 +243,6 @@
                     id,
                     name,
                     email,
-                    password,
                     telefono,
                     genero,
                     fecha_naci,
@@ -256,7 +255,6 @@
                 $('#id')[0].value = id;
                 $('#name')[0].value = name;
                 $('#email')[0].value = userName[0];
-                $('#password')[0].value = password;
                 $('#telefono')[0].value = telefono;
                 $('#genero')[0].value = genero;
                 $('#fecha_naci')[0].value = fecha_naci;
