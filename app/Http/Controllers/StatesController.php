@@ -255,7 +255,13 @@ class StatesController extends Controller
         $element->tab_state_id = $tab_state_id;
         $element->color = $color;
         $element->order = $order;
-        $element->state_user = $state_user;
+
+        if ($state_user && $state_user !== "null") {
+            $element->state_user = $state_user;
+        } else {
+            $element->state_user = 0;
+        }
+
         $element->not = $not;
         $element->age = $age;
         $element->com = $com;
@@ -267,12 +273,14 @@ class StatesController extends Controller
         }
 
         $stateStateData = [];
-        foreach ($state_state as $stateId) {
-            $stateStateData[] = [
-                'from_state_id' => $element->id,
-                'to_state_id' => $stateId,
-                'created_at_user' => Auth::user()->name,
-            ];
+        if ($state_state) {
+            foreach ($state_state as $stateId) {
+                $stateStateData[] = [
+                    'from_state_id' => $element->id,
+                    'to_state_id' => $stateId,
+                    'created_at_user' => Auth::user()->name,
+                ];
+            }
         }
 
         StateState::insert($stateStateData);
