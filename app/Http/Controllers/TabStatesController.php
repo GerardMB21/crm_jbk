@@ -22,6 +22,8 @@ use App\Models\SectionInGroup;
 use App\Models\Section;
 use App\Models\SubSectionInGroup;
 use App\Models\SubSection;
+use App\Models\State;
+use App\Models\Form;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -257,8 +259,17 @@ class TabStatesController extends Controller
         return $elements;
     }
 
-    public function DeleteTabState()
+    public function DeleteTabState($id)
     {
+        $states = State::where('tab_state_id', $id)->get();
+        $forms = Form::where('tab_state_id', $id)->get();
+
+        if (count($states) || count($forms)) {
+            return response()->json([
+                'error' => 'La pestaña de estado tiene estados y/o ventas asociadas.',
+            ], 400);
+        }
+
         $element = TabState::findOrFail(request('id'));
         $element->delete();
 

@@ -169,6 +169,7 @@
         const sectionsGroup = @json($sectionsGroup);
         const subSectionsGroup = @json($subSectionsGroup);
         const titleEditGroup = $('#editGroupTitle')[0];
+        console.log(groups)
 
         function reinitData() {
             const tree = $(`#tree-container`).jstree(true);

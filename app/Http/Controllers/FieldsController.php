@@ -23,6 +23,7 @@ use App\Models\SectionInGroup;
 use App\Models\Section;
 use App\Models\SubSectionInGroup;
 use App\Models\SubSection;
+use App\Models\Form;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -486,6 +487,16 @@ class FieldsController extends Controller
     public function DeleteField($id)
     {
         $element = Field::findOrFail($id);
+
+        $block = Block::findOrFail($element->block_id);
+        $forms = Form::where('campain_id', $block->campain_id)->get();
+
+        if (count($forms)) {
+            return response()->json([
+                'error' => 'El campo tiene ventas asociadas.',
+            ], 400);
+        }
+
         $element->delete();
 
         $msg = 'Registro eliminado exitosamente';

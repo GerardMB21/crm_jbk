@@ -19,7 +19,7 @@ class CheckUserIP
     {
         $clientIP = $request->ip();
 
-        $userWithIP = Group::where('ip', $clientIP)->exists();
+        $userWithIP = Group::where('ip', 'like', '%' . $clientIP . '%')->exists();
 
         if (!$userWithIP) {
             abort(403, 'Acceso denegado.');

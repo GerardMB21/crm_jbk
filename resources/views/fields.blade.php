@@ -423,14 +423,25 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-                            Swal.fire({
-                                title: 'Eliminado!',
-                                text: 'Campo eliminado.',
-                                icon: 'success',
-                                confirmButtonColor: "#34c38f"
-                            }).then(function () {
-                                window.location.reload();
-                            })
+                            const { error } = data;
+
+                            if (error) {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: error,
+                                    icon: 'error',
+                                    confirmButtonColor: "#34c38f"
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Eliminado!',
+                                    text: 'Campaña eliminado.',
+                                    icon: 'success',
+                                    confirmButtonColor: "#34c38f"
+                                }).then(function () {
+                                    window.location.reload();
+                                })
+                            }
                         })
                         .catch(error => {
                             Swal.fire({

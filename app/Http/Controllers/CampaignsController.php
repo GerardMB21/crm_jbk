@@ -28,6 +28,8 @@ use App\Models\SubSectionInGroup;
 use App\Models\SubSection;
 use App\Models\Form;
 use App\Models\Field;
+use App\Models\Block;
+use App\Models\TabState;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -385,10 +387,12 @@ class CampaignsController extends Controller
     {
         $fields = Field::where('campain_id', $id)->get();
         $forms = Form::where('campain_id', $id)->get();
+        $blocks = Block::where('campain_id', $id)->get();
+        $tabStates = TabState::where('campain_id', $id)->get();
 
-        if (count($fields) || count($forms)) {
+        if (count($fields) || count($forms) || count($blocks) || count($tabStates)) {
             return response()->json([
-                'error' => 'La campaña tiene campos y/o ventas asociadas.',
+                'error' => 'La campaña tiene campos, bloque de campos, pestaña de estados, estados y/o ventas asociadas.',
             ], 400);
         }
 

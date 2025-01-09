@@ -16,6 +16,7 @@ use App\Models\SectionInGroup;
 use App\Models\Section;
 use App\Models\SubSectionInGroup;
 use App\Models\SubSection;
+use App\Models\Form;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -362,6 +363,14 @@ class StatesController extends Controller
 
     public function DeleteState($id)
     {
+        $forms = Form::where('state_id', $id)->get();
+
+        if (count($forms)) {
+            return response()->json([
+                'error' => 'El estado tiene ventas asociadas.',
+            ], 400);
+        }
+
         $element = State::findOrFail($id);
         $element->delete();
 

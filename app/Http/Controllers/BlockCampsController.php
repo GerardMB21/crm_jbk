@@ -14,6 +14,7 @@ use App\Models\SectionInGroup;
 use App\Models\Section;
 use App\Models\SubSectionInGroup;
 use App\Models\SubSection;
+use App\Models\Field;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -217,6 +218,14 @@ class BlockCampsController extends Controller
 
     public function DeleteBlock($id)
     {
+        $fields = Field::where('block_id', $id)->get();
+
+        if (count($fields)) {
+            return response()->json([
+                'error' => 'El bloque de campos tiene campos y/o ventas asociadas.',
+            ], 400);
+        }
+
         $element = Block::findOrFail($id);
         $element->delete();
 
