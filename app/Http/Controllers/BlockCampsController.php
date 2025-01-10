@@ -140,13 +140,13 @@ class BlockCampsController extends Controller
         $messages = [
             'name.required'         => 'Debe completar el nombre.',
             'order.required'         => 'Debe completar el Orden.',
-            'campain_id.required'         => 'Debe elegir una Campaña.',
+            'campaign_id.required'         => 'Debe elegir una Campaña.',
         ];
 
         $rules = [
             'name'                  => 'required',
             'order'                  => 'required',
-            'campain_id'                  => 'required',
+            'campaign_id'                  => 'required',
         ];
 
         request()->validate($rules, $messages);
