@@ -144,7 +144,7 @@ class FieldsController extends Controller
             $subSectionsIds[] = $subSectionGroup->sub_section_id;
         };
 
-        $modules = Module::whereIn('id', [2])
+        $modules = Module::whereIn('id', $modulesIds)
                         ->get();
         $sections = Section::whereIn('id', $sectionsIds)
                             ->orderBy('order','asc')
@@ -326,39 +326,47 @@ class FieldsController extends Controller
         }
 
         $groupFieldEditData = [];
-        foreach ($group_field_edit as $groupId) {
-            $groupFieldEditData[] = [
-                'field_id' => $field->id,
-                'group_id' => $groupId,
-                'created_at_user' => Auth::user()->name,
-            ];
+        if ($group_field_edit) {
+            foreach ($group_field_edit as $groupId) {
+                $groupFieldEditData[] = [
+                    'field_id' => $field->id,
+                    'group_id' => $groupId,
+                    'created_at_user' => Auth::user()->name,
+                ];
+            }
         }
 
         $groupFieldViewData = [];
-        foreach ($group_field_view as $groupId) {
-            $groupFieldViewData[] = [
-                'field_id' => $field->id,
-                'group_id' => $groupId,
-                'created_at_user' => Auth::user()->name,
-            ];
+        if ($group_field_view) {
+            foreach ($group_field_view as $groupId) {
+                $groupFieldViewData[] = [
+                    'field_id' => $field->id,
+                    'group_id' => $groupId,
+                    'created_at_user' => Auth::user()->name,
+                ];
+            }
         }
 
         $groupFieldHaveCommentData = [];
-        foreach ($group_field_have_comment as $groupId) {
-            $groupFieldHaveCommentData[] = [
-                'field_id' => $field->id,
-                'group_id' => $groupId,
-                'created_at_user' => Auth::user()->name,
-            ];
+        if ($group_field_have_comment) {
+            foreach ($group_field_have_comment as $groupId) {
+                $groupFieldHaveCommentData[] = [
+                    'field_id' => $field->id,
+                    'group_id' => $groupId,
+                    'created_at_user' => Auth::user()->name,
+                ];
+            }
         }
 
         $tabStateFieldData = [];
-        foreach ($tab_state_field as $tabStateId) {
-            $tabStateFieldData[] = [
-                'field_id' => $field->id,
-                'tab_state_id' => $tabStateId,
-                'created_at_user' => Auth::user()->name,
-            ];
+        if ($tab_state_field) {
+            foreach ($tab_state_field as $tabStateId) {
+                $tabStateFieldData[] = [
+                    'field_id' => $field->id,
+                    'tab_state_id' => $tabStateId,
+                    'created_at_user' => Auth::user()->name,
+                ];
+            }
         }
 
         GroupFieldEdit::insert($groupFieldEditData);

@@ -73,8 +73,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label" for="country">País:</label>
-                    <select class="form-select" id="country" name="country_id" value="0" required>
-                        <option value="0" selected>Seleccionar</option>
+                    <select class="form-select" id="country" name="country_id" required>
                         @foreach ($countries as $country)
                             <option value="{{ $country->id }}">{{ $country->name }}</option>
                         @endforeach
@@ -254,6 +253,7 @@
 
 @endsection
 @section('script')
+<script src="{{ URL::asset('/assets/libs/parsleyjs/parsleyjs.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/datatables/datatables.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/select2/select2.min.js') }}"></script>
@@ -269,8 +269,11 @@
         const groupsViewEdition = @json($groupsViewEdition);
         const groupsAuditDataSold = @json($groupsAuditDataSold);
         const titleEdit = $('#editCampaignTitle')[0];
+		const forms = document.getElementsByClassName('needs-validation');
 
         function reinitData() {
+            $('#editCampaign').removeClass('was-validated');
+            $('#editCampaign').addClass('needs-validated');
             $('#id').val("");
             $('#name').val("");
             $('#country').val("0");
@@ -293,6 +296,8 @@
             $('#autorize_duplicate_sold').val([]).trigger('change');
         };
         function loadData(ID) {
+            $('#editCampaign').removeClass('was-validated');
+            $('#editCampaign').addClass('needs-validated');
             let campaignData;
 
             const exportSold = groupsExportSold.filter(i => i.campain_id == +ID);
@@ -458,6 +463,15 @@
                         });
                     };
                 });
+            });
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
             });
         });
 

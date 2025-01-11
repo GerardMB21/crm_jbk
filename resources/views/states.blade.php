@@ -95,8 +95,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label" for="tab_state_id">Pestaña de Estado:</label>
-                    <select class="form-select" id="tab_state_id" name="tab_state_id" value="0" required>
-                        <option value="0" selected>Seleccionar</option>
+                    <select class="form-select" id="tab_state_id" name="tab_state_id" required>
                         @foreach ($tabStates as $tabState)
                             <option value="{{ $tabState->id }}">{{ $tabState->name }}</option>
                         @endforeach
@@ -127,8 +126,7 @@
                 <div class="mb-3">
                     <label class="form-label" for="state_user">Estados usado para:</label>
                     <select class="form-select" id="state_user" name="state_user" value="0" required>
-                        <option value="null" selected>Seleccionar</option>
-                        <option value="0">Crear Ventas</option>
+                        <option value="0" selected>Crear Ventas</option>
                         <option value="1">Editar Ventas</option>
                         <option value="2">Crear y Editar Ventas</option>
                     </select>
@@ -179,6 +177,7 @@
 
 @endsection
 @section('script')
+<script src="{{ URL::asset('/assets/libs/parsleyjs/parsleyjs.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/datatables/datatables.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/select2/select2.min.js') }}"></script>
@@ -190,6 +189,7 @@
         const tabStates = @json($tabStates);
         const titleEdit = $('#editStateTitle')[0];
         const stateStates = @json($stateStates);
+		const forms = document.getElementsByClassName('needs-validation');
 
         if (id) {
             $('#id_campaign').val(id);
@@ -197,6 +197,8 @@
         };
 
         function reinitData() {
+            $('#editState').removeClass('was-validated');
+            $('#editState').addClass('needs-validated');
             $('#id').val("");
             $('#name').val("");
             $('#color').val("");
@@ -211,6 +213,8 @@
             $('#states').val([]).trigger('change');
         };
         function loadData(ID) {
+            $('#editState').removeClass('was-validated');
+            $('#editState').addClass('needs-validated');
             let stateData;
 
             const groupStates = stateStates.filter(i => i.from_state_id == +ID);
@@ -367,6 +371,15 @@
                 const campaignId = $('#id_campaign').val();
 
                 window.location.assign(`{{ url('sales/states/${campaignId}') }}`);
+            });
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
             });
         });
     </script>

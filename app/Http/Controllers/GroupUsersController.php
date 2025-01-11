@@ -315,10 +315,16 @@ class GroupUsersController extends Controller
         ]);
     }
 
-    public function DeleteGroup()
+    public function DeleteGroup($id)
     {
+        $usersGroups = UserGroup::where('group_id', $id)->get();
 
-        $id = request('id');
+        if (count($usersGroups)) {
+            return response()->json([
+                'error' => 'El grupo tiene usuarios asignados.',
+            ], 400);
+        }
+
         $element = Group::findOrFail($id);
         $element->delete();
 

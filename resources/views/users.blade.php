@@ -76,12 +76,12 @@
                 <div class="mb-3">
                     <label class="form-label" for="email">Email:</label>
                     <div class="input-group">
-                        <input type="text" class="form-control" id="email" name="email" placeholder="Email">
+                        <input type="text" class="form-control" id="email" name="email" placeholder="Email" required>
                         <div class="input-group-text">{{ $company->sufijo }}</div>
+                        <div class="valid-feedback">Valido!</div>
+                        <div class="invalid-feedback">El email es requerido.</div>
                     </div>
                     {{-- <input type="text" class="form-control" id="email" name="email" required> --}}
-                    <div class="valid-feedback">Valido!</div>
-                    <div class="invalid-feedback">El email es requerido.</div>
                 </div>
             </div>
         </div>
@@ -205,6 +205,7 @@
 
 @endsection
 @section('script')
+<script src="{{ URL::asset('/assets/libs/parsleyjs/parsleyjs.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/datatables/datatables.min.js') }}"></script>
     <script>
@@ -213,8 +214,11 @@
         const users = @json($users);
         const groups = @json($groups);
         const titleEdit = $('#editUserTitle')[0];
+		const forms = document.getElementsByClassName('needs-validation');
 
         function reinitData() {
+            $('#editUser').removeClass('was-validated');
+            $('#editUser').addClass('needs-validated');
             $('#id')[0].value = "";
             $('#name')[0].value = "";
             $('#email')[0].value = "";
@@ -228,6 +232,8 @@
             $('#datatable-group tbody')[0].innerHTML = "";
         };
         function loadData(ID) {
+            $('#editUser').removeClass('was-validated');
+            $('#editUser').addClass('needs-validated');
             const userGroups = groups.filter(i => i.user_id == +ID);
 
             let userData;
@@ -284,6 +290,7 @@
             const table = $('#datatable').DataTable();
 
             $('#newEditUser').on('click', '', function () {
+                $('#password').attr('required', true);
                 reinitData();
                 titleEdit.innerText = "Nuevo Usuario";
             });
@@ -294,6 +301,8 @@
 
             $('#datatable tbody').on('click', '.btn.edit', function () {
                 titleEdit.innerText = "Editar Usuario";
+
+                $('#password').attr('required', false);
 
                 reinitData();
 
@@ -414,6 +423,15 @@
                         });
                     };
                 });
+            });
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
             });
         });
 

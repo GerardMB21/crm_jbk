@@ -125,7 +125,7 @@ class AgentsController extends Controller
             $subSectionsIds[] = $subSectionGroup->sub_section_id;
         };
 
-        $modules = Module::whereIn('id', [2])
+        $modules = Module::whereIn('id', $modulesIds)
                         ->get();
         $sections = Section::whereIn('id', $sectionsIds)
                             ->orderBy('order','asc')

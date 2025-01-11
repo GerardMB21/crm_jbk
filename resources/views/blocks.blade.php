@@ -78,6 +78,7 @@
 
 @endsection
 @section('script')
+    <script src="{{ URL::asset('/assets/libs/parsleyjs/parsleyjs.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/datatables/datatables.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/select2/select2.min.js') }}"></script>
@@ -87,6 +88,7 @@
         const campaigns = @json($campaigns);
         const blocks = @json($blocks);
         const titleEdit = $('#editBlockTitle')[0];
+		const forms = document.getElementsByClassName('needs-validation');
 
         if (id) {
             $('#id_campaign').val(id);
@@ -94,11 +96,15 @@
         };
 
         function reinitData() {
+            $('#editBlock').removeClass('was-validated');
+            $('#editBlock').addClass('needs-validated');
             $('#id').val("");
             $('#name').val("");
             $('#order').val("");
         };
         function loadData(ID) {
+            $('#editBlock').removeClass('was-validated');
+            $('#editBlock').addClass('needs-validated');
             let blockData;
 
             for (let i = 0; i < blocks.length; i++) {
@@ -255,6 +261,15 @@
                         console.log(error)
                     });
                 };
+            });
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
             });
         });
     </script>

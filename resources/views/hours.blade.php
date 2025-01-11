@@ -186,12 +186,16 @@
             </div>
             <div class="col-md-4">
                 <div class="mb-3">
-                    <input class="form-control" type="time" id="in-time-monday" name="in-time-monday">
+                    <input class="form-control" type="time" id="in-time-monday" name="in-time-monday" required>
+                    <div class="valid-feedback">Valido!</div>
+                    <div class="invalid-feedback">La entrada es requerida.</div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="mb-3">
-                    <input class="form-control" type="time" id="out-time-monday" name="out-time-monday">
+                    <input class="form-control" type="time" id="out-time-monday" name="out-time-monday" required>
+                    <div class="valid-feedback">Valido!</div>
+                    <div class="invalid-feedback">La salida es requerida.</div>
                 </div>
             </div>
         </div>
@@ -203,12 +207,16 @@
             </div>
             <div class="col-md-4">
                 <div class="mb-3">
-                    <input class="form-control" type="time" id="in-time-tuesday" name="in-time-tuesday">
+                    <input class="form-control" type="time" id="in-time-tuesday" name="in-time-tuesday" required>
+                    <div class="valid-feedback">Valido!</div>
+                    <div class="invalid-feedback">La entrada es requerida.</div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="mb-3">
-                    <input class="form-control" type="time" id="out-time-tuesday" name="out-time-tuesday">
+                    <input class="form-control" type="time" id="out-time-tuesday" name="out-time-tuesday" required>
+                    <div class="valid-feedback">Valido!</div>
+                    <div class="invalid-feedback">La salida es requerida.</div>
                 </div>
             </div>
         </div>
@@ -220,12 +228,16 @@
             </div>
             <div class="col-md-4">
                 <div class="mb-3">
-                    <input class="form-control" type="time" id="in-time-wednesday" name="in-time-wednesday">
+                    <input class="form-control" type="time" id="in-time-wednesday" name="in-time-wednesday" required>
+                    <div class="valid-feedback">Valido!</div>
+                    <div class="invalid-feedback">La entrada es requerida.</div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="mb-3">
-                    <input class="form-control" type="time" id="out-time-wednesday" name="out-time-wednesday">
+                    <input class="form-control" type="time" id="out-time-wednesday" name="out-time-wednesday" required>
+                    <div class="valid-feedback">Valido!</div>
+                    <div class="invalid-feedback">La salida es requerida.</div>
                 </div>
             </div>
         </div>
@@ -237,12 +249,16 @@
             </div>
             <div class="col-md-4">
                 <div class="mb-3">
-                    <input class="form-control" type="time" id="in-time-thursday" name="in-time-thursday">
+                    <input class="form-control" type="time" id="in-time-thursday" name="in-time-thursday" required>
+                    <div class="valid-feedback">Valido!</div>
+                    <div class="invalid-feedback">La entrada es requerida.</div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="mb-3">
-                    <input class="form-control" type="time" id="out-time-thursday" name="out-time-thursday">
+                    <input class="form-control" type="time" id="out-time-thursday" name="out-time-thursday" required>
+                    <div class="valid-feedback">Valido!</div>
+                    <div class="invalid-feedback">La salida es requerida.</div>
                 </div>
             </div>
         </div>
@@ -254,12 +270,16 @@
             </div>
             <div class="col-md-4">
                 <div class="mb-3">
-                    <input class="form-control" type="time" id="in-time-friday" name="in-time-friday">
+                    <input class="form-control" type="time" id="in-time-friday" name="in-time-friday" required>
+                    <div class="valid-feedback">Valido!</div>
+                    <div class="invalid-feedback">La entrada es requerida.</div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="mb-3">
-                    <input class="form-control" type="time" id="out-time-friday" name="out-time-friday">
+                    <input class="form-control" type="time" id="out-time-friday" name="out-time-friday" required>
+                    <div class="valid-feedback">Valido!</div>
+                    <div class="invalid-feedback">La salida es requerida.</div>
                 </div>
             </div>
         </div>
@@ -301,13 +321,17 @@
 
 @endsection
 @section('script')
+    <script src="{{ URL::asset('/assets/libs/parsleyjs/parsleyjs.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/datatables/datatables.min.js') }}"></script>
     <script>
         const horarios = @json($horarios);
         const titleEditHour = $('#editHourTitle')[0];
+		const forms = document.getElementsByClassName('needs-validation');
 
         function reinitData() {
+            $('#editHour').removeClass('was-validated');
+            $('#editHour').addClass('needs-validated');
             $('#id')[0].value = "";
             $('#name')[0].value = "";
             $('#tolerancia_min')[0].value = "";
@@ -331,6 +355,8 @@
             $('#out-time-sunday')[0].value = "";
         };
         function loadData(hourId) {
+            $('#editHour').removeClass('was-validated');
+            $('#editHour').addClass('needs-validated');
             let hourData;
 
             for (let i = 0; i < horarios.length; i++) {
@@ -709,6 +735,15 @@
                         console.log(error)
                     });
                 };
+            });
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
             });
         });
     </script>

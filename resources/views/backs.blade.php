@@ -60,8 +60,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label" for="user_id">Back office / Jefe de equipo:</label>
-                    <select class="form-select" id="user_id" name="user_id" value="0">
-                        <option value="0" disabled selected>Seleccionar</option>
+                    <select class="form-select" id="user_id" name="user_id" required>
                         @foreach ($users as $user)
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
@@ -85,6 +84,7 @@
 
 @endsection
 @section('script')
+    <script src="{{ URL::asset('/assets/libs/parsleyjs/parsleyjs.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/datatables/datatables.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/select2/select2.min.js') }}"></script>
@@ -95,6 +95,7 @@
         const backs = @json($backs);
         const supsInBacks = @json($supsInBacks);
         const titleEdit = $('#editBackTitle')[0];
+		const forms = document.getElementsByClassName('needs-validation');
 
         if (id) {
             $('#id_campaign').val(id);
@@ -102,6 +103,8 @@
         };
 
         function reinitData() {
+            $('#editBack').removeClass('was-validated');
+            $('#editBack').addClass('needs-validated');
             $('#id').val("");
 
             $('#user_id').val("0").trigger('change');
@@ -110,6 +113,8 @@
 
         };
         function loadData(ID) {
+            $('#editBack').removeClass('was-validated');
+            $('#editBack').addClass('needs-validated');
             let backData;
 
             const sups = supsInBacks.filter(i => i.back_id == +ID);
@@ -265,6 +270,15 @@
                         console.log(error)
                     });
                 };
+            });
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
             });
         });
     </script>

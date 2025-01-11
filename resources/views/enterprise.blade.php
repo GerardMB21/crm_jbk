@@ -106,8 +106,20 @@
     <!-- end row -->
 @endsection
 @section('script')
+<script src="{{ URL::asset('/assets/libs/parsleyjs/parsleyjs.min.js') }}"></script>
 <script src="{{ URL::asset('/assets/libs/spectrum-colorpicker/spectrum-colorpicker.min.js') }}"></script>
 <script>
-    $(document).ready(function() {});
+    const forms = document.getElementsByClassName('needs-validation');
+    $(document).ready(function() {
+        Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    });
 </script>
 @endsection

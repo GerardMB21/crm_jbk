@@ -1,6 +1,6 @@
 <div class="modal fade" id="{{ $idModal }}" tabindex="-1" role="dialog" aria-labelledby="{{ $ariaLabelledby }}" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
-        <form class="modal-content" action="{{ $routeAction }}" method="POST" enctype="multipart/form-data">
+        <form class="modal-content needs-validation" action="{{ $routeAction }}" method="POST" enctype="multipart/form-data" novalidate>
             @csrf
             <input id="id" name="id" style="display: none;">
             <div class="modal-header">

@@ -83,7 +83,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label" for="block_id">Bloque de Campos:</label>
-                    <select class="form-select" id="block_id" name="block_id" value="0">
+                    <select class="form-select" id="block_id" name="block_id" value="0" required>
                         <option value="0" selected>Seleccionar</option>
                         @foreach ($blocks as $block)
                             <option value="{{ $block->id }}">{{ $block->name }}</option>
@@ -96,7 +96,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label" for="type_field_id">Tipo de Campo:</label>
-                    <select class="form-select" id="type_field_id" name="type_field_id" value="0">
+                    <select class="form-select" id="type_field_id" name="type_field_id" value="0" required>
                         <option value="0" selected>Seleccionar</option>
                         @foreach ($type_fields as $type_field)
                             <option value="{{ $type_field->id }}">{{ $type_field->name }}</option>
@@ -111,7 +111,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label" for="width_id">Ancho del Campo:</label>
-                    <select class="form-select" id="width_id" name="width_id" value="0">
+                    <select class="form-select" id="width_id" name="width_id" value="0" required>
                         <option value="0" selected>Seleccionar</option>
                         @foreach ($widths as $width)
                             <option value="{{ $width->id }}">{{ $width->col }}/12 | {{ number_format(($width->col / 12) * 100, 2) }}%</option>
@@ -237,6 +237,7 @@
 
 @endsection
 @section('script')
+    <script src="{{ URL::asset('/assets/libs/parsleyjs/parsleyjs.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/datatables/datatables.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/select2/select2.min.js') }}"></script>
@@ -256,6 +257,7 @@
         const groupFieldHaveComment = @json($groupFieldHaveComment);
         const tabStateField = @json($tabStateField);
         const titleEdit = $('#editFieldTitle')[0];
+		const forms = document.getElementsByClassName('needs-validation');
 
         if (id) {
             $('#id_campaign').val(id);
@@ -263,6 +265,8 @@
         };
 
         function reinitData() {
+            $('#editField').removeClass('was-validated');
+            $('#editField').addClass('needs-validated');
             $('#id').val("");
             $('#name').val("");
             $('#order').val("");
@@ -284,6 +288,8 @@
             $('#has_edit').prop("checked", 0);
         };
         function loadData(ID) {
+            $('#editField').removeClass('was-validated');
+            $('#editField').addClass('needs-validated');
             let fieldData;
 
             const fieldEdit = groupFieldEdit.filter(i => i.field_id == +ID);
@@ -498,6 +504,16 @@
                         console.log(error)
                     });
                 };
+            });
+
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
             });
         });
     </script>

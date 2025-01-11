@@ -61,7 +61,7 @@
             <div class="col-md-12">
                 <div class="mb-3" style="display: flex; flex-direction: column;">
                     <label class="form-label" for="title">Lista de distribución:</label>
-                    <select id="groups" class="select2 form-control select2-multiple" name="group_advertisement_ids[]" multiple="multiple" data-placeholder="Selecciona">
+                    <select id="groups" class="select2 form-control select2-multiple" name="group_advertisement_ids[]" multiple="multiple" data-placeholder="Selecciona" required>
                         @foreach ($groups as $group)
                             <option value="{{ $group->id }}">{{ $group->name }}</option>
                         @endforeach
@@ -74,11 +74,11 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="mb-3">
-                    <input id="text" name="text" style="display: none;">
+                    <input id="text" name="text" style="display: none;" required>
                     <label class="form-label" for="text">Contenido:</label>
                     <div id="text-edit"></div>
                     <div class="valid-feedback">Valido!</div>
-                    <div class="invalid-feedback">Los grupos son requeridos.</div>
+                    <div class="invalid-feedback">El contenido es requerido.</div>
                 </div>
             </div>
         </div>
@@ -86,6 +86,7 @@
 
 @endsection
 @section('script')
+<script src="{{ URL::asset('/assets/libs/parsleyjs/parsleyjs.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/datatables/datatables.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/select2/select2.min.js') }}"></script>
@@ -95,8 +96,11 @@
         const groups = @json($groups);
         const groups_advertisements = @json($groups_advertisements);
         const titleEdit = $('#editAdvertisementTitle')[0];
+		const forms = document.getElementsByClassName('needs-validation');
 
         function reinitData() {
+            $('#editAdvertisement').removeClass('was-validated');
+            $('#editAdvertisement').addClass('needs-validated');
             $('#id').val("");
             $('#title').val("");
             $('#file').val("");
@@ -104,6 +108,8 @@
             window.editor.setData("");
         };
         function loadData(ID) {
+            $('#editAdvertisement').removeClass('was-validated');
+            $('#editAdvertisement').addClass('needs-validated');
             const advertisementGroups = groups_advertisements.filter(i => i.advertisement_id == +ID);
 
             let advertisementData;
@@ -266,6 +272,15 @@
                     console.log(error)
                 });
             };
+        });
+        Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
         });
     </script>
 @endsection

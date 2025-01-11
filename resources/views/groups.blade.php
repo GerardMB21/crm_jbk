@@ -56,8 +56,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label" for="company_id">Compañía:</label>
-                    <select class="form-select" id="company_id" name="company_id" value="0" required>
-                        <option value="0" selected>Seleccionar</option>
+                    <select class="form-select" id="company_id" name="company_id" required>
                         @foreach ($companies as $company)
                             <option value="{{ $company->id }}">{{ $company->name }}</option>
                         @endforeach
@@ -87,8 +86,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label" for="horario_id">Horario:</label>
-                    <select class="form-select" id="horario_id" name="horario_id" value="0" required>
-                        <option value="0" selected>Seleccionar</option>
+                    <select class="form-select" id="horario_id" name="horario_id" required>
                         @foreach ($hours as $hour)
                             <option value="{{ $hour->id }}">{{ $hour->name }}</option>
                         @endforeach
@@ -157,6 +155,7 @@
 
 @endsection
 @section('script')
+<script src="{{ URL::asset('/assets/libs/parsleyjs/parsleyjs.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/datatables/datatables.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
@@ -169,9 +168,12 @@
         const sectionsGroup = @json($sectionsGroup);
         const subSectionsGroup = @json($subSectionsGroup);
         const titleEditGroup = $('#editGroupTitle')[0];
+		const forms = document.getElementsByClassName('needs-validation');
         console.log(groups)
 
         function reinitData() {
+            $('#editGroup').removeClass('was-validated');
+            $('#editGroup').addClass('needs-validated');
             const tree = $(`#tree-container`).jstree(true);
             tree.uncheck_all();
             tree.close_all();
@@ -183,6 +185,8 @@
             $('#horario_id')[0].value = "0";
         };
         function loadData(groupId) {
+            $('#editGroup').removeClass('was-validated');
+            $('#editGroup').addClass('needs-validated');
             let groupData;
 
             for (let i = 0; i < groups.length; i++) {
@@ -372,14 +376,25 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-                            Swal.fire({
-                                title: 'Eliminado!',
-                                text: 'Grupo eliminado.',
-                                icon: 'success',
-                                confirmButtonColor: "#34c38f"
-                            }).then(function () {
-                                window.location.reload();
-                            })
+                            const { error } = data;
+
+                            if (error) {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: error,
+                                    icon: 'error',
+                                    confirmButtonColor: "#34c38f"
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Eliminado!',
+                                    text: 'Campaña eliminado.',
+                                    icon: 'success',
+                                    confirmButtonColor: "#34c38f"
+                                }).then(function () {
+                                    window.location.reload();
+                                })
+                            }
                         })
                         .catch(error => {
                             Swal.fire({
@@ -428,6 +443,15 @@
                         console.log(error)
                     });
                 };
+            });
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
             });
         });
     </script>
