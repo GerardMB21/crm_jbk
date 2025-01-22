@@ -8,11 +8,9 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="text-center">
-                        <a href="{{ url('index') }}" class="mb-5 d-block auth-logo auth-title">
+                        {{-- <a href="{{ url('index') }}" class="mb-5 d-block auth-logo auth-title">
                             Zicacenter
-                            {{-- <img src="{{ URL::asset('/assets/images/logo-dark.png') }}" alt="" height="22" class="logo logo-dark">
-                            <img src="{{ URL::asset('/assets/images/logo-light.png') }}" alt="" height="22" class="logo logo-light"> --}}
-                        </a>
+                        </a> --}}
                     </div>
                 </div>
             </div>
@@ -31,9 +29,7 @@
 
                                     <div class="mb-3">
                                         <label class="form-label" for="email">Email</label>
-                                        <input type="text" class="form-control @error('email') is-invalid @enderror"
-                                            name="email" value="{{ old('email', 'admin@themesbrand.com') }}" id="email"
-                                            placeholder="Enter Email address">
+                                        <input type="text" class="form-control @error('email') is-invalid @enderror" name="email" id="email" placeholder="Ingresar usuario">
                                         @error('email')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -49,8 +45,7 @@
                                             @endif --}}
                                         </div>
                                         <label class="form-label" for="userpassword">Contraseña</label>
-                                        <input type="password" class="form-control @error('password') is-invalid @enderror"
-                                            value="12345678" name="password" id="userpassword" placeholder="Enter password">
+                                        <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" id="userpassword" placeholder="Ingresar contraseña">
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -106,12 +101,12 @@
                         </div>
                     </div>
 
-                    <div class="mt-5 text-center">
+                    {{-- <div class="mt-5 text-center">
                         <p>© <script>
                                 document.write(new Date().getFullYear())
 
                             </script> Zicacenter</p>
-                    </div>
+                    </div> --}}
 
                 </div>
             </div>

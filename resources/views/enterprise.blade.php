@@ -83,9 +83,7 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label" for="logo">Logo de la Empresa</label>
-                                    <input type="file" class="form-control" id="logo" name="logo" value="{{ $company->logo }}" required>
-                                    <div class="valid-feedback">Valido!</div>
-                                    <div class="invalid-feedback">El color del menu es requerido.</div>
+                                    <input type="file" class="form-control" id="logo" name="logo" value="{{ $company->logo }}">
                                 </div>
                             </div>
                         </div>
