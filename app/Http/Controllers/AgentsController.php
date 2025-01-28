@@ -59,14 +59,16 @@ class AgentsController extends Controller
         $id = 0;
         $campaigns = Campain::get();
 
+        $agentsInSups = [];
         $agents = [];
         $users = [];
+        $sups = [];
 
         $userId = Auth::user()->id;
         $user = User::findOrFail($userId);
         $company = Company::findOrFail(1);
 
-        return view('agents', compact('id','campaigns','modules','user','company','agents','users'));
+        return view('agents', compact('id','campaigns','modules','user','company','agents','users','sups','agentsInSups'));
     }
 
     public function indexWithId($id)
@@ -87,13 +89,27 @@ class AgentsController extends Controller
                     )
                     ->where('camp_id', $id)
                     ->get();
+        $agentsInSups = AgentInSup::get();
         $users = User::get();
+        $sups = Sup::leftjoin('users', 'users.id', '=', 'sups.user_id')
+                    ->leftjoin('campains', 'campains.id', '=', 'sups.camp_id')
+                    ->select(
+                        'sups.id as id',
+                        'sups.user_id as user_id',
+                        'sups.camp_id as camp_id',
+                        'sups.state as state',
+                        'campains.name as camp_name',
+                        'users.name as user_name',
+                        'users.email as user_email',
+                    )
+                    ->where('camp_id', $id)
+                    ->get();
 
         $userId = Auth::user()->id;
         $user = User::findOrFail($userId);
         $company = Company::findOrFail(1);
 
-        return view('agents', compact('id','campaigns','modules','user','company','agents','users'));
+        return view('agents', compact('id','campaigns','modules','user','company','agents','users','sups','agentsInSups'));
     }
 
     public function modules()
@@ -177,11 +193,21 @@ class AgentsController extends Controller
         $this->validateModalForm();
 
         $id = request('id');
+        $sup_id = request('sup_id');
         $user_id = request('user_id');
         $camp_id = request('campaign_id');
 
         if (isset($id)) {
             $agent =  Agent::findOrFail($id);
+            
+            AgentInSup::where('agent_id', $id)
+                        ->delete();
+
+            $sup = new AgentInSup();
+            $sup->sup_id = $sup_id;
+            $sup->created_at_user = Auth::user()->name;
+            $sup->agent_id = $agent->id;
+
             $msg = 'Registro actualizado exitosamente';
             $agent->updated_at_user = Auth::user()->name;
         } else {
@@ -190,9 +216,16 @@ class AgentsController extends Controller
             $agent->camp_id = $camp_id;
             $agent->created_at_user = Auth::user()->name;
             $msg = 'Registro creado exitosamente';
+
+            $sup = new AgentInSup();
+            $sup->sup_id = $sup_id;
+            $sup->created_at_user = Auth::user()->name;
         }
 
         $agent->save();
+
+        $sup->agent_id = $agent->id;
+        $sup->save();
 
         $modules = $this->modules();
         $campaigns = Campain::get();
@@ -210,8 +243,21 @@ class AgentsController extends Controller
                     )
                     ->where('camp_id', $id)
                     ->get();
+        $sups = Sup::leftjoin('users', 'users.id', '=', 'sups.user_id')
+                    ->leftjoin('campains', 'campains.id', '=', 'sups.camp_id')
+                    ->select(
+                        'sups.id as id',
+                        'sups.user_id as user_id',
+                        'sups.camp_id as camp_id',
+                        'sups.state as state',
+                        'campains.name as camp_name',
+                        'users.name as user_name',
+                        'users.email as user_email',
+                    )
+                    ->where('camp_id', $id)
+                    ->get();
+        $agentsInSups = AgentInSup::get();
         $users = User::get();
-
         $userId = Auth::user()->id;
         $user = User::findOrFail($userId);
         $company = Company::findOrFail(1);
@@ -223,7 +269,9 @@ class AgentsController extends Controller
             'user' => $user,
             'company' => $company,
             'agents' => $agents,
-            'users' => $users
+            'users' => $users,
+            'sups' => $sups,
+            'agentsInSups' => $agentsInSups
         ]);
     }
 

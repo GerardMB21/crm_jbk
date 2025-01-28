@@ -83,7 +83,7 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label" for="logo">Logo de la Empresa</label>
-                                    <input type="file" class="form-control" id="logo" name="logo" value="{{ $company->logo }}">
+                                    <input type="file" class="form-control" id="logo" name="logo" accept="image/*" value="{{ $company->logo }}">
                                 </div>
                             </div>
                         </div>

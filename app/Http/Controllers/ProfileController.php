@@ -258,7 +258,21 @@ class ProfileController extends Controller
             ]);
         }
 
+        $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
+        $allowedExtensions = ['jpeg', 'jpg', 'png', 'gif', 'svg', 'webp'];
+
         $file = $foto_perfil;
+        $mimeType = $file->getMimeType();
+        $extension = $file->getClientOriginalExtension();
+
+        if (!in_array($mimeType, $allowedMimeTypes)) {
+            return back()->withErrors(['image' => 'El archivo debe ser una imagen válida (JPEG, PNG, GIF, SVG, WebP).']);
+        }
+
+        if (!in_array(strtolower($extension), $allowedExtensions)) {
+            return back()->withErrors(['image' => 'La extensión del archivo no es válida.']);
+        }
+
         $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $fileExtension = $file->getClientOriginalExtension();
 

@@ -57,12 +57,24 @@
     <x-modal :idModal="'editAgent'" :ariaLabelledby="'editAgent'" :routeAction="route('SaveAgent')" :idTitle="'editAgentTitle'" :textTitle="'Crear Agente'">
         <input type="text" class="form-control" id="campaign_id" name="campaign_id" style="display: none;">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label" for="sup_id">Supervisor:</label>
+                    <select class="form-select" id="sup_id" name="sup_id" required>
+                        @foreach ($sups as $sup)
+                            <option value="{{ $sup->id }}">{{ $sup->user_name }}</option>
+                        @endforeach
+                    </select>
+                    <div class="valid-feedback">Valido!</div>
+                    <div class="invalid-feedback">El supervisor es requerido.</div>
+                </div>
+            </div>
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label" for="user_id">Agente:</label>
                     <select class="form-select" id="user_id" name="user_id" required>
                         @foreach ($users as $user)
-                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            <option value="{{ $user->id }}" data-user-id="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
                     </select>
                     <div class="valid-feedback">Valido!</div>
@@ -83,6 +95,8 @@
         const id = @json($id);
         const campaigns = @json($campaigns);
         const agents = @json($agents);
+        const sups = @json($sups);
+        const agentsInSups = @json($agentsInSups);
         const titleEdit = $('#editAgentTitle')[0];
 		const forms = document.getElementsByClassName('needs-validation');
 
@@ -97,6 +111,7 @@
             $('#id').val("");
 
             $('#user_id').val("0").trigger('change');
+            $('#sup_id').val("0").trigger('change');
 
         };
         function loadData(ID) {
@@ -118,10 +133,36 @@
                     camp_name,
                 } = agentData;
 
+                let agentSup;
+
+                for (let i = 0; i < agentsInSups.length; i++) {
+                    const element = agentsInSups[i];
+
+                    if (element.agent_id == id) agentSup = element;
+                };
+
                 $('#id').val(id);
 
                 $('#user_id').val(user_id).trigger('change');
+
+                if (agentSup) $('#sup_id').val(agentSup.sup_id).trigger('change');
             };
+        };
+        function hideOptions() {
+            const ids = [];
+
+            agents.forEach(element => {
+                ids.push(element.user_id);
+            });
+
+            $('#user_id option').each(function() {
+                const value = parseInt($(this).val());
+
+                if (ids.includes(value)) $(this).hide();
+            })
+        };
+        function showOptions() {
+            $('#user_id option').show();
         };
 
         $(document).ready(function() {
@@ -129,6 +170,7 @@
             const table = $('#datatable').DataTable();
 
             $('#newEditAgent').on('click', '', function () {
+                hideOptions();
                 reinitData();
                 titleEdit.innerText = "Nuevo Agente";
             });
@@ -140,6 +182,7 @@
             $('#datatable tbody').on('click', '.btn.edit', function () {
                 titleEdit.innerText = "Editar Agente";
 
+                showOptions();
                 reinitData();
 
                 const agentId = this.dataset.agentId;

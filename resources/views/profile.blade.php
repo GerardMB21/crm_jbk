@@ -153,7 +153,7 @@
                     <div class="col-md-12">
                         <div class="mb-3">
                             <label class="form-label" for="foto_perfil">Foto de Perfil</label>
-                            <input type="file" class="form-control" id="foto_perfil" name="foto_perfil" required>
+                            <input type="file" class="form-control" id="foto_perfil" name="foto_perfil" accept="image/*" required>
                         </div>
                         <img id="preview-profile" src="{{ url('/storage/uploads', $user->foto_perfil) }}" alt="{{ $user->foto_perfil }}" style="width: 100%; height: auto;">
                     </div>

@@ -85,15 +85,17 @@
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label" for="password">Contraseña:</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
+                    <input type="password" class="form-control" id="password" name="password" >
                     <div class="valid-feedback">Valido!</div>
                     <div class="invalid-feedback">La contraseña es requerida.</div>
                 </div>
             </div>
+
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label" for="telefono">Teléfono:</label>
